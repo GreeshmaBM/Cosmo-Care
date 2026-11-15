@@ -575,28 +575,26 @@
         <!-- AUTHENTICATION PANEL -->
 
         <section class="auth-panel" id="authPanel">
-            <h3><i class="fas fa-shield-halved"></i> Secure Cosmo Care Login</h3>
+            <h3><i class="fas fa-shield-halved"></i> Cosmo Care Gmail Login</h3>
 
             <p>
-                Sign in using the email address registered to your original
-                Cosmo Care Supabase account. No password is required.
+                Sign in to Cosmo Care using its official communication account.
             </p>
 
-            <form id="loginForm">
-                <input type="email" id="loginEmail" placeholder="Enter your registered email address"
-                    autocomplete="email" required>
+            <h4 style="color:#ff79c6;">
+                <i class="fas fa-envelope"></i>
+                cosmocare.connect@gmail.com
+            </h4>
 
-                <button type="submit" class="btn" id="loginBtn">
-                    <i class="fas fa-envelope"></i>
-                    Send Secure Login Link
-                </button>
-            </form>
+            <button type="button" class="btn" id="loginBtn">
+                <i class="fas fa-envelope"></i>
+                Send Login Link
+            </button>
 
             <p class="auth-info" id="authMessage">
-                A secure login link will be sent to your registered email.
+                A login link will be sent to the official Cosmo Care Gmail account.
             </p>
         </section>
-
         <!-- ACCOUNT BAR -->
 
         <section class="account-bar" id="accountBar">
@@ -812,13 +810,13 @@
 
 
         /* ==========================================
-           5. LOGIN WITH EMAIL OTP
-        ========================================== */
+     5. LOGIN WITH FIXED COSMO CARE GMAIL
+  ========================================== */
 
-        async function authenticateUser(email) {
+        async function authenticateUser() {
 
             const { error } = await supabaseClient.auth.signInWithOtp({
-                email: email.trim(),
+                email: COSMOCARE_GMAIL,
                 options: {
                     shouldCreateUser: false,
                     emailRedirectTo: window.location.origin +
@@ -831,52 +829,44 @@
             return true;
         }
 
-        document.getElementById("loginForm").addEventListener("submit", async function (e) {
+        document.getElementById("loginBtn").addEventListener("click", async function () {
 
-            e.preventDefault();
-
-            const email = document.getElementById("loginEmail").value.trim();
             const button = document.getElementById("loginBtn");
             const message = document.getElementById("authMessage");
 
-            if (!email) {
-                showToast("Enter your registered email.");
-                return;
-            }
-
             button.disabled = true;
+
             button.innerHTML =
                 '<i class="fas fa-spinner fa-spin"></i> Sending Login Link...';
 
             try {
 
-                await authenticateUser(email);
+                await authenticateUser();
 
                 message.textContent =
-                    "Login link sent. Open your email and click the link using this browser.";
+                    "Login link sent to cosmocare.connect@gmail.com. Open it using this browser.";
 
-                showToast("Secure login link sent successfully!");
+                showToast("Cosmo Care login link sent!");
 
             } catch (error) {
 
-                console.error("OTP error:", error);
+                console.error("Login error:", error);
 
                 message.textContent =
                     error.message || "Unable to send login link.";
 
-                showToast(error.message || "Login link could not be sent.");
+                showToast(error.message || "Login failed.");
 
             } finally {
 
                 button.disabled = false;
 
                 button.innerHTML =
-                    '<i class="fas fa-envelope"></i> Send Secure Login Link';
+                    '<i class="fas fa-envelope"></i> Send Login Link';
 
             }
 
         });
-
 
         /* ==========================================
            6. AUTHENTICATION UI
