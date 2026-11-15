@@ -1,0 +1,1155 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cosmo Care | Alerts & Warnings</title>
+
+    <link rel="stylesheet" href="cosmo-style.css">
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #080b12;
+            --panel: #101725;
+            --panel2: #141e2e;
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #eef3ff;
+            --muted: #8996aa;
+            --accent: #ff5c73;
+            --cyan: #40d9ff;
+            --green: #4ce2a0;
+            --yellow: #ffd166;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(circle at 80% 15%, rgba(255, 70, 100, 0.09), transparent 30%),
+                radial-gradient(circle at 15% 80%, rgba(50, 150, 255, 0.07), transparent 30%);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* MAIN CONTENT */
+
+        .main {
+            margin-left: 255px;
+            width: calc(100% - 255px);
+            padding: 35px 40px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 35px;
+        }
+
+        .page-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .page-title span {
+            color: var(--accent);
+        }
+
+        .page-subtitle {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 8px;
+        }
+
+        .live-status {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            background: rgba(40, 220, 150, 0.08);
+            border: 1px solid rgba(40, 220, 150, 0.2);
+            color: var(--green);
+            padding: 10px 15px;
+            border-radius: 30px;
+            font-size: 11px;
+            white-space: nowrap;
+        }
+
+        .live-dot {
+            height: 7px;
+            width: 7px;
+            background: var(--green);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--green);
+            animation: blink 1.5s infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: .3;
+            }
+        }
+
+        /* SECTION HEADINGS */
+
+        .section-heading,
+        .notification-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .section-heading h2,
+        .notification-heading h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 15px;
+        }
+
+        .section-heading h2 i,
+        .notification-heading h2 i {
+            color: var(--accent);
+            margin-right: 9px;
+        }
+
+        /* DASHBOARD COUNTS */
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 14px;
+            margin-bottom: 35px;
+        }
+
+        .dashboard-card {
+            background: linear-gradient(145deg, #141e2e, #0d1420);
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            padding: 19px;
+            transition: .3s;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 92, 115, .4);
+        }
+
+        .dashboard-icon {
+            font-size: 17px;
+            color: var(--accent);
+            margin-bottom: 13px;
+        }
+
+        .dashboard-name {
+            color: var(--muted);
+            font-size: 11px;
+            min-height: 30px;
+            line-height: 1.5;
+        }
+
+        .dashboard-count {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            margin-top: 12px;
+            color: white;
+        }
+
+        .count-label {
+            font-size: 10px;
+            color: #748198;
+            margin-top: 5px;
+        }
+
+        /* CLEAR BUTTON */
+
+        .clear-btn {
+            border: 1px solid rgba(255, 92, 115, .35);
+            background: rgba(255, 92, 115, .1);
+            color: #ff8192;
+            padding: 10px 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            transition: .3s;
+        }
+
+        .clear-btn:hover {
+            background: rgba(255, 92, 115, .23);
+        }
+
+        /* NOTIFICATIONS */
+
+        .notification-list {
+            display: flex;
+            flex-direction: column;
+            gap: 13px;
+        }
+
+        .notification-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: linear-gradient(110deg, #141e2e, #101725);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 19px;
+            animation: slideIn .35s ease;
+            transition: .3s;
+        }
+
+        .notification-card:hover {
+            border-color: rgba(255, 92, 115, .3);
+            transform: translateX(3px);
+        }
+
+        .notification-card.acknowledged {
+            opacity: .72;
+            border-color: rgba(76, 226, 160, .2);
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .notification-icon {
+            height: 46px;
+            min-width: 46px;
+            border-radius: 12px;
+            background: rgba(255, 92, 115, .12);
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .notification-card.acknowledged .notification-icon {
+            background: rgba(76, 226, 160, .12);
+            color: var(--green);
+        }
+
+        .notification-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .notification-title {
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 7px;
+        }
+
+        .notification-message {
+            font-size: 12px;
+            color: #a6b2c5;
+            line-height: 1.6;
+            overflow-wrap: anywhere;
+        }
+
+        .notification-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 10px;
+            font-size: 10px;
+            color: #77869d;
+        }
+
+        .source-tag {
+            color: var(--cyan);
+        }
+
+        .status-tag {
+            color: var(--yellow);
+        }
+
+        .notification-card.acknowledged .status-tag {
+            color: var(--green);
+        }
+
+        .notification-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+            flex-shrink: 0;
+        }
+
+        .ack-btn,
+        .delete-btn {
+            padding: 9px 12px;
+            border-radius: 7px;
+            cursor: pointer;
+            font-size: 10px;
+            font-weight: 600;
+            transition: .3s;
+            white-space: nowrap;
+        }
+
+        .ack-btn {
+            background: rgba(76, 226, 160, .09);
+            border: 1px solid rgba(76, 226, 160, .25);
+            color: var(--green);
+        }
+
+        .ack-btn:hover {
+            background: rgba(76, 226, 160, .2);
+        }
+
+        .delete-btn {
+            background: rgba(255, 92, 115, .09);
+            border: 1px solid rgba(255, 92, 115, .22);
+            color: #ff8192;
+        }
+
+        .delete-btn:hover {
+            background: rgba(255, 92, 115, .25);
+            color: white;
+        }
+
+        /* EMPTY STATE */
+
+        .empty-state {
+            text-align: center;
+            padding: 65px 20px;
+            background: var(--panel);
+            border: 1px dashed rgba(255, 255, 255, .12);
+            border-radius: 14px;
+        }
+
+        .empty-state i {
+            font-size: 38px;
+            color: var(--green);
+            margin-bottom: 18px;
+        }
+
+        .empty-state h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 15px;
+            margin-bottom: 9px;
+        }
+
+        .empty-state p {
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .footer {
+            text-align: center;
+            color: #58667d;
+            font-size: 10px;
+            padding: 35px 0 10px;
+        }
+
+        /* CONSTANT SIDEBAR DESIGN */
+
+        .sidebar {
+            width: 255px !important;
+            min-width: 255px !important;
+        }
+
+        .sidebar-menu .nav-link {
+            font-size: 14px !important;
+            height: 46px !important;
+            min-height: 46px !important;
+            padding: 0 12px !important;
+            margin-bottom: 10px !important;
+            gap: 13px !important;
+            line-height: 1 !important;
+        }
+
+        .sidebar-menu .nav-link i {
+            width: 16px !important;
+            min-width: 16px !important;
+            font-size: 16px !important;
+            text-align: center;
+        }
+
+        .sidebar-menu .nav-link span {
+            font-size: 14px !important;
+            white-space: nowrap;
+        }
+
+        /* RESPONSIVE MAIN CONTENT */
+
+        @media(max-width:1100px) {
+            .dashboard-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media(max-width:750px) {
+            .main {
+                margin-left: 255px;
+                width: calc(100% - 255px);
+                padding: 25px 17px;
+            }
+
+            .page-title {
+                font-size: 19px;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+
+            .dashboard-card {
+                padding: 14px;
+            }
+
+            .dashboard-count {
+                font-size: 23px;
+            }
+
+            .notification-card {
+                align-items: flex-start;
+                flex-wrap: wrap;
+                padding: 14px;
+            }
+
+            .notification-actions {
+                margin-left: 60px;
+                flex-direction: row;
+            }
+
+            .topbar {
+                align-items: flex-start;
+            }
+
+            .live-status {
+                font-size: 9px;
+                padding: 8px 10px;
+            }
+        }
+
+        @media(max-width:500px) {
+            .main {
+                padding: 20px 12px;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .dashboard-name {
+                font-size: 10px;
+            }
+
+            .notification-heading h2 {
+                font-size: 12px;
+            }
+        }
+
+        /* MOBILE MENU BUTTON */
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1200;
+            width: 45px;
+            height: 45px;
+            border: 1px solid var(--accent, #00dcff);
+            border-radius: 10px;
+            background: #15151f;
+            color: var(--accent, #00dcff);
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* SIDEBAR OVERLAY */
+        .sidebar-overlay {
+            display: none;
+        }
+
+        /* MOBILE RESPONSIVENESS */
+        @media screen and (max-width: 768px) {
+
+            .mobile-menu-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100vh;
+                width: 255px;
+                z-index: 1100;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.65);
+                z-index: 1000;
+            }
+
+            .main {
+                margin-left: 0 !important;
+                width: 100% !important;
+                padding: 75px 15px 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- MOBILE MENU BUTTON -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open navigation">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- SIDEBAR OVERLAY -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="layout">
+
+        <!-- SHARED SIDEBAR -->
+
+        <aside class="sidebar">
+
+            <div class="sidebar-logo">
+                <span>✦</span> COSMO CARE
+            </div>
+
+            <div class="sidebar-menu">
+
+                <a href="index.html" class="nav-link">
+                    <i class="fas fa-house"></i>
+                    <span>Main Dashboard</span>
+                </a>
+
+                <a href="cardiovascular.html" class="nav-link">
+                    <i class="fas fa-heartbeat"></i>
+                    <span>Cardiovascular</span>
+                </a>
+
+                <a href="oxygen.html" class="nav-link">
+                    <i class="fas fa-lungs"></i>
+                    <span>Blood Oxygen</span>
+                </a>
+
+                <a href="sleep.html" class="nav-link">
+                    <i class="fas fa-moon"></i>
+                    <span>Sleep Monitor</span>
+                </a>
+
+                <a href="bone-health.html" class="nav-link">
+                    <i class="fas fa-bone"></i>
+                    <span>Bone Health</span>
+                </a>
+
+                <a href="radiation.html" class="nav-link">
+                    <i class="fas fa-radiation"></i>
+                    <span>Radiation Monitor</span>
+                </a>
+
+                <a href="air-quality.html" class="nav-link">
+                    <i class="fas fa-wind"></i>
+                    <span>Air Quality</span>
+                </a>
+
+                <a href="movement.html" class="nav-link">
+                    <i class="fas fa-person-walking"></i>
+                    <span>Balance & Movement</span>
+                </a>
+
+                <a href="famil-connect.html" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    <span>Family Connect</span>
+                </a>
+
+                <a href="alerts.html" class="nav-link active">
+                    <i class="fas fa-bell"></i>
+                    <span>Alerts & Warnings</span>
+                </a>
+
+            </div>
+
+        </aside>
+
+        <!-- MAIN CONTENT -->
+
+        <main class="main">
+
+            <div class="topbar">
+
+                <div>
+                    <h1 class="page-title">
+                        ALERTS <span>& WARNINGS</span>
+                    </h1>
+
+                    <p class="page-subtitle">
+                        Centralized notifications from all Cosmo Care monitoring dashboards.
+                    </p>
+                </div>
+
+                <div class="live-status">
+                    <span class="live-dot"></span>
+                    LIVE MONITORING
+                </div>
+
+            </div>
+
+            <div class="section-heading">
+                <h2>
+                    <i class="fa-solid fa-layer-group"></i>
+                    DASHBOARD NOTIFICATIONS
+                </h2>
+            </div>
+
+            <div class="dashboard-grid" id="dashboardGrid"></div>
+
+            <div class="notification-heading">
+
+                <h2>
+                    <i class="fa-solid fa-bell"></i>
+                    ALL NOTIFICATIONS
+                    <span id="totalCount" style="color:#ff8192;">(0)</span>
+                </h2>
+
+                <button class="clear-btn" onclick="clearAllNotifications()">
+                    <i class="fa-solid fa-trash"></i>
+                    CLEAR ALL
+                </button>
+
+            </div>
+
+            <div class="notification-list" id="notificationList"></div>
+
+            <div class="footer">
+                COSMO CARE | ASTRONAUT HEALTH MONITORING SYSTEM
+            </div>
+
+        </main>
+
+    </div>
+
+    <script>
+
+        const STORAGE_KEY = "cosmoCareAlerts";
+
+        const dashboards = [
+            {
+                name: "Cardiovascular",
+                aliases: ["cardiovascular", "cardiovascular monitor"],
+                icon: "fa-heart-pulse"
+            },
+            {
+                name: "Blood Oxygen",
+                aliases: ["blood oxygen", "blood oxygen monitor", "oxygen", "oxygen monitor"],
+                icon: "fa-lungs"
+            },
+            {
+                name: "Sleep Monitor",
+                aliases: ["sleep", "sleep monitor"],
+                icon: "fa-moon"
+            },
+            {
+                name: "Bone Health",
+                aliases: ["bone", "bone health", "bone health monitor"],
+                icon: "fa-bone"
+            },
+            {
+                name: "Radiation Monitor",
+                aliases: ["radiation", "radiation monitor"],
+                icon: "fa-radiation"
+            },
+            {
+                name: "Air Quality",
+                aliases: ["air", "air quality", "air quality monitor"],
+                icon: "fa-wind"
+            },
+            {
+                name: "Balance & Movement",
+                aliases: ["movement", "balance", "balance and movement", "balance & movement"],
+                icon: "fa-person-walking"
+            },
+            {
+                name: "Family Connect",
+                aliases: ["family", "family connect"],
+                icon: "fa-users"
+            }
+        ];
+
+        let notifications = [];
+
+        /* NORMALIZE SOURCE */
+
+        function normalizeSource(source) {
+
+            const value = String(source || "").toLowerCase().trim();
+
+            const dashboard = dashboards.find(item =>
+                item.aliases.includes(value)
+            );
+
+            return dashboard ? dashboard.name : (source || "Other Dashboard");
+        }
+
+        /* GET ICON */
+
+        function getIcon(source) {
+
+            const dashboard = dashboards.find(item =>
+                item.name === normalizeSource(source)
+            );
+
+            return dashboard ? dashboard.icon : "fa-bell";
+        }
+
+        /* LOAD */
+
+        function loadNotifications() {
+
+            try {
+
+                const stored = JSON.parse(
+                    localStorage.getItem(STORAGE_KEY) || "[]"
+                );
+
+                notifications = Array.isArray(stored) ? stored : [];
+
+            } catch (error) {
+
+                console.error("Unable to load Cosmo Care alerts:", error);
+                notifications = [];
+
+            }
+
+            renderAll();
+        }
+
+        /* SAVE */
+
+        function saveNotifications() {
+
+            localStorage.setItem(
+                STORAGE_KEY,
+                JSON.stringify(notifications)
+            );
+
+        }
+
+        /* DASHBOARD COUNTS */
+
+        function renderDashboardCounts() {
+
+            const grid = document.getElementById("dashboardGrid");
+
+            grid.innerHTML = "";
+
+            dashboards.forEach(dashboard => {
+
+                const count = notifications.filter(alert =>
+                    normalizeSource(alert.source || alert.type) === dashboard.name
+                ).length;
+
+                const card = document.createElement("div");
+
+                card.className = "dashboard-card";
+
+                card.innerHTML = `
+                    <div class="dashboard-icon">
+                        <i class="fa-solid ${dashboard.icon}"></i>
+                    </div>
+
+                    <div class="dashboard-name">
+                        ${dashboard.name}
+                    </div>
+
+                    <div class="dashboard-count">
+                        ${count}
+                    </div>
+
+                    <div class="count-label">
+                        Notifications
+                    </div>
+                `;
+
+                grid.appendChild(card);
+
+            });
+
+        }
+
+        /* NOTIFICATION LIST */
+
+        function renderNotifications() {
+
+            const list = document.getElementById("notificationList");
+
+            document.getElementById("totalCount").textContent =
+                `(${notifications.length})`;
+
+            list.innerHTML = "";
+
+            if (notifications.length === 0) {
+
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <i class="fa-solid fa-circle-check"></i>
+                        <h3>ALL SYSTEMS CLEAR</h3>
+                        <p>
+                            No notifications received from monitoring dashboards.
+                        </p>
+                    </div>
+                `;
+
+                return;
+            }
+
+            const sorted = [...notifications].sort((a, b) => {
+
+                const timeA = new Date(a.timestamp || a.time || 0).getTime();
+                const timeB = new Date(b.timestamp || b.time || 0).getTime();
+
+                return timeB - timeA;
+
+            });
+
+            sorted.forEach(alert => {
+
+                const source = normalizeSource(alert.source || alert.type);
+                const icon = getIcon(source);
+
+                const acknowledged =
+                    alert.acknowledged === true ||
+                    alert.status === "acknowledged";
+
+                const card = document.createElement("div");
+
+                card.className = "notification-card";
+
+                if (acknowledged) {
+                    card.classList.add("acknowledged");
+                }
+
+                const title = alert.title || "Health Monitoring Notification";
+                const message = alert.message || "A notification was received.";
+
+                let time = alert.time ||
+                    (alert.timestamp
+                        ? new Date(alert.timestamp).toLocaleString()
+                        : "Time unavailable");
+
+                card.innerHTML = `
+
+                    <div class="notification-icon">
+                        <i class="fa-solid ${icon}"></i>
+                    </div>
+
+                    <div class="notification-content">
+
+                        <div class="notification-title"></div>
+
+                        <div class="notification-message"></div>
+
+                        <div class="notification-meta">
+
+                            <span class="source-tag">
+                                <i class="fa-solid fa-layer-group"></i>
+                                <span class="source-name"></span>
+                            </span>
+
+                            <span>
+                                <i class="fa-regular fa-clock"></i>
+                                <span class="notification-time"></span>
+                            </span>
+
+                            <span class="status-tag"></span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="notification-actions">
+
+                        <button class="ack-btn" type="button">
+                            <i class="fa-solid fa-check"></i>
+                            ACKNOWLEDGE
+                        </button>
+
+                        <button class="delete-btn" type="button">
+                            <i class="fa-solid fa-trash"></i>
+                            DELETE
+                        </button>
+
+                    </div>
+
+                `;
+
+                card.querySelector(".notification-title").textContent = title;
+                card.querySelector(".notification-message").textContent = message;
+                card.querySelector(".source-name").textContent = source;
+                card.querySelector(".notification-time").textContent = time;
+
+                card.querySelector(".status-tag").textContent =
+                    acknowledged ? "ACKNOWLEDGED" : "ACTIVE WARNING";
+
+                const ackButton = card.querySelector(".ack-btn");
+
+                if (acknowledged) {
+                    ackButton.disabled = true;
+                    ackButton.textContent = "ACKNOWLEDGED";
+                    ackButton.style.opacity = ".55";
+                    ackButton.style.cursor = "default";
+                } else {
+                    ackButton.addEventListener("click", () => {
+                        acknowledgeNotification(alert.id);
+                    });
+                }
+
+                card.querySelector(".delete-btn").addEventListener("click", () => {
+                    deleteNotification(alert.id);
+                });
+
+                list.appendChild(card);
+
+            });
+
+        }
+
+        /* RENDER ALL */
+
+        function renderAll() {
+            renderDashboardCounts();
+            renderNotifications();
+        }
+
+        /* ACKNOWLEDGE */
+
+        function acknowledgeNotification(id) {
+
+            const alert = notifications.find(item =>
+                String(item.id) === String(id)
+            );
+
+            if (!alert) return;
+
+            alert.status = "acknowledged";
+            alert.acknowledged = true;
+            alert.acknowledgedAt = new Date().toISOString();
+
+            saveNotifications();
+            renderAll();
+
+        }
+
+        /* DELETE ONE */
+
+        function deleteNotification(id) {
+
+            notifications = notifications.filter(alert =>
+                String(alert.id) !== String(id)
+            );
+
+            saveNotifications();
+            renderAll();
+
+        }
+
+        /* CLEAR ALL */
+
+        function clearAllNotifications() {
+
+            if (notifications.length === 0) return;
+
+            const confirmDelete = confirm(
+                "Are you sure you want to delete all notifications?"
+            );
+
+            if (!confirmDelete) return;
+
+            notifications = [];
+
+            saveNotifications();
+            renderAll();
+
+        }
+
+        /* RECEIVE NOTIFICATIONS */
+
+        function receiveAlert(data) {
+
+            if (!data || typeof data !== "object") return;
+
+            const alert = {
+                ...data,
+
+                id: data.id || (
+                    "COSMO-" +
+                    Date.now() +
+                    "-" +
+                    Math.random().toString(36).slice(2, 8)
+                ),
+
+                source: normalizeSource(data.source || data.type),
+
+                title: data.title || "Health Monitoring Notification",
+
+                message: data.message || "A notification was received.",
+
+                status: data.status || "active",
+
+                acknowledged: data.acknowledged === true,
+
+                time: data.time || new Date().toLocaleString(),
+
+                timestamp: data.timestamp || new Date().toISOString()
+            };
+
+            const exists = notifications.some(item =>
+                String(item.id) === String(alert.id)
+            );
+
+            if (exists) return;
+
+            notifications.push(alert);
+
+            saveNotifications();
+            renderAll();
+
+        }
+
+        /* RECEIVE BOTH EVENT NAMES */
+
+        window.addEventListener("cosmoCareAlert", event => {
+            receiveAlert(event.detail);
+        });
+
+        window.addEventListener("cosmoCareAlertAdded", event => {
+            receiveAlert(event.detail);
+        });
+
+        /* RECEIVE UPDATES */
+
+        window.addEventListener("cosmoCareAlertUpdated", event => {
+
+            const data = event.detail;
+
+            if (!data || !data.id) return;
+
+            const alert = notifications.find(item =>
+                String(item.id) === String(data.id)
+            );
+
+            if (!alert) return;
+
+            Object.assign(alert, data);
+
+            saveNotifications();
+            renderAll();
+
+        });
+
+        /* CROSS-TAB SYNC */
+
+        window.addEventListener("storage", event => {
+
+            if (event.key === STORAGE_KEY) {
+                loadNotifications();
+            }
+
+        });
+
+        /* BACKUP SYNC */
+
+        let lastStorageValue = localStorage.getItem(STORAGE_KEY) || "[]";
+
+        setInterval(() => {
+
+            const currentValue = localStorage.getItem(STORAGE_KEY) || "[]";
+
+            if (currentValue !== lastStorageValue) {
+
+                lastStorageValue = currentValue;
+
+                loadNotifications();
+
+            }
+
+        }, 1000);
+
+        /* INITIALIZE */
+
+        loadNotifications();
+
+    </script>
+
+    <script>
+        const menuBtn = document.getElementById("mobileMenuBtn");
+        const sidebar = document.querySelector(".sidebar");
+        const overlay = document.getElementById("sidebarOverlay");
+
+        menuBtn.addEventListener("click", () => {
+            sidebar.classList.toggle("open");
+            overlay.classList.toggle("active");
+        });
+
+        overlay.addEventListener("click", closeMenu);
+
+        document.querySelectorAll(".sidebar .nav-link").forEach(link => {
+            link.addEventListener("click", closeMenu);
+        });
+
+        function closeMenu() {
+            sidebar.classList.remove("open");
+            overlay.classList.remove("active");
+        }
+    </script>
+
+</body>
+
+</html>

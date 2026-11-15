@@ -1,6 +1,7 @@
+
 /* ==========================================
    COSMO CARE — GLOBAL DESIGN SYSTEM
-   ========================================== */
+========================================== */
 
 :root {
     --cosmo-bg: #080d1b;
@@ -19,7 +20,9 @@
     --cosmo-transition: 0.3s ease;
 }
 
-/* RESET */
+/* ==========================================
+   UNIVERSAL RESET
+========================================== */
 
 * {
     box-sizing: border-box;
@@ -41,7 +44,9 @@ textarea {
     font: inherit;
 }
 
-/* SCROLLBAR */
+/* ==========================================
+   SCROLLBAR
+========================================== */
 
 ::-webkit-scrollbar {
     width: 7px;
@@ -56,7 +61,9 @@ textarea {
     border-radius: 20px;
 }
 
-/* TEXT */
+/* ==========================================
+   TEXT STYLES
+========================================== */
 
 .cosmo-muted {
     color: var(--cosmo-muted);
@@ -74,15 +81,19 @@ textarea {
     line-height: 1.7;
 }
 
-/* GLASS CARDS */
+/* ==========================================
+   GLASS CARDS
+========================================== */
 
 .cosmo-card {
     background: var(--cosmo-surface);
     border: 1px solid var(--cosmo-border);
     border-radius: var(--cosmo-radius);
     padding: 22px;
+
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
+
     transition: var(--cosmo-transition);
 }
 
@@ -91,21 +102,27 @@ textarea {
     transform: translateY(-3px);
 }
 
-/* BUTTONS */
+/* ==========================================
+   BUTTONS
+========================================== */
 
 .cosmo-btn {
     border: none;
     outline: none;
     border-radius: 10px;
+
     padding: 12px 20px;
+
     font-weight: 650;
     cursor: pointer;
+
     transition: var(--cosmo-transition);
 }
 
 .cosmo-btn-primary {
     background: linear-gradient(135deg, #258dff, #7665ff);
     color: white;
+
     box-shadow: 0 5px 20px rgba(65, 120, 255, 0.2);
 }
 
@@ -114,15 +131,20 @@ textarea {
     box-shadow: 0 8px 25px rgba(65, 120, 255, 0.35);
 }
 
-/* INPUTS */
+/* ==========================================
+   INPUTS
+========================================== */
 
 .cosmo-input {
     width: 100%;
     padding: 13px 15px;
+
     color: var(--cosmo-text);
     background: rgba(255, 255, 255, 0.045);
+
     border: 1px solid var(--cosmo-border);
     border-radius: 10px;
+
     outline: none;
     transition: var(--cosmo-transition);
 }
@@ -132,21 +154,29 @@ textarea {
     box-shadow: 0 0 0 3px rgba(88, 199, 255, 0.10);
 }
 
-/* STATUS BADGES */
+/* ==========================================
+   STATUS BADGES
+========================================== */
 
 .cosmo-badge {
     display: inline-flex;
     align-items: center;
     gap: 7px;
+
     padding: 6px 11px;
+
     border-radius: 30px;
+
     font-size: 11px;
     font-weight: 700;
+
     background: rgba(88, 199, 255, 0.10);
     color: var(--cosmo-primary);
 }
 
-/* ANIMATIONS */
+/* ==========================================
+   ANIMATIONS
+========================================== */
 
 @keyframes cosmoFadeUp {
     from {
@@ -164,47 +194,25 @@ textarea {
     animation: cosmoFadeUp 0.6s ease both;
 }
 
-/* RESPONSIVE */
-
-@media (max-width: 768px) {
-    .cosmo-card {
-        padding: 16px;
-        border-radius: 14px;
-    }
-
-    .cosmo-title {
-        font-size: 25px;
-    }
-
-    .cosmo-btn {
-        padding: 11px 16px;
-    }
-}
-
-@media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
-    }
-}
-
 /* ==========================================
-   COSMO CARE - UNIVERSAL SIDEBAR
-   Same design across every dashboard
+   UNIVERSAL SIDEBAR VARIABLES
 ========================================== */
 
 :root {
     --sidebar-width: 255px;
+
     --sidebar-bg: #091321;
     --sidebar-accent: #38bdf8;
-    --sidebar-glow: rgba(56, 189, 248, 0.15);
+    --sidebar-glow: rgba(56, 189, 248, 0.18);
     --sidebar-border: rgba(255, 255, 255, 0.08);
 }
 
-/* SIDEBAR THEMES */
+/* ==========================================
+   DASHBOARD COLOUR THEMES
+
+   Change the theme class on the body
+   to change the sidebar colours.
+========================================== */
 
 .theme-blue {
     --sidebar-accent: #38bdf8;
@@ -251,172 +259,163 @@ textarea {
     --sidebar-glow: rgba(196, 181, 253, 0.18);
 }
 
-/* MAIN SIDEBAR */
+/* ==========================================
+   UNIVERSAL SIDEBAR
+========================================== */
 
 .sidebar {
-    width: var(--sidebar-width);
-    height: 100vh;
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 1000;
 
-    background: var(--sidebar-bg);
-    border-right: 1px solid var(--sidebar-border);
+    width: var(--sidebar-width);
+    min-width: var(--sidebar-width);
+    max-width: var(--sidebar-width);
+
+    height: 100vh;
 
     padding: 25px 18px;
 
     display: flex;
     flex-direction: column;
 
-    overflow-y: auto;
+    background: var(--sidebar-bg);
 
-    transition: border-color 0.3s ease;
+    border-right: 1px solid var(--sidebar-border);
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    z-index: 1100;
+
     box-sizing: border-box;
+
+    transition: transform 0.3s ease;
 }
 
-/* SIDEBAR BRAND */
+/* ==========================================
+   SIDEBAR LOGO
+========================================== */
 
-.sidebar .logo,
-.sidebar .sidebar-logo {
+.sidebar-logo {
+    display: flex;
+    align-items: center;
+
     color: white;
+
     font-size: 23px;
     font-weight: 800;
     letter-spacing: 1px;
+
+    line-height: 1.2;
+
     margin-bottom: 35px;
+
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
-.sidebar .logo span,
-.sidebar .sidebar-logo span {
+.sidebar-logo span {
     color: var(--sidebar-accent);
 }
 
-/* NAVIGATION */
-
-.sidebar nav,
-.sidebar .nav-links {
-    display: flex;
-    flex-direction: column;
-    gap: 9px;
-}
-
-.sidebar nav a,
-.sidebar .nav-links a {
-    display: flex;
-    align-items: center;
-    gap: 13px;
-
-    padding: 13px 14px;
-
-    color: #a8b4c7;
-    text-decoration: none;
-
-    font-size: 14px;
-    font-weight: 500;
-
-    border-radius: 10px;
-    border: 1px solid transparent;
-
-    transition: all 0.25s ease;
-}
-
-/* ICONS */
-
-.sidebar nav a i,
-.sidebar .nav-links a i {
-    width: 20px;
-    text-align: center;
-    font-size: 16px;
-}
-
-/* HOVER */
-
-.sidebar nav a:hover,
-.sidebar .nav-links a:hover {
-    color: white;
-    background: var(--sidebar-glow);
-    border-color: var(--sidebar-border);
-    transform: translateX(3px);
-}
-
-/* ACTIVE PAGE */
-
-.sidebar nav a.active,
-.sidebar .nav-links a.active {
-    color: white;
-    background: var(--sidebar-glow);
-    border-left: 3px solid var(--sidebar-accent);
-    box-shadow: inset 0 0 18px var(--sidebar-glow);
-}
-
-.sidebar nav a.active i,
-.sidebar .nav-links a.active i {
-    color: var(--sidebar-accent);
-}
-
-/* MAIN CONTENT ALIGNMENT */
-
-.main {
-    margin-left: var(--sidebar-width);
-    width: calc(100% - var(--sidebar-width));
-    min-height: 100vh;
-    box-sizing: border-box;
-}
-
-/* MOBILE */
-
-@media (max-width: 768px) {
-    .sidebar {
-        transform: translateX(-100%);
-        transition: transform 0.3s ease;
-    }
-
-    .sidebar.open {
-        transform: translateX(0);
-    }
-
-    .main {
-        margin-left: 0;
-        width: 100%;
-    }
-}
+/* ==========================================
+   SIDEBAR NAVIGATION
+========================================== */
 
 .sidebar-menu {
     display: flex;
     flex-direction: column;
-    gap: 9px;
+
+    gap: 10px;
+
+    width: 100%;
 }
+
+/* Individual navigation links */
 
 .sidebar-menu .nav-link {
     display: flex;
     align-items: center;
+    justify-content: flex-start;
+
+    width: 100%;
+    height: 46px;
+    min-height: 46px;
+
+    padding: 0 12px;
+
     gap: 13px;
-    padding: 13px 14px;
 
     color: #a8b4c7;
-    text-decoration: none;
-    font-size: 14px;
 
-    border-radius: 10px;
+    font-family: 'Inter', sans-serif;
+
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+
+    text-decoration: none;
+    white-space: nowrap;
+
+    border: 1px solid transparent;
     border-left: 3px solid transparent;
 
-    transition: 0.3s ease;
+    border-radius: 10px;
+
+    box-sizing: border-box;
+
+    transition: background 0.25s ease,
+                color 0.25s ease,
+                border-color 0.25s ease;
 }
 
+/* Navigation icons */
+
 .sidebar-menu .nav-link i {
-    width: 20px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 16px;
+    min-width: 16px;
+
+    font-size: 16px;
+    line-height: 20px;
+
     text-align: center;
 }
+
+/* Navigation text */
+
+.sidebar-menu .nav-link span {
+    display: inline-block;
+
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+
+    white-space: nowrap;
+}
+
+/* Hover effect */
 
 .sidebar-menu .nav-link:hover {
     color: white;
     background: var(--sidebar-glow);
+    border-color: var(--sidebar-border);
 }
+
+/* Active dashboard */
 
 .sidebar-menu .nav-link.active {
     color: white;
+
     background: var(--sidebar-glow);
+
     border-left-color: var(--sidebar-accent);
+
+    box-shadow: inset 0 0 18px var(--sidebar-glow);
 }
 
 .sidebar-menu .nav-link.active i {
@@ -424,163 +423,158 @@ textarea {
 }
 
 /* ==========================================
-   COSMO CARE - FIXED SIDEBAR SPACING
+   MAIN CONTENT ALIGNMENT
 ========================================== */
 
-.sidebar {
-    width: 255px !important;
-    min-width: 255px !important;
-    max-width: 255px !important;
-
-    padding: 25px 18px !important;
-    box-sizing: border-box !important;
-}
-
-.sidebar-menu {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 9px !important;
-}
-
-.sidebar-menu .nav-link {
-    width: 100% !important;
-    min-height: 44px !important;
-    height: 44px !important;
-
-    display: flex !important;
-    align-items: center !important;
-
-    gap: 13px !important;
-    padding: 0 14px !important;
-
-    box-sizing: border-box !important;
-
-    font-family: 'Inter', sans-serif !important;
-    font-size: 14px !important;
-    font-weight: 500 !important;
-    line-height: 1 !important;
-    letter-spacing: 0 !important;
-
-    white-space: nowrap !important;
-    text-decoration: none !important;
-
-    border-radius: 10px !important;
-}
-
-.sidebar-menu .nav-link i {
-    width: 20px !important;
-    min-width: 20px !important;
-
-    font-size: 16px !important;
-    line-height: 1 !important;
-    text-align: center !important;
-}
-
-.sidebar-menu .nav-link span {
-    font-size: 14px !important;
-    line-height: 1 !important;
-    font-weight: 500 !important;
-    letter-spacing: 0 !important;
-}
-
-/* Keep sidebar logo consistent */
-
-.sidebar-logo {
-    font-size: 23px !important;
-    font-weight: 800 !important;
-    margin-bottom: 35px !important;
-    line-height: 1.2 !important;
-}
-
-/* Main content alignment */
-
 .main {
-    margin-left: 255px !important;
-    width: calc(100% - 255px) !important;
-    box-sizing: border-box !important;
+    margin-left: var(--sidebar-width);
+
+    width: calc(100% - var(--sidebar-width));
+
+    min-height: 100vh;
+
+    box-sizing: border-box;
 }
 
-/* Mobile */
+/* ==========================================
+   MOBILE MENU BUTTON
+========================================== */
+
+.mobile-menu-btn {
+    display: none;
+
+    position: fixed;
+
+    top: 15px;
+    left: 15px;
+
+    width: 48px;
+    height: 48px;
+
+    align-items: center;
+    justify-content: center;
+
+    background: var(--sidebar-bg);
+    color: var(--sidebar-accent);
+
+    border: 1px solid var(--sidebar-accent);
+    border-radius: 12px;
+
+    font-size: 21px;
+
+    cursor: pointer;
+
+    z-index: 1200;
+
+    box-shadow: 0 0 12px var(--sidebar-glow);
+}
+
+/* ==========================================
+   SIDEBAR OVERLAY
+========================================== */
+
+.sidebar-overlay {
+    display: none;
+
+    position: fixed;
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.7);
+
+    z-index: 1000;
+}
+
+.sidebar-overlay.active {
+    display: block;
+}
+
+/* ==========================================
+   MOBILE RESPONSIVE DESIGN
+========================================== */
 
 @media (max-width: 768px) {
+
+    /* Sidebar hidden by default */
+
     .sidebar {
-        width: 255px !important;
-        min-width: 255px !important;
+        position: fixed;
+
+        top: 0;
+        left: 0;
+
+        width: 255px;
+        min-width: 255px;
+        max-width: 255px;
+
+        height: 100vh;
+
         transform: translateX(-100%);
     }
+
+    /* Sidebar open */
 
     .sidebar.open {
         transform: translateX(0);
     }
 
+    /* Hamburger visible */
+
+    .mobile-menu-btn {
+        display: flex;
+    }
+
+    /* Dashboard names remain visible */
+
+    .sidebar-menu .nav-link span {
+        display: inline-block;
+        visibility: visible;
+        opacity: 1;
+    }
+
+    /* Main content uses full width */
+
     .main {
-        margin-left: 0 !important;
-        width: 100% !important;
+        margin-left: 0;
+        width: 100%;
+    }
+
+    /* Prevent horizontal scrolling */
+
+    body {
+        overflow-x: hidden;
+    }
+
+    /* Cards */
+
+    .cosmo-card {
+        padding: 16px;
+        border-radius: 14px;
+    }
+
+    /* Titles */
+
+    .cosmo-title {
+        font-size: 25px;
+    }
+
+    /* Buttons */
+
+    .cosmo-btn {
+        padding: 11px 16px;
     }
 }
 
-/* =================================
-   COSMO CARE - FIXED NAVIGATION
-================================= */
+/* ==========================================
+   ACCESSIBILITY
+========================================== */
 
-/* Fixed gap between dashboard links */
-.sidebar-menu {
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 10px !important;
-}
+@media (prefers-reduced-motion: reduce) {
 
-/* Every dashboard navigation link */
-.sidebar-menu a.nav-link {
-    display: flex !important;
-    align-items: center !important;
-
-    height: 46px !important;
-    min-height: 46px !important;
-
-    padding: 0 14px !important;
-    margin: 0 !important;
-
-    font-size: 14px !important;
-    font-weight: 500 !important;
-    line-height: 20px !important;
-    letter-spacing: 0 !important;
-
-    box-sizing: border-box !important;
-}
-
-/* Navigation text */
-.sidebar-menu a.nav-link span {
-    font-size: 14px !important;
-    font-weight: 500 !important;
-    line-height: 20px !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-/* Navigation icons */
-.sidebar-menu a.nav-link i {
-    width: 20px !important;
-    min-width: 20px !important;
-
-    font-size: 16px !important;
-    line-height: 20px !important;
-
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-/* Prevent individual page styles changing link sizes */
-.sidebar-menu a.nav-link,
-.sidebar-menu a.nav-link span,
-.sidebar-menu a.nav-link i {
-    transform: none;
-}
-
-/* Keep active and hover links same size */
-.sidebar-menu a.nav-link:hover,
-.sidebar-menu a.nav-link.active {
-    font-size: 14px !important;
-    height: 46px !important;
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
 }

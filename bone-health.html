@@ -1,1455 +1,1719 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cosmo Care | Bone Health</title>
-
-<link rel="stylesheet" href="cosmo-style.css">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-
-<style>
-:root {
-    --bg:#090909;
-    --card:rgba(25,23,20,.92);
-    --gold:#d9c19a;
-    --gold2:#f0dfbf;
-    --text:#f4eee4;
-    --muted:#a49a89;
-    --danger:#ff7777;
-    --success:#9ed5a9;
-    --border:rgba(217,193,154,.19);
-}
-
-* {margin:0;padding:0;box-sizing:border-box;}
-
-body {
-    background:var(--bg);
-    color:var(--text);
-    font-family:'Inter',sans-serif;
-    min-height:100vh;
-    overflow-x:hidden;
-}
-
-.background-glow {
-    position:fixed;
-    width:600px;height:600px;
-    background:rgba(217,193,154,.045);
-    filter:blur(120px);
-    border-radius:50%;
-    top:15%;left:40%;
-    pointer-events:none;
-    z-index:-2;
-}
-
-.bone-particles {
-    position:fixed;inset:0;
-    overflow:hidden;pointer-events:none;z-index:-1;
-}
-
-.bone {
-    position:absolute;width:75px;height:13px;
-    border-radius:20px;
-    border:2px solid rgba(217,193,154,.15);
-    transform:rotate(-35deg);
-    animation:floatBone 14s infinite ease-in-out;
-}
-
-.bone::before,.bone::after {
-    content:"";position:absolute;
-    width:17px;height:17px;
-    border:2px solid rgba(217,193,154,.15);
-    border-radius:50%;top:-4px;background:#090909;
-}
-.bone::before{left:-5px;}
-.bone::after{right:-5px;}
-.bone:nth-child(1){top:15%;left:82%;}
-.bone:nth-child(2){top:68%;left:15%;animation-delay:3s;transform:rotate(40deg);}
-.bone:nth-child(3){top:85%;left:75%;animation-delay:5s;}
-.bone:nth-child(4){top:35%;left:48%;animation-delay:7s;transform:rotate(65deg);}
-
-@keyframes floatBone {
-    0%,100%{translate:0 0;opacity:.35;}
-    50%{translate:0 -25px;opacity:.8;}
-}
-
-/* SHARED SIDEBAR */
-
-.sidebar {
-    width:255px!important;
-    min-width:255px!important;
-    height:100vh;
-    position:fixed;
-    top:0;left:0;
-    padding:25px 18px!important;
-    overflow-y:auto;
-    z-index:10;
-    display:flex;
-    flex-direction:column;
-    background:rgba(12,12,12,.96);
-    border-right:1px solid var(--border);
-}
-
-.sidebar-logo {
-    font-family:'Orbitron',sans-serif;
-    font-size:19px;font-weight:800;
-    color:var(--gold2);
-    letter-spacing:2px;
-    margin:4px 8px 30px;
-    white-space:nowrap;
-}
-.sidebar-logo span{color:var(--gold);}
-
-.sidebar-menu {
-    display:flex;
-    flex-direction:column;
-    gap:10px;
-}
-
-.sidebar-menu .nav-link {
-    display:flex;
-    align-items:center;
-    gap:13px!important;
-    height:46px!important;
-    min-height:46px!important;
-    padding:0 12px!important;
-    margin:0!important;
-    border:1px solid transparent;
-    border-radius:9px;
-    text-decoration:none;
-    color:#aaa398;
-    font-size:14px!important;
-    line-height:1!important;
-    font-weight:500;
-    white-space:nowrap;
-    transition:.3s;
-}
-
-.sidebar-menu .nav-link span {
-    display:inline!important;
-    font-size:14px!important;
-    white-space:nowrap;
-}
-
-.sidebar-menu .nav-link i {
-    width:16px!important;
-    min-width:16px!important;
-    font-size:16px!important;
-    text-align:center;
-}
-
-.sidebar-menu .nav-link:hover,
-.sidebar-menu .nav-link.active {
-    background:rgba(217,193,154,.12);
-    color:var(--gold2);
-    border-color:rgba(217,193,154,.17);
-}
-
-/* MAIN LAYOUT */
-
-.main {
-    margin-left:255px;
-    width:calc(100% - 255px);
-    padding:30px 35px 50px;
-}
-
-.topbar {
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    margin-bottom:30px;
-    gap:15px;
-}
-
-.topbar small {
-    color:var(--muted);
-    letter-spacing:2px;
-    font-size:10px;
-}
-
-.topbar h1 {
-    font-family:'Orbitron',sans-serif;
-    font-size:23px;
-    margin-top:8px;
-    color:var(--gold2);
-}
-
-.status {
-    border:1px solid rgba(158,213,169,.3);
-    color:var(--success);
-    padding:10px 15px;
-    border-radius:30px;
-    font-size:11px;
-    background:rgba(158,213,169,.06);
-    white-space:nowrap;
-}
-
-/* CONTROLS */
-
-.control-panel {
-    background:linear-gradient(110deg,#201c16,#12110f);
-    border:1px solid var(--border);
-    border-radius:15px;
-    padding:22px;
-    margin-bottom:24px;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    flex-wrap:wrap;
-    gap:20px;
-}
-
-.control-info h2 {
-    font-family:'Orbitron',sans-serif;
-    font-size:14px;
-    color:var(--gold2);
-    margin-bottom:8px;
-}
-
-.control-info p {
-    font-size:11px;
-    color:var(--muted);
-    line-height:1.7;
-}
-
-.buttons {
-    display:flex;
-    gap:10px;
-    flex-wrap:wrap;
-}
-
-.mode-btn {
-    border:1px solid var(--border);
-    padding:13px 17px;
-    border-radius:8px;
-    cursor:pointer;
-    font-family:'Inter',sans-serif;
-    font-size:11px;
-    font-weight:700;
-    letter-spacing:1px;
-    transition:.3s;
-}
-
-.normal-btn {
-    background:rgba(158,213,169,.09);
-    color:var(--success);
-    border-color:rgba(158,213,169,.35);
-}
-
-.high-btn {
-    background:rgba(255,119,119,.09);
-    color:#ff9696;
-    border-color:rgba(255,119,119,.35);
-}
-
-.sound-btn {
-    background:rgba(217,193,154,.08);
-    color:var(--gold2);
-    border-color:rgba(217,193,154,.4);
-}
-
-.mode-btn:hover{transform:translateY(-3px);filter:brightness(1.25);}
-.mode-btn.selected{box-shadow:0 0 18px rgba(217,193,154,.17);outline:1px solid var(--gold);}
-
-/* SECTIONS */
-
-.section-title {
-    font-family:'Orbitron',sans-serif;
-    color:var(--gold2);
-    font-size:13px;
-    letter-spacing:1px;
-    margin:30px 0 16px;
-}
-
-.grid {
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:17px;
-}
-
-.card {
-    background:var(--card);
-    border:1px solid var(--border);
-    border-radius:13px;
-    padding:21px;
-    position:relative;
-    overflow:hidden;
-    transition:.3s;
-}
-
-.card:hover {
-    border-color:rgba(217,193,154,.48);
-    transform:translateY(-3px);
-}
-
-.card-label {
-    color:var(--muted);
-    font-size:10px;
-    letter-spacing:1.5px;
-    text-transform:uppercase;
-}
-
-.card-icon {
-    position:absolute;
-    right:20px;top:20px;
-    color:var(--gold);
-    font-size:19px;
-    opacity:.7;
-}
-
-.metric {
-    font-family:'Orbitron',sans-serif;
-    font-size:31px;
-    margin:17px 0 8px;
-    color:var(--gold2);
-}
-
-.metric span{font-size:14px;color:var(--muted);}
-.card-note{font-size:10px;color:var(--muted);}
-
-.progress {
-    height:5px;
-    background:#39332a;
-    border-radius:10px;
-    margin-top:18px;
-    overflow:hidden;
-}
-
-.progress-fill {
-    height:100%;width:0;
-    background:linear-gradient(90deg,#9e8865,#f0dfbf);
-    border-radius:10px;
-    transition:width 1s ease;
-}
-
-/* RISK */
-
-.risk-layout {
-    display:grid;
-    grid-template-columns:1.2fr 1fr;
-    gap:18px;
-}
-
-.risk-card {
-    background:var(--card);
-    border:1px solid var(--border);
-    padding:24px;
-    border-radius:13px;
-}
-
-.risk-score {
-    font-family:'Orbitron',sans-serif;
-    font-size:45px;
-    color:var(--gold2);
-    margin:15px 0 5px;
-}
-
-.risk-score span{font-size:14px;color:var(--muted);}
-
-.risk-status {
-    display:inline-block;
-    padding:7px 13px;
-    border-radius:20px;
-    font-size:10px;
-    margin-top:10px;
-    letter-spacing:1px;
-}
-
-.low{background:rgba(158,213,169,.12);color:var(--success);}
-.moderate{background:rgba(255,194,112,.12);color:#ffc278;}
-.high{background:rgba(255,119,119,.12);color:#ff8989;}
-
-.factor{margin:17px 0;}
-.factor-header {
-    display:flex;
-    justify-content:space-between;
-    font-size:11px;
-    color:var(--muted);
-    margin-bottom:8px;
-}
-.factor .progress{margin-top:0;}
-
-/* ALERT CENTER */
-
-.alert-panel {
-    background:var(--card);
-    border:1px solid var(--border);
-    border-radius:13px;
-    padding:22px;
-}
-
-.alert-item {
-    display:flex;
-    gap:12px;
-    padding:14px 0;
-    border-bottom:1px solid rgba(217,193,154,.1);
-    font-size:11px;
-    line-height:1.6;
-}
-.alert-item:last-child{border-bottom:none;}
-.alert-item i{color:var(--gold);margin-top:3px;}
-.alert-item.warning i{color:var(--danger);}
-.alert-item.safe i{color:var(--success);}
-.alert-item strong{display:block;color:var(--text);margin-bottom:3px;}
-.alert-item p{color:var(--muted);}
-
-/* DXA */
-
-.dxa-card {
-    display:flex;
-    gap:25px;
-    align-items:flex-start;
-    padding:27px;
-    border-radius:14px;
-    background:linear-gradient(120deg,#211d17,#11100e);
-    border:1px solid rgba(217,193,154,.25);
-    margin-bottom:25px;
-    transition:.3s;
-}
-
-.dxa-card:hover {
-    border-color:#d9c19a;
-    box-shadow:0 0 25px rgba(217,193,154,.08);
-}
-
-.dxa-icon {
-    min-width:75px;height:75px;
-    border-radius:15px;
-    display:grid;place-items:center;
-    background:rgba(217,193,154,.1);
-    color:#e6d2ad;
-    font-size:34px;
-    border:1px solid rgba(217,193,154,.25);
-}
-
-.dxa-content{flex:1;}
-
-.dxa-heading {
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    flex-wrap:wrap;
-    gap:12px;
-    margin-bottom:13px;
-}
-
-.dxa-heading h2 {
-    font-family:'Orbitron',sans-serif;
-    font-size:17px;
-    color:#f0dfbf;
-}
-
-.device-status {
-    font-size:9px;
-    color:#d9c19a;
-    border:1px solid rgba(217,193,154,.3);
-    padding:7px 11px;
-    border-radius:20px;
-    letter-spacing:1px;
-}
-
-.dxa-content>p {
-    color:#aaa092;
-    font-size:11px;
-    line-height:1.8;
-    margin-bottom:20px;
-}
-
-.dxa-details {
-    display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:12px;
-}
-
-.dxa-details div {
-    padding:14px;
-    background:rgba(255,255,255,.025);
-    border:1px solid rgba(217,193,154,.12);
-    border-radius:9px;
-}
-
-.dxa-details span {
-    display:block;
-    color:#938775;
-    font-size:9px;
-    letter-spacing:1px;
-    margin-bottom:8px;
-}
-
-.dxa-details strong{color:#e8dcc8;font-size:11px;}
-
-.dxa-note {
-    margin-top:17px;
-    padding:12px;
-    border-radius:8px;
-    background:rgba(217,193,154,.06);
-    color:#b9aa92;
-    font-size:10px;
-    line-height:1.7;
-}
-
-.dxa-note i{color:#e3cda8;margin-right:7px;}
-
-/* RESEARCH */
-
-.research-card {
-    background:linear-gradient(120deg,#1d1913,#11100e);
-    border:1px solid var(--border);
-    border-radius:13px;
-    padding:24px;
-    margin-top:25px;
-}
-
-.research-card h3 {
-    font-family:'Orbitron',sans-serif;
-    color:var(--gold2);
-    font-size:13px;
-    margin-bottom:13px;
-}
-
-.research-card p {
-    font-size:11px;
-    color:var(--muted);
-    line-height:1.8;
-    margin-bottom:12px;
-}
-
-.research-card a {
-    color:var(--gold2);
-    text-decoration:none;
-    font-size:11px;
-    display:block;
-    margin:9px 0;
-}
-
-.research-card a:hover{text-decoration:underline;}
-
-.disclaimer {
-    font-size:10px;
-    color:#817869;
-    margin-top:15px;
-    line-height:1.7;
-}
-
-/* HISTORY */
-
-.history {
-    background:var(--card);
-    border:1px solid var(--border);
-    border-radius:13px;
-    padding:22px;
-    margin-top:22px;
-}
-
-.history-row {
-    display:flex;
-    justify-content:space-between;
-    padding:13px 0;
-    border-bottom:1px solid rgba(217,193,154,.1);
-    font-size:11px;
-    color:var(--muted);
-    gap:12px;
-}
-.history-row:last-child{border-bottom:none;}
-
-/* CENTRE WARNING MODAL */
-
-.warning-overlay {
-    position:fixed;
-    inset:0;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    padding:20px;
-    background:rgba(0,0,0,.78);
-    backdrop-filter:blur(8px);
-    z-index:9999;
-    opacity:0;
-    visibility:hidden;
-    transition:.3s;
-}
-
-.warning-overlay.show {
-    opacity:1;
-    visibility:visible;
-}
-
-.warning-modal {
-    width:min(470px,100%);
-    background:linear-gradient(145deg,#282016,#100e0b);
-    border:1px solid rgba(255,119,119,.65);
-    border-radius:17px;
-    padding:30px;
-    text-align:center;
-    box-shadow:0 0 55px rgba(255,80,80,.17);
-    transform:scale(.88);
-    transition:.3s;
-}
-
-.warning-overlay.show .warning-modal{transform:scale(1);}
-
-.warning-icon {
-    width:65px;height:65px;
-    border-radius:50%;
-    display:grid;
-    place-items:center;
-    margin:0 auto 18px;
-    color:#ff8585;
-    background:rgba(255,119,119,.12);
-    border:1px solid rgba(255,119,119,.4);
-    font-size:27px;
-    animation:warningPulse 1.5s infinite;
-}
-
-@keyframes warningPulse {
-    0%,100%{box-shadow:0 0 0 0 rgba(255,119,119,.2);}
-    50%{box-shadow:0 0 0 12px rgba(255,119,119,0);}
-}
-
-.warning-modal h2 {
-    font-family:'Orbitron',sans-serif;
-    font-size:17px;
-    color:#ffaaaa;
-    margin-bottom:13px;
-}
-
-.warning-modal p {
-    color:#c5b9a8;
-    font-size:12px;
-    line-height:1.8;
-}
-
-.warning-label {
-    display:inline-block;
-    margin:15px 0 20px;
-    padding:7px 14px;
-    border-radius:20px;
-    background:rgba(255,119,119,.12);
-    color:#ff9999;
-    font-size:10px;
-    letter-spacing:1px;
-}
-
-.acknowledge-btn {
-    display:block;
-    width:100%;
-    padding:14px;
-    border:1px solid var(--gold);
-    border-radius:9px;
-    background:linear-gradient(110deg,#b99c6b,#e3cda8);
-    color:#17120b;
-    font-weight:800;
-    font-size:11px;
-    letter-spacing:1px;
-    cursor:pointer;
-    transition:.3s;
-}
-
-.acknowledge-btn:hover {
-    transform:translateY(-2px);
-    filter:brightness(1.1);
-}
-
-/* FOOTER */
-
-.footer {
-    color:#71695e;
-    font-size:10px;
-    text-align:center;
-    margin-top:35px;
-}
-
-/* RESPONSIVE */
-
-@media(max-width:1000px) {
-    .grid{grid-template-columns:repeat(2,1fr);}
-}
-
-@media(max-width:750px) {
-    .main {
-        margin-left:255px;
-        width:calc(100% - 255px);
-        padding:22px 15px;
-    }
-    .grid,.risk-layout{grid-template-columns:1fr;}
-    .topbar h1{font-size:17px;}
-    .buttons{width:100%;}
-    .mode-btn{flex:1;padding:12px 7px;}
-    .dxa-card{flex-direction:column;}
-    .dxa-details{grid-template-columns:1fr;}
-}
-
-@media(max-width:400px) {
-    .topbar{align-items:flex-start;flex-direction:column;}
-    .main{padding:18px 12px;}
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmo Care | Bone Health</title>
+
+    <link rel="stylesheet" href="cosmo-style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg: #090909;
+            --card: rgba(25, 23, 20, .92);
+            --gold: #d9c19a;
+            --gold2: #f0dfbf;
+            --text: #f4eee4;
+            --muted: #a49a89;
+            --danger: #ff7777;
+            --success: #9ed5a9;
+            --border: rgba(217, 193, 154, .19);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .background-glow {
+            position: fixed;
+            width: 600px;
+            height: 600px;
+            background: rgba(217, 193, 154, .045);
+            filter: blur(120px);
+            border-radius: 50%;
+            top: 15%;
+            left: 40%;
+            pointer-events: none;
+            z-index: -2;
+        }
+
+        .bone-particles {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .bone {
+            position: absolute;
+            width: 75px;
+            height: 13px;
+            border-radius: 20px;
+            border: 2px solid rgba(217, 193, 154, .15);
+            transform: rotate(-35deg);
+            animation: floatBone 14s infinite ease-in-out;
+        }
+
+        .bone::before,
+        .bone::after {
+            content: "";
+            position: absolute;
+            width: 17px;
+            height: 17px;
+            border: 2px solid rgba(217, 193, 154, .15);
+            border-radius: 50%;
+            top: -4px;
+            background: #090909;
+        }
+
+        .bone::before {
+            left: -5px;
+        }
+
+        .bone::after {
+            right: -5px;
+        }
+
+        .bone:nth-child(1) {
+            top: 15%;
+            left: 82%;
+        }
+
+        .bone:nth-child(2) {
+            top: 68%;
+            left: 15%;
+            animation-delay: 3s;
+            transform: rotate(40deg);
+        }
+
+        .bone:nth-child(3) {
+            top: 85%;
+            left: 75%;
+            animation-delay: 5s;
+        }
+
+        .bone:nth-child(4) {
+            top: 35%;
+            left: 48%;
+            animation-delay: 7s;
+            transform: rotate(65deg);
+        }
+
+        @keyframes floatBone {
+
+            0%,
+            100% {
+                translate: 0 0;
+                opacity: .35;
+            }
+
+            50% {
+                translate: 0 -25px;
+                opacity: .8;
+            }
+        }
+
+        /* SHARED SIDEBAR */
+
+        .sidebar {
+            width: 255px !important;
+            min-width: 255px !important;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: 0;
+            padding: 25px 18px !important;
+            overflow-y: auto;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            background: rgba(12, 12, 12, .96);
+            border-right: 1px solid var(--border);
+        }
+
+        .sidebar-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 19px;
+            font-weight: 800;
+            color: var(--gold2);
+            letter-spacing: 2px;
+            margin: 4px 8px 30px;
+            white-space: nowrap;
+        }
+
+        .sidebar-logo span {
+            color: var(--gold);
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .sidebar-menu .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 13px !important;
+            height: 46px !important;
+            min-height: 46px !important;
+            padding: 0 12px !important;
+            margin: 0 !important;
+            border: 1px solid transparent;
+            border-radius: 9px;
+            text-decoration: none;
+            color: #aaa398;
+            font-size: 14px !important;
+            line-height: 1 !important;
+            font-weight: 500;
+            white-space: nowrap;
+            transition: .3s;
+        }
+
+        .sidebar-menu .nav-link span {
+            display: inline !important;
+            font-size: 14px !important;
+            white-space: nowrap;
+        }
+
+        .sidebar-menu .nav-link i {
+            width: 16px !important;
+            min-width: 16px !important;
+            font-size: 16px !important;
+            text-align: center;
+        }
+
+        .sidebar-menu .nav-link:hover,
+        .sidebar-menu .nav-link.active {
+            background: rgba(217, 193, 154, .12);
+            color: var(--gold2);
+            border-color: rgba(217, 193, 154, .17);
+        }
+
+        /* MAIN LAYOUT */
+
+        .main {
+            margin-left: 255px;
+            width: calc(100% - 255px);
+            padding: 30px 35px 50px;
+        }
+
+        .topbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            gap: 15px;
+        }
+
+        .topbar small {
+            color: var(--muted);
+            letter-spacing: 2px;
+            font-size: 10px;
+        }
+
+        .topbar h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 23px;
+            margin-top: 8px;
+            color: var(--gold2);
+        }
+
+        .status {
+            border: 1px solid rgba(158, 213, 169, .3);
+            color: var(--success);
+            padding: 10px 15px;
+            border-radius: 30px;
+            font-size: 11px;
+            background: rgba(158, 213, 169, .06);
+            white-space: nowrap;
+        }
+
+        /* CONTROLS */
+
+        .control-panel {
+            background: linear-gradient(110deg, #201c16, #12110f);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 22px;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .control-info h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 14px;
+            color: var(--gold2);
+            margin-bottom: 8px;
+        }
+
+        .control-info p {
+            font-size: 11px;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .mode-btn {
+            border: 1px solid var(--border);
+            padding: 13px 17px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            transition: .3s;
+        }
+
+        .normal-btn {
+            background: rgba(158, 213, 169, .09);
+            color: var(--success);
+            border-color: rgba(158, 213, 169, .35);
+        }
+
+        .high-btn {
+            background: rgba(255, 119, 119, .09);
+            color: #ff9696;
+            border-color: rgba(255, 119, 119, .35);
+        }
+
+        .sound-btn {
+            background: rgba(217, 193, 154, .08);
+            color: var(--gold2);
+            border-color: rgba(217, 193, 154, .4);
+        }
+
+        .mode-btn:hover {
+            transform: translateY(-3px);
+            filter: brightness(1.25);
+        }
+
+        .mode-btn.selected {
+            box-shadow: 0 0 18px rgba(217, 193, 154, .17);
+            outline: 1px solid var(--gold);
+        }
+
+        /* SECTIONS */
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--gold2);
+            font-size: 13px;
+            letter-spacing: 1px;
+            margin: 30px 0 16px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 17px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            padding: 21px;
+            position: relative;
+            overflow: hidden;
+            transition: .3s;
+        }
+
+        .card:hover {
+            border-color: rgba(217, 193, 154, .48);
+            transform: translateY(-3px);
+        }
+
+        .card-label {
+            color: var(--muted);
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .card-icon {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            color: var(--gold);
+            font-size: 19px;
+            opacity: .7;
+        }
+
+        .metric {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 31px;
+            margin: 17px 0 8px;
+            color: var(--gold2);
+        }
+
+        .metric span {
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        .card-note {
+            font-size: 10px;
+            color: var(--muted);
+        }
+
+        .progress {
+            height: 5px;
+            background: #39332a;
+            border-radius: 10px;
+            margin-top: 18px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, #9e8865, #f0dfbf);
+            border-radius: 10px;
+            transition: width 1s ease;
+        }
+
+        /* RISK */
+
+        .risk-layout {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 18px;
+        }
+
+        .risk-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            padding: 24px;
+            border-radius: 13px;
+        }
+
+        .risk-score {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 45px;
+            color: var(--gold2);
+            margin: 15px 0 5px;
+        }
+
+        .risk-score span {
+            font-size: 14px;
+            color: var(--muted);
+        }
+
+        .risk-status {
+            display: inline-block;
+            padding: 7px 13px;
+            border-radius: 20px;
+            font-size: 10px;
+            margin-top: 10px;
+            letter-spacing: 1px;
+        }
+
+        .low {
+            background: rgba(158, 213, 169, .12);
+            color: var(--success);
+        }
+
+        .moderate {
+            background: rgba(255, 194, 112, .12);
+            color: #ffc278;
+        }
+
+        .high {
+            background: rgba(255, 119, 119, .12);
+            color: #ff8989;
+        }
+
+        .factor {
+            margin: 17px 0;
+        }
+
+        .factor-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--muted);
+            margin-bottom: 8px;
+        }
+
+        .factor .progress {
+            margin-top: 0;
+        }
+
+        /* ALERT CENTER */
+
+        .alert-panel {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            padding: 22px;
+        }
+
+        .alert-item {
+            display: flex;
+            gap: 12px;
+            padding: 14px 0;
+            border-bottom: 1px solid rgba(217, 193, 154, .1);
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .alert-item:last-child {
+            border-bottom: none;
+        }
+
+        .alert-item i {
+            color: var(--gold);
+            margin-top: 3px;
+        }
+
+        .alert-item.warning i {
+            color: var(--danger);
+        }
+
+        .alert-item.safe i {
+            color: var(--success);
+        }
+
+        .alert-item strong {
+            display: block;
+            color: var(--text);
+            margin-bottom: 3px;
+        }
+
+        .alert-item p {
+            color: var(--muted);
+        }
+
+        /* DXA */
+
+        .dxa-card {
+            display: flex;
+            gap: 25px;
+            align-items: flex-start;
+            padding: 27px;
+            border-radius: 14px;
+            background: linear-gradient(120deg, #211d17, #11100e);
+            border: 1px solid rgba(217, 193, 154, .25);
+            margin-bottom: 25px;
+            transition: .3s;
+        }
+
+        .dxa-card:hover {
+            border-color: #d9c19a;
+            box-shadow: 0 0 25px rgba(217, 193, 154, .08);
+        }
+
+        .dxa-icon {
+            min-width: 75px;
+            height: 75px;
+            border-radius: 15px;
+            display: grid;
+            place-items: center;
+            background: rgba(217, 193, 154, .1);
+            color: #e6d2ad;
+            font-size: 34px;
+            border: 1px solid rgba(217, 193, 154, .25);
+        }
+
+        .dxa-content {
+            flex: 1;
+        }
+
+        .dxa-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 13px;
+        }
+
+        .dxa-heading h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 17px;
+            color: #f0dfbf;
+        }
+
+        .device-status {
+            font-size: 9px;
+            color: #d9c19a;
+            border: 1px solid rgba(217, 193, 154, .3);
+            padding: 7px 11px;
+            border-radius: 20px;
+            letter-spacing: 1px;
+        }
+
+        .dxa-content>p {
+            color: #aaa092;
+            font-size: 11px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .dxa-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .dxa-details div {
+            padding: 14px;
+            background: rgba(255, 255, 255, .025);
+            border: 1px solid rgba(217, 193, 154, .12);
+            border-radius: 9px;
+        }
+
+        .dxa-details span {
+            display: block;
+            color: #938775;
+            font-size: 9px;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .dxa-details strong {
+            color: #e8dcc8;
+            font-size: 11px;
+        }
+
+        .dxa-note {
+            margin-top: 17px;
+            padding: 12px;
+            border-radius: 8px;
+            background: rgba(217, 193, 154, .06);
+            color: #b9aa92;
+            font-size: 10px;
+            line-height: 1.7;
+        }
+
+        .dxa-note i {
+            color: #e3cda8;
+            margin-right: 7px;
+        }
+
+        /* RESEARCH */
+
+        .research-card {
+            background: linear-gradient(120deg, #1d1913, #11100e);
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            padding: 24px;
+            margin-top: 25px;
+        }
+
+        .research-card h3 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--gold2);
+            font-size: 13px;
+            margin-bottom: 13px;
+        }
+
+        .research-card p {
+            font-size: 11px;
+            color: var(--muted);
+            line-height: 1.8;
+            margin-bottom: 12px;
+        }
+
+        .research-card a {
+            color: var(--gold2);
+            text-decoration: none;
+            font-size: 11px;
+            display: block;
+            margin: 9px 0;
+        }
+
+        .research-card a:hover {
+            text-decoration: underline;
+        }
+
+        .disclaimer {
+            font-size: 10px;
+            color: #817869;
+            margin-top: 15px;
+            line-height: 1.7;
+        }
+
+        /* HISTORY */
+
+        .history {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            padding: 22px;
+            margin-top: 22px;
+        }
+
+        .history-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 13px 0;
+            border-bottom: 1px solid rgba(217, 193, 154, .1);
+            font-size: 11px;
+            color: var(--muted);
+            gap: 12px;
+        }
+
+        .history-row:last-child {
+            border-bottom: none;
+        }
+
+        /* CENTRE WARNING MODAL */
+
+        .warning-overlay {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, .78);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            opacity: 0;
+            visibility: hidden;
+            transition: .3s;
+        }
+
+        .warning-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .warning-modal {
+            width: min(470px, 100%);
+            background: linear-gradient(145deg, #282016, #100e0b);
+            border: 1px solid rgba(255, 119, 119, .65);
+            border-radius: 17px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 0 55px rgba(255, 80, 80, .17);
+            transform: scale(.88);
+            transition: .3s;
+        }
+
+        .warning-overlay.show .warning-modal {
+            transform: scale(1);
+        }
+
+        .warning-icon {
+            width: 65px;
+            height: 65px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            margin: 0 auto 18px;
+            color: #ff8585;
+            background: rgba(255, 119, 119, .12);
+            border: 1px solid rgba(255, 119, 119, .4);
+            font-size: 27px;
+            animation: warningPulse 1.5s infinite;
+        }
+
+        @keyframes warningPulse {
+
+            0%,
+            100% {
+                box-shadow: 0 0 0 0 rgba(255, 119, 119, .2);
+            }
+
+            50% {
+                box-shadow: 0 0 0 12px rgba(255, 119, 119, 0);
+            }
+        }
+
+        .warning-modal h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 17px;
+            color: #ffaaaa;
+            margin-bottom: 13px;
+        }
+
+        .warning-modal p {
+            color: #c5b9a8;
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        .warning-label {
+            display: inline-block;
+            margin: 15px 0 20px;
+            padding: 7px 14px;
+            border-radius: 20px;
+            background: rgba(255, 119, 119, .12);
+            color: #ff9999;
+            font-size: 10px;
+            letter-spacing: 1px;
+        }
+
+        .acknowledge-btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            border: 1px solid var(--gold);
+            border-radius: 9px;
+            background: linear-gradient(110deg, #b99c6b, #e3cda8);
+            color: #17120b;
+            font-weight: 800;
+            font-size: 11px;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: .3s;
+        }
+
+        .acknowledge-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.1);
+        }
+
+        /* FOOTER */
+
+        .footer {
+            color: #71695e;
+            font-size: 10px;
+            text-align: center;
+            margin-top: 35px;
+        }
+
+        /* RESPONSIVE */
+
+        @media(max-width:1000px) {
+            .grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media(max-width:750px) {
+            .main {
+                margin-left: 255px;
+                width: calc(100% - 255px);
+                padding: 22px 15px;
+            }
+
+            .grid,
+            .risk-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar h1 {
+                font-size: 17px;
+            }
+
+            .buttons {
+                width: 100%;
+            }
+
+            .mode-btn {
+                flex: 1;
+                padding: 12px 7px;
+            }
+
+            .dxa-card {
+                flex-direction: column;
+            }
+
+            .dxa-details {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media(max-width:400px) {
+            .topbar {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .main {
+                padding: 18px 12px;
+            }
+        }
+
+        /* MOBILE MENU BUTTON */
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1200;
+            width: 45px;
+            height: 45px;
+            border: 1px solid var(--accent, #00dcff);
+            border-radius: 10px;
+            background: #15151f;
+            color: var(--accent, #00dcff);
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* SIDEBAR OVERLAY */
+        .sidebar-overlay {
+            display: none;
+        }
+
+        /* MOBILE RESPONSIVENESS */
+        @media screen and (max-width: 768px) {
+
+            .mobile-menu-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100vh;
+                width: 255px;
+                z-index: 1100;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.65);
+                z-index: 1000;
+            }
+
+            .main {
+                margin-left: 0 !important;
+                width: 100% !important;
+                padding: 75px 15px 20px;
+            }
+        }
+    </style>
 </head>
 
 <body class="theme-yellow">
 
-<div class="background-glow"></div>
+    <!-- MOBILE MENU BUTTON -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open navigation">
+        <i class="fas fa-bars"></i>
+    </button>
 
-<div class="bone-particles">
-    <div class="bone"></div>
-    <div class="bone"></div>
-    <div class="bone"></div>
-    <div class="bone"></div>
-</div>
+    <!-- SIDEBAR OVERLAY -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="background-glow"></div>
 
-<aside class="sidebar">
-    <div class="sidebar-logo"><span>✦</span> COSMO CARE</div>
-
-    <div class="sidebar-menu">
-        <a href="index.html" class="nav-link"><i class="fas fa-house"></i><span>Main Dashboard</span></a>
-        <a href="cardiovascular.html" class="nav-link"><i class="fas fa-heartbeat"></i><span>Cardiovascular</span></a>
-        <a href="oxygen.html" class="nav-link"><i class="fas fa-lungs"></i><span>Blood Oxygen</span></a>
-        <a href="sleep.html" class="nav-link"><i class="fas fa-moon"></i><span>Sleep Monitor</span></a>
-        <a href="bone-health.html" class="nav-link active"><i class="fas fa-bone"></i><span>Bone Health</span></a>
-        <a href="radiation.html" class="nav-link"><i class="fas fa-radiation"></i><span>Radiation Monitor</span></a>
-        <a href="air-quality.html" class="nav-link"><i class="fas fa-wind"></i><span>Air Quality</span></a>
-        <a href="movement.html" class="nav-link"><i class="fas fa-person-walking"></i><span>Balance & Movement</span></a>
-        <a href="famil-connect.html" class="nav-link"><i class="fas fa-users"></i><span>Family Connect</span></a>
-        <a href="alerts.html" class="nav-link"><i class="fas fa-bell"></i><span>Alerts & Warnings</span></a>
-    </div>
-</aside>
-
-<main class="main">
-
-<header class="topbar">
-    <div>
-        <small>COSMO CARE / HEALTH MONITORING / MODULE 04</small>
-        <h1>BONE HEALTH MONITOR</h1>
-    </div>
-    <div class="status"><i class="fa-solid fa-circle"></i> &nbsp; SYSTEM ONLINE</div>
-</header>
-
-<section class="control-panel">
-    <div class="control-info">
-        <h2><i class="fa-solid fa-sliders"></i> BONE MONITORING CONTROL</h2>
-        <p>Select a monitoring profile to update the dashboard readings<br>and observe changes in bone-health risk indicators.</p>
+    <div class="bone-particles">
+        <div class="bone"></div>
+        <div class="bone"></div>
+        <div class="bone"></div>
+        <div class="bone"></div>
     </div>
 
-    <div class="buttons">
-        <button class="mode-btn normal-btn selected" id="normalBtn" onclick="setMode('normal')">
-            <i class="fa-solid fa-circle-check"></i> NORMAL MODE
-        </button>
+    <aside class="sidebar">
+        <div class="sidebar-logo"><span>✦</span> COSMO CARE</div>
 
-        <button class="mode-btn high-btn" id="highBtn" onclick="setMode('high')">
-            <i class="fa-solid fa-triangle-exclamation"></i> HIGH MODE
-        </button>
+        <div class="sidebar-menu">
+            <a href="index.html" class="nav-link"><i class="fas fa-house"></i><span>Main Dashboard</span></a>
+            <a href="cardiovascular.html" class="nav-link"><i
+                    class="fas fa-heartbeat"></i><span>Cardiovascular</span></a>
+            <a href="oxygen.html" class="nav-link"><i class="fas fa-lungs"></i><span>Blood Oxygen</span></a>
+            <a href="sleep.html" class="nav-link"><i class="fas fa-moon"></i><span>Sleep Monitor</span></a>
+            <a href="bone-health.html" class="nav-link active"><i class="fas fa-bone"></i><span>Bone Health</span></a>
+            <a href="radiation.html" class="nav-link"><i class="fas fa-radiation"></i><span>Radiation Monitor</span></a>
+            <a href="air-quality.html" class="nav-link"><i class="fas fa-wind"></i><span>Air Quality</span></a>
+            <a href="movement.html" class="nav-link"><i class="fas fa-person-walking"></i><span>Balance &
+                    Movement</span></a>
+            <a href="famil-connect.html" class="nav-link"><i class="fas fa-users"></i><span>Family Connect</span></a>
+            <a href="alerts.html" class="nav-link"><i class="fas fa-bell"></i><span>Alerts & Warnings</span></a>
+        </div>
+    </aside>
 
-        <button class="mode-btn sound-btn" id="soundButton" onclick="toggleSound()">
-            <i class="fa-solid fa-volume-high"></i> SOUND ON
-        </button>
-    </div>
-</section>
+    <main class="main">
 
-<h3 class="section-title"><i class="fa-solid fa-bone"></i> BONE PRESERVATION STATUS</h3>
+        <header class="topbar">
+            <div>
+                <small>COSMO CARE / HEALTH MONITORING / MODULE 04</small>
+                <h1>BONE HEALTH MONITOR</h1>
+            </div>
+            <div class="status"><i class="fa-solid fa-circle"></i> &nbsp; SYSTEM ONLINE</div>
+        </header>
 
-<section class="grid">
+        <section class="control-panel">
+            <div class="control-info">
+                <h2><i class="fa-solid fa-sliders"></i> BONE MONITORING CONTROL</h2>
+                <p>Select a monitoring profile to update the dashboard readings<br>and observe changes in bone-health
+                    risk indicators.</p>
+            </div>
 
-    <div class="card">
-        <i class="fa-solid fa-person card-icon"></i>
-        <div class="card-label">HIP BONE PRESERVATION</div>
-        <div class="metric"><span id="hipValue">98</span><span>%</span></div>
-        <div class="card-note">Relative to pre-mission reference</div>
-        <div class="progress"><div class="progress-fill" id="hipBar"></div></div>
-    </div>
+            <div class="buttons">
+                <button class="mode-btn normal-btn selected" id="normalBtn" onclick="setMode('normal')">
+                    <i class="fa-solid fa-circle-check"></i> NORMAL MODE
+                </button>
 
-    <div class="card">
-        <i class="fa-solid fa-bone card-icon"></i>
-        <div class="card-label">SPINE PRESERVATION</div>
-        <div class="metric"><span id="spineValue">97</span><span>%</span></div>
-        <div class="card-note">Relative to pre-mission reference</div>
-        <div class="progress"><div class="progress-fill" id="spineBar"></div></div>
-    </div>
+                <button class="mode-btn high-btn" id="highBtn" onclick="setMode('high')">
+                    <i class="fa-solid fa-triangle-exclamation"></i> HIGH MODE
+                </button>
 
-    <div class="card">
-        <i class="fa-solid fa-shield-heart card-icon"></i>
-        <div class="card-label">FEMORAL NECK PRESERVATION</div>
-        <div class="metric"><span id="femurValue">96</span><span>%</span></div>
-        <div class="card-note">Relative to pre-mission reference</div>
-        <div class="progress"><div class="progress-fill" id="femurBar"></div></div>
-    </div>
+                <button class="mode-btn sound-btn" id="soundButton" onclick="toggleSound()">
+                    <i class="fa-solid fa-volume-high"></i> SOUND ON
+                </button>
+            </div>
+        </section>
 
-</section>
+        <h3 class="section-title"><i class="fa-solid fa-bone"></i> BONE PRESERVATION STATUS</h3>
 
-<h3 class="section-title"><i class="fa-solid fa-microscope"></i> BONE DENSITY MEASUREMENT TECHNOLOGY</h3>
+        <section class="grid">
 
-<section class="dxa-card">
-    <div class="dxa-icon"><i class="fa-solid fa-x-ray"></i></div>
+            <div class="card">
+                <i class="fa-solid fa-person card-icon"></i>
+                <div class="card-label">HIP BONE PRESERVATION</div>
+                <div class="metric"><span id="hipValue">98</span><span>%</span></div>
+                <div class="card-note">Relative to pre-mission reference</div>
+                <div class="progress">
+                    <div class="progress-fill" id="hipBar"></div>
+                </div>
+            </div>
 
-    <div class="dxa-content">
-        <div class="dxa-heading">
-            <h2>DXA SCANNER</h2>
-            <span class="device-status">MEASUREMENT TECHNOLOGY</span>
+            <div class="card">
+                <i class="fa-solid fa-bone card-icon"></i>
+                <div class="card-label">SPINE PRESERVATION</div>
+                <div class="metric"><span id="spineValue">97</span><span>%</span></div>
+                <div class="card-note">Relative to pre-mission reference</div>
+                <div class="progress">
+                    <div class="progress-fill" id="spineBar"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <i class="fa-solid fa-shield-heart card-icon"></i>
+                <div class="card-label">FEMORAL NECK PRESERVATION</div>
+                <div class="metric"><span id="femurValue">96</span><span>%</span></div>
+                <div class="card-note">Relative to pre-mission reference</div>
+                <div class="progress">
+                    <div class="progress-fill" id="femurBar"></div>
+                </div>
+            </div>
+
+        </section>
+
+        <h3 class="section-title"><i class="fa-solid fa-microscope"></i> BONE DENSITY MEASUREMENT TECHNOLOGY</h3>
+
+        <section class="dxa-card">
+            <div class="dxa-icon"><i class="fa-solid fa-x-ray"></i></div>
+
+            <div class="dxa-content">
+                <div class="dxa-heading">
+                    <h2>DXA SCANNER</h2>
+                    <span class="device-status">MEASUREMENT TECHNOLOGY</span>
+                </div>
+
+                <p>
+                    Dual-energy X-ray Absorptiometry (DXA) is a bone-density measurement
+                    technique used to assess Bone Mineral Density (BMD). It helps monitor
+                    changes in bone mass during long-duration space missions.
+                </p>
+
+                <div class="dxa-details">
+                    <div><span>MEASUREMENT</span><strong>Bone Mineral Density (BMD)</strong></div>
+                    <div><span>MEASUREMENT SITES</span><strong>Hip • Lumbar Spine • Femoral Neck</strong></div>
+                    <div><span>COMPARISON</span><strong>Pre-mission BMD Baseline</strong></div>
+                    <div><span>OUTPUT</span><strong>Bone Density Assessment</strong></div>
+                </div>
+
+                <div class="dxa-note">
+                    <i class="fa-solid fa-circle-info"></i>
+                    DXA is the referenced measurement technology. This prototype does not
+                    directly connect to a DXA scanner or receive live scanner measurements.
+                </div>
+            </div>
+        </section>
+
+        <h3 class="section-title"><i class="fa-solid fa-chart-line"></i> BONE LOSS RISK ANALYSIS</h3>
+
+        <section class="risk-layout">
+
+            <div class="risk-card">
+                <div class="card-label">CALCULATED BONE RISK INDEX</div>
+                <div class="risk-score"><span id="riskValue">11</span><span>/100</span></div>
+                <div class="risk-status low" id="riskStatus">LOW RISK</div>
+                <div class="progress" style="margin-top:25px;">
+                    <div class="progress-fill" id="riskBar"></div>
+                </div>
+                <p class="card-note" style="margin-top:18px;">Composite prototype index based on selected monitoring
+                    factors.</p>
+            </div>
+
+            <div class="risk-card">
+                <div class="card-label">RISK CONTRIBUTING FACTORS</div>
+
+                <div class="factor">
+                    <div class="factor-header"><span>BMD LOSS INDICATOR</span><span id="lossText">10%</span></div>
+                    <div class="progress">
+                        <div class="progress-fill" id="lossBar"></div>
+                    </div>
+                </div>
+
+                <div class="factor">
+                    <div class="factor-header"><span>RESORPTION INDICATOR</span><span id="resorptionText">10%</span>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-fill" id="resorptionBar"></div>
+                    </div>
+                </div>
+
+                <div class="factor">
+                    <div class="factor-header"><span>EXERCISE DEFICIT</span><span id="exerciseText">10%</span></div>
+                    <div class="progress">
+                        <div class="progress-fill" id="exerciseBar"></div>
+                    </div>
+                </div>
+
+                <div class="factor">
+                    <div class="factor-header"><span>NUTRITION DEFICIT</span><span id="nutritionText">10%</span></div>
+                    <div class="progress">
+                        <div class="progress-fill" id="nutritionBar"></div>
+                    </div>
+                </div>
+
+                <div class="factor">
+                    <div class="factor-header"><span>MISSION DURATION FACTOR</span><span id="durationText">20%</span>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-fill" id="durationBar"></div>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <h3 class="section-title"><i class="fa-solid fa-bell"></i> BONE HEALTH ALERT CENTER</h3>
+
+        <section class="alert-panel" id="alertPanel" aria-live="polite">
+            <div class="alert-item safe">
+                <i class="fa-solid fa-circle-check"></i>
+                <div><strong>Monitoring initialized</strong>
+                    <p>Bone-health monitoring system is ready.</p>
+                </div>
+            </div>
+        </section>
+
+        <h3 class="section-title"><i class="fa-solid fa-clock-rotate-left"></i> MONITORING HISTORY</h3>
+
+        <section class="history" id="historyPanel">
+            <div class="history-row"><span>Monitoring system initialized</span><span>READY</span></div>
+        </section>
+
+        <section class="research-card">
+            <h3><i class="fa-solid fa-satellite"></i> NASA BONE HEALTH RESEARCH</h3>
+
+            <p>
+                NASA research investigates bone mineral density changes experienced by
+                astronauts during spaceflight. Reduced mechanical loading in microgravity
+                can contribute to bone loss, particularly in weight-bearing regions such
+                as the hip and spine.
+            </p>
+
+            <p>
+                Published research has reported approximately 1–2% monthly bone-density
+                loss in the hip and spine in some astronauts. The actual response varies
+                between individuals and missions.
+            </p>
+
+            <a href="https://www.nasa.gov/directorates/esdmd/hhp/bone-and-mineral-evaluation-and-analysis/"
+                target="_blank" rel="noopener">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> NASA Bone and Mineral Evaluation and Analysis
+            </a>
+
+            <a href="https://ntrs.nasa.gov/citations/20070032016" target="_blank" rel="noopener">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> NASA Technical Research Publication
+            </a>
+
+            <a href="https://humanresearchroadmap.nasa.gov/gaps/gap.aspx?i=812" target="_blank" rel="noopener">
+                <i class="fa-solid fa-arrow-up-right-from-square"></i> NASA Human Research Roadmap – Bone
+            </a>
+
+            <a href="https://www.nasa.gov/wp-content/uploads/2026/02/ochmo-mtb-013-bone-loss.pdf" target="_blank"
+                rel="noopener">
+                <i class="fa-solid fa-file-pdf"></i> NASA Bone Loss Technical Brief
+            </a>
+
+            <div class="disclaimer">
+                Scientific references are published NASA research. The dashboard values,
+                mode controls and composite risk score are illustrative Cosmo Care
+                prototype outputs, not live NASA measurements or validated clinical
+                predictions. The 95% hip/spine and 90% femoral-neck levels are
+                project-configured alert references, not official NASA clinical alarm limits.
+            </div>
+        </section>
+
+        <div class="footer">COSMO CARE © 2026 | ASTRONAUT HEALTH MONITORING SYSTEM</div>
+
+    </main>
+
+    <!-- CENTRE WARNING POPUP -->
+
+    <div class="warning-overlay" id="warningOverlay" role="presentation">
+
+        <div class="warning-modal" role="alertdialog" aria-modal="true" aria-labelledby="warningTitle"
+            aria-describedby="warningMessage">
+
+            <div class="warning-icon">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+
+            <h2 id="warningTitle">BONE HEALTH WARNING</h2>
+
+            <p id="warningMessage">A bone-health warning has been detected.</p>
+
+            <div class="warning-label">COSMO CARE • ALERT NOTIFICATION</div>
+
+            <button class="acknowledge-btn" id="acknowledgeBtn" type="button">
+                <i class="fa-solid fa-check"></i>
+                &nbsp; ACKNOWLEDGE WARNING
+            </button>
+
         </div>
 
-        <p>
-            Dual-energy X-ray Absorptiometry (DXA) is a bone-density measurement
-            technique used to assess Bone Mineral Density (BMD). It helps monitor
-            changes in bone mass during long-duration space missions.
-        </p>
-
-        <div class="dxa-details">
-            <div><span>MEASUREMENT</span><strong>Bone Mineral Density (BMD)</strong></div>
-            <div><span>MEASUREMENT SITES</span><strong>Hip • Lumbar Spine • Femoral Neck</strong></div>
-            <div><span>COMPARISON</span><strong>Pre-mission BMD Baseline</strong></div>
-            <div><span>OUTPUT</span><strong>Bone Density Assessment</strong></div>
-        </div>
-
-        <div class="dxa-note">
-            <i class="fa-solid fa-circle-info"></i>
-            DXA is the referenced measurement technology. This prototype does not
-            directly connect to a DXA scanner or receive live scanner measurements.
-        </div>
-    </div>
-</section>
-
-<h3 class="section-title"><i class="fa-solid fa-chart-line"></i> BONE LOSS RISK ANALYSIS</h3>
-
-<section class="risk-layout">
-
-    <div class="risk-card">
-        <div class="card-label">CALCULATED BONE RISK INDEX</div>
-        <div class="risk-score"><span id="riskValue">11</span><span>/100</span></div>
-        <div class="risk-status low" id="riskStatus">LOW RISK</div>
-        <div class="progress" style="margin-top:25px;"><div class="progress-fill" id="riskBar"></div></div>
-        <p class="card-note" style="margin-top:18px;">Composite prototype index based on selected monitoring factors.</p>
     </div>
 
-    <div class="risk-card">
-        <div class="card-label">RISK CONTRIBUTING FACTORS</div>
+    <script>
+        /* =========================================
+           1. PROFILE DATA
+        ========================================= */
 
-        <div class="factor">
-            <div class="factor-header"><span>BMD LOSS INDICATOR</span><span id="lossText">10%</span></div>
-            <div class="progress"><div class="progress-fill" id="lossBar"></div></div>
-        </div>
+        const profiles = {
+            normal: {
+                hip: 98, spine: 97, femur: 96,
+                loss: 10, resorption: 10, exercise: 10,
+                nutrition: 10, duration: 20
+            },
 
-        <div class="factor">
-            <div class="factor-header"><span>RESORPTION INDICATOR</span><span id="resorptionText">10%</span></div>
-            <div class="progress"><div class="progress-fill" id="resorptionBar"></div></div>
-        </div>
+            high: {
+                hip: 93, spine: 91, femur: 88,
+                loss: 75, resorption: 70, exercise: 65,
+                nutrition: 55, duration: 80
+            }
+        };
 
-        <div class="factor">
-            <div class="factor-header"><span>EXERCISE DEFICIT</span><span id="exerciseText">10%</span></div>
-            <div class="progress"><div class="progress-fill" id="exerciseBar"></div></div>
-        </div>
+        const STORAGE_KEY = "cosmoCareAlerts";
 
-        <div class="factor">
-            <div class="factor-header"><span>NUTRITION DEFICIT</span><span id="nutritionText">10%</span></div>
-            <div class="progress"><div class="progress-fill" id="nutritionBar"></div></div>
-        </div>
+        let activeWarningCodes = new Set();
+        let currentPopupAlertId = null;
 
-        <div class="factor">
-            <div class="factor-header"><span>MISSION DURATION FACTOR</span><span id="durationText">20%</span></div>
-            <div class="progress"><div class="progress-fill" id="durationBar"></div></div>
-        </div>
-    </div>
+        let audioContext = null;
+        let alarmInterval = null;
 
-</section>
-
-<h3 class="section-title"><i class="fa-solid fa-bell"></i> BONE HEALTH ALERT CENTER</h3>
-
-<section class="alert-panel" id="alertPanel" aria-live="polite">
-    <div class="alert-item safe">
-        <i class="fa-solid fa-circle-check"></i>
-        <div><strong>Monitoring initialized</strong><p>Bone-health monitoring system is ready.</p></div>
-    </div>
-</section>
-
-<h3 class="section-title"><i class="fa-solid fa-clock-rotate-left"></i> MONITORING HISTORY</h3>
-
-<section class="history" id="historyPanel">
-    <div class="history-row"><span>Monitoring system initialized</span><span>READY</span></div>
-</section>
-
-<section class="research-card">
-    <h3><i class="fa-solid fa-satellite"></i> NASA BONE HEALTH RESEARCH</h3>
-
-    <p>
-        NASA research investigates bone mineral density changes experienced by
-        astronauts during spaceflight. Reduced mechanical loading in microgravity
-        can contribute to bone loss, particularly in weight-bearing regions such
-        as the hip and spine.
-    </p>
-
-    <p>
-        Published research has reported approximately 1–2% monthly bone-density
-        loss in the hip and spine in some astronauts. The actual response varies
-        between individuals and missions.
-    </p>
-
-    <a href="https://www.nasa.gov/directorates/esdmd/hhp/bone-and-mineral-evaluation-and-analysis/" target="_blank" rel="noopener">
-        <i class="fa-solid fa-arrow-up-right-from-square"></i> NASA Bone and Mineral Evaluation and Analysis
-    </a>
-
-    <a href="https://ntrs.nasa.gov/citations/20070032016" target="_blank" rel="noopener">
-        <i class="fa-solid fa-arrow-up-right-from-square"></i> NASA Technical Research Publication
-    </a>
-
-    <a href="https://humanresearchroadmap.nasa.gov/gaps/gap.aspx?i=812" target="_blank" rel="noopener">
-        <i class="fa-solid fa-arrow-up-right-from-square"></i> NASA Human Research Roadmap – Bone
-    </a>
-
-    <a href="https://www.nasa.gov/wp-content/uploads/2026/02/ochmo-mtb-013-bone-loss.pdf" target="_blank" rel="noopener">
-        <i class="fa-solid fa-file-pdf"></i> NASA Bone Loss Technical Brief
-    </a>
-
-    <div class="disclaimer">
-        Scientific references are published NASA research. The dashboard values,
-        mode controls and composite risk score are illustrative Cosmo Care
-        prototype outputs, not live NASA measurements or validated clinical
-        predictions. The 95% hip/spine and 90% femoral-neck levels are
-        project-configured alert references, not official NASA clinical alarm limits.
-    </div>
-</section>
-
-<div class="footer">COSMO CARE © 2026 | ASTRONAUT HEALTH MONITORING SYSTEM</div>
-
-</main>
-
-<!-- CENTRE WARNING POPUP -->
-
-<div class="warning-overlay" id="warningOverlay" role="presentation">
-
-    <div class="warning-modal" role="alertdialog"
-         aria-modal="true" aria-labelledby="warningTitle" aria-describedby="warningMessage">
-
-        <div class="warning-icon">
-            <i class="fa-solid fa-triangle-exclamation"></i>
-        </div>
-
-        <h2 id="warningTitle">BONE HEALTH WARNING</h2>
-
-        <p id="warningMessage">A bone-health warning has been detected.</p>
-
-        <div class="warning-label">COSMO CARE • ALERT NOTIFICATION</div>
-
-        <button class="acknowledge-btn" id="acknowledgeBtn" type="button">
-            <i class="fa-solid fa-check"></i>
-            &nbsp; ACKNOWLEDGE WARNING
-        </button>
-
-    </div>
-
-</div>
-
-<script>
-/* =========================================
-   1. PROFILE DATA
-========================================= */
-
-const profiles = {
-    normal: {
-        hip:98, spine:97, femur:96,
-        loss:10, resorption:10, exercise:10,
-        nutrition:10, duration:20
-    },
-
-    high: {
-        hip:93, spine:91, femur:88,
-        loss:75, resorption:70, exercise:65,
-        nutrition:55, duration:80
-    }
-};
-
-const STORAGE_KEY = "cosmoCareAlerts";
-
-let activeWarningCodes = new Set();
-let currentPopupAlertId = null;
-
-let audioContext = null;
-let alarmInterval = null;
-
-let soundEnabled = true;
-let currentMode = "normal";
+        let soundEnabled = true;
+        let currentMode = "normal";
 
 
-/* =========================================
-   2. STORAGE
-========================================= */
+        /* =========================================
+           2. STORAGE
+        ========================================= */
 
-function getStoredAlerts() {
-    try {
-        const stored = JSON.parse(
-            localStorage.getItem(STORAGE_KEY) || "[]"
-        );
+        function getStoredAlerts() {
+            try {
+                const stored = JSON.parse(
+                    localStorage.getItem(STORAGE_KEY) || "[]"
+                );
 
-        return Array.isArray(stored) ? stored : [];
+                return Array.isArray(stored) ? stored : [];
 
-    } catch(error) {
-        console.error("Unable to read alerts:", error);
-        return [];
-    }
-}
-
-function saveStoredAlerts(alerts) {
-    try {
-        localStorage.setItem(
-            STORAGE_KEY,
-            JSON.stringify(alerts)
-        );
-
-        return true;
-
-    } catch(error) {
-        console.error("Unable to save alerts:", error);
-        return false;
-    }
-}
-
-
-/* =========================================
-   3. WARNING SOUND
-   SAME SOUND AS AIR QUALITY DASHBOARD
-========================================= */
-
-function playWarningTone() {
-
-    if (!soundEnabled) return;
-
-    try {
-
-        const AudioContextClass =
-            window.AudioContext || window.webkitAudioContext;
-
-        if (!AudioContextClass) return;
-
-        if (!audioContext) {
-            audioContext = new AudioContextClass();
+            } catch (error) {
+                console.error("Unable to read alerts:", error);
+                return [];
+            }
         }
 
-        if (audioContext.state === "suspended") {
-            audioContext.resume();
+        function saveStoredAlerts(alerts) {
+            try {
+                localStorage.setItem(
+                    STORAGE_KEY,
+                    JSON.stringify(alerts)
+                );
+
+                return true;
+
+            } catch (error) {
+                console.error("Unable to save alerts:", error);
+                return false;
+            }
         }
 
-        const oscillator = audioContext.createOscillator();
-        const gain = audioContext.createGain();
 
-        oscillator.type = "square";
+        /* =========================================
+           3. WARNING SOUND
+           SAME SOUND AS AIR QUALITY DASHBOARD
+        ========================================= */
 
-        // FIRST TONE: 880 Hz
-        oscillator.frequency.setValueAtTime(
-            880,
-            audioContext.currentTime
-        );
+        function playWarningTone() {
 
-        // SECOND TONE: 620 Hz
-        oscillator.frequency.setValueAtTime(
-            620,
-            audioContext.currentTime + 0.2
-        );
+            if (!soundEnabled) return;
 
-        gain.gain.setValueAtTime(
-            0.12,
-            audioContext.currentTime
-        );
+            try {
 
-        gain.gain.exponentialRampToValueAtTime(
-            0.001,
-            audioContext.currentTime + 0.4
-        );
+                const AudioContextClass =
+                    window.AudioContext || window.webkitAudioContext;
 
-        oscillator.connect(gain);
-        gain.connect(audioContext.destination);
+                if (!AudioContextClass) return;
 
-        oscillator.start();
-        oscillator.stop(audioContext.currentTime + 0.42);
+                if (!audioContext) {
+                    audioContext = new AudioContextClass();
+                }
 
-    } catch(error) {
-        console.warn("Warning sound unavailable:", error);
-    }
-}
+                if (audioContext.state === "suspended") {
+                    audioContext.resume();
+                }
+
+                const oscillator = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+
+                oscillator.type = "square";
+
+                // FIRST TONE: 880 Hz
+                oscillator.frequency.setValueAtTime(
+                    880,
+                    audioContext.currentTime
+                );
+
+                // SECOND TONE: 620 Hz
+                oscillator.frequency.setValueAtTime(
+                    620,
+                    audioContext.currentTime + 0.2
+                );
+
+                gain.gain.setValueAtTime(
+                    0.12,
+                    audioContext.currentTime
+                );
+
+                gain.gain.exponentialRampToValueAtTime(
+                    0.001,
+                    audioContext.currentTime + 0.4
+                );
+
+                oscillator.connect(gain);
+                gain.connect(audioContext.destination);
+
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.42);
+
+            } catch (error) {
+                console.warn("Warning sound unavailable:", error);
+            }
+        }
 
 
-/* =========================================
-   4. REPEATING WARNING ALARM
-========================================= */
+        /* =========================================
+           4. REPEATING WARNING ALARM
+        ========================================= */
 
-function startWarningAlarm() {
+        function startWarningAlarm() {
 
-    stopWarningAlarm();
-
-    if (!soundEnabled || currentMode !== "high") return;
-
-    // Play immediately
-    playWarningTone();
-
-    // Repeat every second
-    alarmInterval = setInterval(() => {
-
-        if (currentMode === "high" && soundEnabled) {
-            playWarningTone();
-        } else {
             stopWarningAlarm();
+
+            if (!soundEnabled || currentMode !== "high") return;
+
+            // Play immediately
+            playWarningTone();
+
+            // Repeat every second
+            alarmInterval = setInterval(() => {
+
+                if (currentMode === "high" && soundEnabled) {
+                    playWarningTone();
+                } else {
+                    stopWarningAlarm();
+                }
+
+            }, 1000);
         }
 
-    }, 1000);
-}
 
+        function stopWarningAlarm() {
 
-function stopWarningAlarm() {
-
-    if (alarmInterval) {
-        clearInterval(alarmInterval);
-        alarmInterval = null;
-    }
-}
-
-
-/* =========================================
-   5. SOUND BUTTON
-========================================= */
-
-function toggleSound() {
-
-    soundEnabled = !soundEnabled;
-
-    const button = document.getElementById("soundButton");
-
-    if (soundEnabled) {
-
-        button.innerHTML =
-            '<i class="fa-solid fa-volume-high"></i> SOUND ON';
-
-        if (currentMode === "high") {
-            startWarningAlarm();
+            if (alarmInterval) {
+                clearInterval(alarmInterval);
+                alarmInterval = null;
+            }
         }
 
-    } else {
 
-        button.innerHTML =
-            '<i class="fa-solid fa-volume-xmark"></i> SOUND OFF';
+        /* =========================================
+           5. SOUND BUTTON
+        ========================================= */
 
-        stopWarningAlarm();
-    }
-}
+        function toggleSound() {
 
+            soundEnabled = !soundEnabled;
 
-/* =========================================
-   6. CENTRE WARNING POPUP
-========================================= */
+            const button = document.getElementById("soundButton");
 
-function showWarningPopup(alert) {
+            if (soundEnabled) {
 
-    if (!alert) return;
+                button.innerHTML =
+                    '<i class="fa-solid fa-volume-high"></i> SOUND ON';
 
-    currentPopupAlertId = alert.id;
+                if (currentMode === "high") {
+                    startWarningAlarm();
+                }
 
-    document.getElementById("warningTitle").textContent =
-        alert.title;
+            } else {
 
-    document.getElementById("warningMessage").textContent =
-        alert.message;
+                button.innerHTML =
+                    '<i class="fa-solid fa-volume-xmark"></i> SOUND OFF';
 
-    document.getElementById("warningOverlay").classList.add("show");
-}
-
-
-function hideWarningPopup() {
-
-    document.getElementById("warningOverlay").classList.remove("show");
-
-    currentPopupAlertId = null;
-}
+                stopWarningAlarm();
+            }
+        }
 
 
-/* =========================================
-   7. ACKNOWLEDGEMENT
-========================================= */
+        /* =========================================
+           6. CENTRE WARNING POPUP
+        ========================================= */
 
-function acknowledgeWarning() {
+        function showWarningPopup(alert) {
 
-    if (!currentPopupAlertId) return;
+            if (!alert) return;
 
-    const acknowledgedId = currentPopupAlertId;
+            currentPopupAlertId = alert.id;
 
-    const alerts = getStoredAlerts();
+            document.getElementById("warningTitle").textContent =
+                alert.title;
 
-    const alert = alerts.find(item =>
-        String(item.id) === String(acknowledgedId)
-    );
+            document.getElementById("warningMessage").textContent =
+                alert.message;
 
-    if (alert) {
-
-        alert.acknowledged = true;
-        alert.status = "acknowledged";
-        alert.acknowledgedAt = new Date().toISOString();
-
-        saveStoredAlerts(alerts);
-
-        window.dispatchEvent(
-            new CustomEvent("cosmoCareAlertUpdated", {
-                detail: alert
-            })
-        );
-    }
-
-    // Close popup only.
-    // The alarm continues until NORMAL MODE or SOUND OFF.
-    hideWarningPopup();
-}
-
-document.getElementById("acknowledgeBtn").addEventListener(
-    "click",
-    acknowledgeWarning
-);
+            document.getElementById("warningOverlay").classList.add("show");
+        }
 
 
-/* =========================================
-   8. CENTRAL ALERTS DASHBOARD SYNC
-========================================= */
+        function hideWarningPopup() {
 
-function sendCentralAlert(code, title, message) {
+            document.getElementById("warningOverlay").classList.remove("show");
 
-    const alerts = getStoredAlerts();
-
-    const alert = {
-        id: "BONE-" + Date.now() + "-" +
-            Math.random().toString(36).slice(2,8),
-
-        source: "Bone Health",
-        module: "Bone Health",
-
-        title: title,
-        message: message,
-
-        severity: "warning",
-        type: "warning",
-
-        status: "active",
-        acknowledged: false,
-
-        warningCode: code,
-
-        timestamp: new Date().toISOString(),
-        time: new Date().toLocaleString()
-    };
-
-    alerts.unshift(alert);
-
-    if (!saveStoredAlerts(alerts)) return null;
-
-    window.dispatchEvent(
-        new CustomEvent("cosmoCareAlertAdded", {
-            detail: alert
-        })
-    );
-
-    return alert;
-}
+            currentPopupAlertId = null;
+        }
 
 
-/* =========================================
-   9. PREVENT DUPLICATE ACTIVE WARNINGS
-========================================= */
+        /* =========================================
+           7. ACKNOWLEDGEMENT
+        ========================================= */
 
-function processWarnings(warnings) {
+        function acknowledgeWarning() {
 
-    const currentCodes = new Set(
-        warnings.map(item => item.code)
-    );
+            if (!currentPopupAlertId) return;
 
-    const newlyTriggered = warnings.filter(item =>
-        !activeWarningCodes.has(item.code)
-    );
+            const acknowledgedId = currentPopupAlertId;
 
-    activeWarningCodes = currentCodes;
+            const alerts = getStoredAlerts();
 
-    if (newlyTriggered.length === 0) return;
+            const alert = alerts.find(item =>
+                String(item.id) === String(acknowledgedId)
+            );
 
-    const generatedAlerts = [];
+            if (alert) {
 
-    newlyTriggered.forEach(item => {
+                alert.acknowledged = true;
+                alert.status = "acknowledged";
+                alert.acknowledgedAt = new Date().toISOString();
 
-        const alert = sendCentralAlert(
-            item.code,
-            item.title,
-            item.message
+                saveStoredAlerts(alerts);
+
+                window.dispatchEvent(
+                    new CustomEvent("cosmoCareAlertUpdated", {
+                        detail: alert
+                    })
+                );
+            }
+
+            // Close popup only.
+            // The alarm continues until NORMAL MODE or SOUND OFF.
+            hideWarningPopup();
+        }
+
+        document.getElementById("acknowledgeBtn").addEventListener(
+            "click",
+            acknowledgeWarning
         );
 
-        if (alert) {
-            generatedAlerts.push(alert);
+
+        /* =========================================
+           8. CENTRAL ALERTS DASHBOARD SYNC
+        ========================================= */
+
+        function sendCentralAlert(code, title, message) {
+
+            const alerts = getStoredAlerts();
+
+            const alert = {
+                id: "BONE-" + Date.now() + "-" +
+                    Math.random().toString(36).slice(2, 8),
+
+                source: "Bone Health",
+                module: "Bone Health",
+
+                title: title,
+                message: message,
+
+                severity: "warning",
+                type: "warning",
+
+                status: "active",
+                acknowledged: false,
+
+                warningCode: code,
+
+                timestamp: new Date().toISOString(),
+                time: new Date().toLocaleString()
+            };
+
+            alerts.unshift(alert);
+
+            if (!saveStoredAlerts(alerts)) return null;
+
+            window.dispatchEvent(
+                new CustomEvent("cosmoCareAlertAdded", {
+                    detail: alert
+                })
+            );
+
+            return alert;
         }
-    });
 
-    // Show only the first newly triggered warning.
-    // All newly triggered warnings are still saved centrally.
-    if (generatedAlerts.length > 0) {
-        showWarningPopup(generatedAlerts[0]);
-    }
-}
 
+        /* =========================================
+           9. PREVENT DUPLICATE ACTIVE WARNINGS
+        ========================================= */
 
-/* =========================================
-   10. PROGRESS BARS
-========================================= */
+        function processWarnings(warnings) {
 
-function updateBar(id, value) {
+            const currentCodes = new Set(
+                warnings.map(item => item.code)
+            );
 
-    const element = document.getElementById(id);
+            const newlyTriggered = warnings.filter(item =>
+                !activeWarningCodes.has(item.code)
+            );
 
-    if (!element) return;
+            activeWarningCodes = currentCodes;
 
-    element.style.width =
-        Math.max(0, Math.min(100, value)) + "%";
-}
+            if (newlyTriggered.length === 0) return;
 
-function updateMetric(valueId, barId, value) {
+            const generatedAlerts = [];
 
-    document.getElementById(valueId).textContent = value;
+            newlyTriggered.forEach(item => {
 
-    updateBar(barId, value);
-}
+                const alert = sendCentralAlert(
+                    item.code,
+                    item.title,
+                    item.message
+                );
 
+                if (alert) {
+                    generatedAlerts.push(alert);
+                }
+            });
 
-/* =========================================
-   11. HISTORY
-========================================= */
+            // Show only the first newly triggered warning.
+            // All newly triggered warnings are still saved centrally.
+            if (generatedAlerts.length > 0) {
+                showWarningPopup(generatedAlerts[0]);
+            }
+        }
 
-function addHistory(mode, risk) {
 
-    const panel = document.getElementById("historyPanel");
+        /* =========================================
+           10. PROGRESS BARS
+        ========================================= */
 
-    const row = document.createElement("div");
+        function updateBar(id, value) {
 
-    row.className = "history-row";
+            const element = document.getElementById(id);
 
-    const left = document.createElement("span");
+            if (!element) return;
 
-    left.textContent =
-        `${mode} profile activated • ${new Date().toLocaleTimeString()}`;
+            element.style.width =
+                Math.max(0, Math.min(100, value)) + "%";
+        }
 
-    const right = document.createElement("span");
+        function updateMetric(valueId, barId, value) {
 
-    right.textContent = `RISK ${risk}/100`;
+            document.getElementById(valueId).textContent = value;
 
-    row.append(left, right);
+            updateBar(barId, value);
+        }
 
-    panel.prepend(row);
 
-    while (panel.children.length > 6) {
-        panel.removeChild(panel.lastElementChild);
-    }
-}
+        /* =========================================
+           11. HISTORY
+        ========================================= */
 
+        function addHistory(mode, risk) {
 
-/* =========================================
-   12. RISK CALCULATION
-========================================= */
+            const panel = document.getElementById("historyPanel");
 
-function calculateRisk(data) {
+            const row = document.createElement("div");
 
-    const risk =
-        (0.35 * data.loss) +
-        (0.25 * data.resorption) +
-        (0.20 * data.exercise) +
-        (0.10 * data.nutrition) +
-        (0.10 * data.duration);
+            row.className = "history-row";
 
-    return Math.round(risk);
-}
+            const left = document.createElement("span");
 
+            left.textContent =
+                `${mode} profile activated • ${new Date().toLocaleTimeString()}`;
 
-function getRiskCategory(risk) {
+            const right = document.createElement("span");
 
-    if (risk < 30) return "LOW";
+            right.textContent = `RISK ${risk}/100`;
 
-    if (risk < 60) return "MODERATE";
+            row.append(left, right);
 
-    return "HIGH";
-}
+            panel.prepend(row);
 
+            while (panel.children.length > 6) {
+                panel.removeChild(panel.lastElementChild);
+            }
+        }
 
-/* =========================================
-   13. WARNING GENERATION
-========================================= */
 
-function buildWarnings(data, risk) {
+        /* =========================================
+           12. RISK CALCULATION
+        ========================================= */
 
-    const warnings = [];
+        function calculateRisk(data) {
 
-    if (data.hip < 95) {
+            const risk =
+                (0.35 * data.loss) +
+                (0.25 * data.resorption) +
+                (0.20 * data.exercise) +
+                (0.10 * data.nutrition) +
+                (0.10 * data.duration);
 
-        warnings.push({
-            code:"HIP_BELOW_REFERENCE",
+            return Math.round(risk);
+        }
 
-            title:"Hip preservation below project reference",
 
-            message:`Hip preservation is ${data.hip}%. It is below the configured 95% project alert reference.`
-        });
-    }
+        function getRiskCategory(risk) {
 
-    if (data.spine < 95) {
+            if (risk < 30) return "LOW";
 
-        warnings.push({
-            code:"SPINE_BELOW_REFERENCE",
+            if (risk < 60) return "MODERATE";
 
-            title:"Spine preservation below project reference",
+            return "HIGH";
+        }
 
-            message:`Spine preservation is ${data.spine}%. It is below the configured 95% project alert reference.`
-        });
-    }
 
-    if (data.femur < 90) {
+        /* =========================================
+           13. WARNING GENERATION
+        ========================================= */
 
-        warnings.push({
-            code:"FEMUR_BELOW_REFERENCE",
+        function buildWarnings(data, risk) {
 
-            title:"Femoral-neck preservation below project reference",
+            const warnings = [];
 
-            message:`Femoral-neck preservation is ${data.femur}%. It is below the configured 90% project alert reference.`
-        });
-    }
+            if (data.hip < 95) {
 
-    if (risk >= 60) {
+                warnings.push({
+                    code: "HIP_BELOW_REFERENCE",
 
-        warnings.push({
-            code:"HIGH_BONE_RISK",
+                    title: "Hip preservation below project reference",
 
-            title:"High composite bone-risk index",
+                    message: `Hip preservation is ${data.hip}%. It is below the configured 95% project alert reference.`
+                });
+            }
 
-            message:`The calculated prototype bone-risk index is ${risk}/100 and has entered the high-risk category.`
-        });
+            if (data.spine < 95) {
 
-    } else if (risk >= 30) {
+                warnings.push({
+                    code: "SPINE_BELOW_REFERENCE",
 
-        warnings.push({
-            code:"MODERATE_BONE_RISK",
+                    title: "Spine preservation below project reference",
 
-            title:"Moderate composite bone-risk index",
+                    message: `Spine preservation is ${data.spine}%. It is below the configured 95% project alert reference.`
+                });
+            }
 
-            message:`The calculated prototype bone-risk index is ${risk}/100 and has entered the moderate-risk category.`
-        });
-    }
+            if (data.femur < 90) {
 
-    return warnings;
-}
+                warnings.push({
+                    code: "FEMUR_BELOW_REFERENCE",
 
+                    title: "Femoral-neck preservation below project reference",
 
-/* =========================================
-   14. LOCAL ALERT DISPLAY
-========================================= */
+                    message: `Femoral-neck preservation is ${data.femur}%. It is below the configured 90% project alert reference.`
+                });
+            }
 
-function generateAlerts(warnings) {
+            if (risk >= 60) {
 
-    const panel = document.getElementById("alertPanel");
+                warnings.push({
+                    code: "HIGH_BONE_RISK",
 
-    panel.innerHTML = "";
+                    title: "High composite bone-risk index",
 
-    if (warnings.length === 0) {
+                    message: `The calculated prototype bone-risk index is ${risk}/100 and has entered the high-risk category.`
+                });
 
-        const item = document.createElement("div");
+            } else if (risk >= 30) {
 
-        item.className = "alert-item safe";
+                warnings.push({
+                    code: "MODERATE_BONE_RISK",
 
-        item.innerHTML = `
+                    title: "Moderate composite bone-risk index",
+
+                    message: `The calculated prototype bone-risk index is ${risk}/100 and has entered the moderate-risk category.`
+                });
+            }
+
+            return warnings;
+        }
+
+
+        /* =========================================
+           14. LOCAL ALERT DISPLAY
+        ========================================= */
+
+        function generateAlerts(warnings) {
+
+            const panel = document.getElementById("alertPanel");
+
+            panel.innerHTML = "";
+
+            if (warnings.length === 0) {
+
+                const item = document.createElement("div");
+
+                item.className = "alert-item safe";
+
+                item.innerHTML = `
             <i class="fa-solid fa-circle-check"></i>
             <div>
                 <strong>Bone-health indicators within configured references</strong>
@@ -1457,180 +1721,203 @@ function generateAlerts(warnings) {
             </div>
         `;
 
-        panel.appendChild(item);
+                panel.appendChild(item);
 
-        return;
-    }
+                return;
+            }
 
-    warnings.forEach(alert => {
+            warnings.forEach(alert => {
 
-        const item = document.createElement("div");
+                const item = document.createElement("div");
 
-        item.className = "alert-item warning";
+                item.className = "alert-item warning";
 
-        const icon = document.createElement("i");
+                const icon = document.createElement("i");
 
-        icon.className =
-            "fa-solid fa-triangle-exclamation";
+                icon.className =
+                    "fa-solid fa-triangle-exclamation";
 
-        const content = document.createElement("div");
+                const content = document.createElement("div");
 
-        const title = document.createElement("strong");
+                const title = document.createElement("strong");
 
-        title.textContent = alert.title;
+                title.textContent = alert.title;
 
-        const message = document.createElement("p");
+                const message = document.createElement("p");
 
-        message.textContent = alert.message;
+                message.textContent = alert.message;
 
-        content.append(title, message);
+                content.append(title, message);
 
-        item.append(icon, content);
+                item.append(icon, content);
 
-        panel.appendChild(item);
-    });
-}
-
-
-/* =========================================
-   15. UPDATE DASHBOARD
-========================================= */
-
-function updateDashboard(data) {
-
-    updateMetric("hipValue", "hipBar", data.hip);
-
-    updateMetric("spineValue", "spineBar", data.spine);
-
-    updateMetric("femurValue", "femurBar", data.femur);
-
-    ["loss","resorption","exercise","nutrition","duration"].forEach(key => {
-
-        document.getElementById(key + "Text").textContent =
-            data[key] + "%";
-
-        updateBar(key + "Bar", data[key]);
-    });
-
-    const risk = calculateRisk(data);
-
-    document.getElementById("riskValue").textContent = risk;
-
-    updateBar("riskBar", risk);
-
-    const category = getRiskCategory(risk);
-
-    const status = document.getElementById("riskStatus");
-
-    status.textContent = category + " RISK";
-
-    status.className =
-        "risk-status " + category.toLowerCase();
-
-    const warnings = buildWarnings(data, risk);
-
-    generateAlerts(warnings);
-
-    processWarnings(warnings);
-
-    return {
-        risk: risk,
-        warnings: warnings
-    };
-}
-
-
-/* =========================================
-   16. MODE SWITCHING
-========================================= */
-
-function setMode(mode) {
-
-    if (!profiles[mode]) return;
-
-    currentMode = mode;
-
-    const data = profiles[mode];
-
-    document.getElementById("normalBtn").classList.toggle(
-        "selected",
-        mode === "normal"
-    );
-
-    document.getElementById("highBtn").classList.toggle(
-        "selected",
-        mode === "high"
-    );
-
-    const result = updateDashboard(data);
-
-    addHistory(mode.toUpperCase(), result.risk);
-
-    if (mode === "normal") {
-
-        // Stop repeating warning sound.
-        stopWarningAlarm();
-
-        // Close any currently displayed warning popup.
-        hideWarningPopup();
-
-        // Reset active warning conditions.
-        // Previously saved central alerts remain available.
-        activeWarningCodes = new Set();
-
-    } else if (mode === "high") {
-
-        // Start repeating alarm if sound is enabled.
-        // Acknowledging the popup does not stop this alarm.
-        if (result.warnings.length > 0 && soundEnabled) {
-            startWarningAlarm();
+                panel.appendChild(item);
+            });
         }
-    }
-}
 
 
-/* =========================================
-   17. SYNC ACKNOWLEDGEMENT FROM OTHER TAB
-========================================= */
+        /* =========================================
+           15. UPDATE DASHBOARD
+        ========================================= */
 
-window.addEventListener("storage", event => {
+        function updateDashboard(data) {
 
-    if (
-        event.key !== STORAGE_KEY ||
-        !currentPopupAlertId
-    ) return;
+            updateMetric("hipValue", "hipBar", data.hip);
 
-    const alerts = getStoredAlerts();
+            updateMetric("spineValue", "spineBar", data.spine);
 
-    const popupAlert = alerts.find(item =>
-        String(item.id) === String(currentPopupAlertId)
-    );
+            updateMetric("femurValue", "femurBar", data.femur);
 
-    if (
-        !popupAlert ||
-        popupAlert.acknowledged === true ||
-        popupAlert.status === "acknowledged"
-    ) {
-        hideWarningPopup();
-    }
-});
+            ["loss", "resorption", "exercise", "nutrition", "duration"].forEach(key => {
+
+                document.getElementById(key + "Text").textContent =
+                    data[key] + "%";
+
+                updateBar(key + "Bar", data[key]);
+            });
+
+            const risk = calculateRisk(data);
+
+            document.getElementById("riskValue").textContent = risk;
+
+            updateBar("riskBar", risk);
+
+            const category = getRiskCategory(risk);
+
+            const status = document.getElementById("riskStatus");
+
+            status.textContent = category + " RISK";
+
+            status.className =
+                "risk-status " + category.toLowerCase();
+
+            const warnings = buildWarnings(data, risk);
+
+            generateAlerts(warnings);
+
+            processWarnings(warnings);
+
+            return {
+                risk: risk,
+                warnings: warnings
+            };
+        }
 
 
-/* =========================================
-   18. INITIALIZATION
-========================================= */
+        /* =========================================
+           16. MODE SWITCHING
+        ========================================= */
 
-window.addEventListener("DOMContentLoaded", () => {
+        function setMode(mode) {
 
-    updateDashboard(profiles.normal);
+            if (!profiles[mode]) return;
 
-    addHistory(
-        "NORMAL",
-        calculateRisk(profiles.normal)
-    );
+            currentMode = mode;
 
-});
-</script>
+            const data = profiles[mode];
+
+            document.getElementById("normalBtn").classList.toggle(
+                "selected",
+                mode === "normal"
+            );
+
+            document.getElementById("highBtn").classList.toggle(
+                "selected",
+                mode === "high"
+            );
+
+            const result = updateDashboard(data);
+
+            addHistory(mode.toUpperCase(), result.risk);
+
+            if (mode === "normal") {
+
+                // Stop repeating warning sound.
+                stopWarningAlarm();
+
+                // Close any currently displayed warning popup.
+                hideWarningPopup();
+
+                // Reset active warning conditions.
+                // Previously saved central alerts remain available.
+                activeWarningCodes = new Set();
+
+            } else if (mode === "high") {
+
+                // Start repeating alarm if sound is enabled.
+                // Acknowledging the popup does not stop this alarm.
+                if (result.warnings.length > 0 && soundEnabled) {
+                    startWarningAlarm();
+                }
+            }
+        }
+
+
+        /* =========================================
+           17. SYNC ACKNOWLEDGEMENT FROM OTHER TAB
+        ========================================= */
+
+        window.addEventListener("storage", event => {
+
+            if (
+                event.key !== STORAGE_KEY ||
+                !currentPopupAlertId
+            ) return;
+
+            const alerts = getStoredAlerts();
+
+            const popupAlert = alerts.find(item =>
+                String(item.id) === String(currentPopupAlertId)
+            );
+
+            if (
+                !popupAlert ||
+                popupAlert.acknowledged === true ||
+                popupAlert.status === "acknowledged"
+            ) {
+                hideWarningPopup();
+            }
+        });
+
+
+        /* =========================================
+           18. INITIALIZATION
+        ========================================= */
+
+        window.addEventListener("DOMContentLoaded", () => {
+
+            updateDashboard(profiles.normal);
+
+            addHistory(
+                "NORMAL",
+                calculateRisk(profiles.normal)
+            );
+
+        });
+    </script>
+
+    <script>
+        const menuBtn = document.getElementById("mobileMenuBtn");
+        const sidebar = document.querySelector(".sidebar");
+        const overlay = document.getElementById("sidebarOverlay");
+
+        menuBtn.addEventListener("click", () => {
+            sidebar.classList.toggle("open");
+            overlay.classList.toggle("active");
+        });
+
+        overlay.addEventListener("click", closeMenu);
+
+        document.querySelectorAll(".sidebar .nav-link").forEach(link => {
+            link.addEventListener("click", closeMenu);
+        });
+
+        function closeMenu() {
+            sidebar.classList.remove("open");
+            overlay.classList.remove("active");
+        }
+    </script>
 
 </body>
+
 </html>

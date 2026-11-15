@@ -1,1484 +1,1659 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Cosmo Care | Sleep Monitor</title>
-
-<link rel="stylesheet" href="cosmo-style.css">
-<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<style>
-:root{
-    --bg:#080610;
-    --panel:#171126;
-    --purple:#b78aff;
-    --purple2:#9360e8;
-    --lavender:#dfc9ff;
-    --pink:#ed9bff;
-    --text:#f5edff;
-    --muted:#a99abf;
-    --border:rgba(183,138,255,.2);
-}
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-}
-
-body{
-    background:var(--bg);
-    color:var(--text);
-    font-family:Inter,sans-serif;
-    min-height:100vh;
-    overflow-x:hidden;
-}
-
-#stars{
-    position:fixed;
-    inset:0;
-    width:100%;
-    height:100%;
-    z-index:-3;
-}
-
-.space-glow{
-    position:fixed;
-    width:400px;
-    height:400px;
-    border-radius:50%;
-    filter:blur(120px);
-    opacity:.16;
-    z-index:-2;
-    pointer-events:none;
-}
-
-.glow-one{
-    background:#9a5cff;
-    top:5%;
-    left:20%;
-}
-
-.glow-two{
-    background:#d36bff;
-    bottom:5%;
-    right:5%;
-}
-
-/* SIDEBAR */
-
-.sidebar{
-    width:250px;
-    height:100vh;
-    position:fixed;
-    left:0;
-    top:0;
-    background:rgba(12,8,21,.96);
-    border-right:1px solid var(--border);
-    padding:25px 15px;
-    z-index:10;
-    overflow-y:auto;
-}
-
-.logo{
-    font-family:Orbitron,sans-serif;
-    font-size:21px;
-    font-weight:800;
-    color:var(--lavender);
-    text-align:center;
-    margin-bottom:5px;
-}
-
-.logo-sub{
-    text-align:center;
-    color:var(--muted);
-    font-size:10px;
-    letter-spacing:2px;
-    margin-bottom:35px;
-}
-
-.nav-title{
-    color:#8d7ca5;
-    font-size:10px;
-    letter-spacing:2px;
-    margin:20px 10px 12px;
-}
-
-.nav-link{
-    display:flex;
-    align-items:center;
-    gap:12px;
-    padding:12px;
-    margin:5px 0;
-    border-radius:10px;
-    text-decoration:none;
-    color:#b9accb;
-    font-size:12px;
-    transition:.3s;
-}
-
-.nav-link i{
-    width:18px;
-    text-align:center;
-}
-
-.nav-link:hover,
-.nav-link.active{
-    background:rgba(183,138,255,.15);
-    color:var(--lavender);
-    box-shadow:0 0 15px rgba(183,138,255,.1);
-}
-
-/* MAIN */
-
-.main{
-    margin-left:250px;
-    padding:30px;
-    max-width:1600px;
-}
-
-.header{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    flex-wrap:wrap;
-    gap:20px;
-    margin-bottom:28px;
-}
-
-.header h1{
-    font-family:Orbitron,sans-serif;
-    font-size:25px;
-    color:var(--lavender);
-    letter-spacing:1px;
-}
-
-.header p{
-    font-size:12px;
-    color:var(--muted);
-    margin-top:8px;
-}
-
-.status{
-    display:flex;
-    align-items:center;
-    gap:8px;
-    background:rgba(183,138,255,.1);
-    border:1px solid var(--border);
-    padding:10px 15px;
-    border-radius:30px;
-    color:var(--lavender);
-    font-size:11px;
-}
-
-.status-dot{
-    width:8px;
-    height:8px;
-    border-radius:50%;
-    background:#b78aff;
-    box-shadow:0 0 10px #b78aff;
-}
-
-.status.warning{
-    color:#ffb1cf;
-    border-color:rgba(255,100,150,.4);
-    background:rgba(255,80,130,.1);
-}
-
-.status.warning .status-dot{
-    background:#ff578f;
-    box-shadow:0 0 12px #ff578f;
-}
-
-/* HERO */
-
-.hero{
-    background:linear-gradient(120deg,rgba(48,28,76,.9),rgba(19,13,32,.95));
-    border:1px solid var(--border);
-    border-radius:20px;
-    padding:25px;
-    display:grid;
-    grid-template-columns:1.4fr 1fr;
-    gap:20px;
-    align-items:center;
-    margin-bottom:25px;
-    overflow:hidden;
-}
-
-.hero h2{
-    font-family:Orbitron,sans-serif;
-    color:var(--lavender);
-    font-size:20px;
-    margin-bottom:12px;
-}
-
-.hero p{
-    font-size:13px;
-    color:#c0b2d3;
-    line-height:1.8;
-    max-width:650px;
-}
-
-.hero-visual{
-    min-height:190px;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    position:relative;
-}
-
-.moon{
-    width:110px;
-    height:110px;
-    border-radius:50%;
-    background:linear-gradient(135deg,#f5e8ff,#b78aff,#7046b3);
-    box-shadow:0 0 35px rgba(183,138,255,.5);
-    animation:moonFloat 5s ease-in-out infinite;
-}
-
-@keyframes moonFloat{
-    0%,100%{transform:translateY(0)}
-    50%{transform:translateY(-14px)}
-}
-
-.zzz{
-    position:absolute;
-    color:var(--lavender);
-    font-family:Orbitron;
-    font-weight:700;
-    animation:floatZ 3s ease-in-out infinite;
-}
-
-.z1{top:20px;right:25%;font-size:22px}
-.z2{top:55px;right:15%;font-size:16px;animation-delay:1s}
-.z3{top:85px;right:30%;font-size:12px;animation-delay:2s}
-
-@keyframes floatZ{
-    0%{transform:translateY(10px);opacity:0}
-    40%{opacity:1}
-    100%{transform:translateY(-30px);opacity:0}
-}
-
-/* CONTROLS */
-
-.controls{
-    display:flex;
-    flex-wrap:wrap;
-    gap:10px;
-    margin-bottom:25px;
-}
-
-.btn{
-    padding:11px 16px;
-    border:1px solid var(--border);
-    border-radius:9px;
-    background:rgba(183,138,255,.1);
-    color:var(--lavender);
-    cursor:pointer;
-    font-size:11px;
-    font-weight:600;
-    transition:.3s;
-}
-
-.btn:hover{
-    background:rgba(183,138,255,.25);
-    transform:translateY(-2px);
-}
-
-.btn.active{
-    background:var(--purple2);
-    color:white;
-}
-
-.btn.high{
-    border-color:rgba(255,100,150,.4);
-    color:#ffb1cf;
-}
-
-.btn.high.active{
-    background:#a93668;
-    color:white;
-}
-
-.btn.stop{
-    border-color:rgba(255,100,140,.4);
-    color:#ff9bb7;
-}
-
-/* METRICS */
-
-.section-title{
-    font-family:Orbitron,sans-serif;
-    font-size:14px;
-    letter-spacing:1px;
-    color:var(--lavender);
-    margin:25px 0 15px;
-}
-
-.metrics{
-    display:grid;
-    grid-template-columns:repeat(4,1fr);
-    gap:15px;
-}
-
-.card{
-    background:var(--panel);
-    border:1px solid var(--border);
-    border-radius:15px;
-    padding:20px;
-    min-width:0;
-    transition:.3s;
-}
-
-.card:hover{
-    transform:translateY(-4px);
-    border-color:rgba(183,138,255,.5);
-}
-
-.card-top{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    margin-bottom:18px;
-}
-
-.card-icon{
-    width:38px;
-    height:38px;
-    border-radius:11px;
-    display:grid;
-    place-items:center;
-    color:var(--lavender);
-    background:rgba(183,138,255,.15);
-}
-
-.card-label{
-    font-size:11px;
-    color:var(--muted);
-    margin-bottom:10px;
-}
-
-.card-value{
-    font-family:Orbitron,sans-serif;
-    font-size:25px;
-    color:var(--text);
-    transition:.3s;
-}
-
-.card-unit{
-    color:var(--muted);
-    font-size:11px;
-    margin-top:7px;
-}
-
-.card.warning{
-    border-color:rgba(255,100,150,.5);
-}
-
-.card.warning .card-value{
-    color:#ff9bb7;
-}
-
-/* GRID */
-
-.grid-two{
-    display:grid;
-    grid-template-columns:1.3fr 1fr;
-    gap:18px;
-    margin-top:20px;
-}
-
-.chart-card{
-    background:var(--panel);
-    border:1px solid var(--border);
-    border-radius:15px;
-    padding:20px;
-    min-width:0;
-}
-
-.chart-card h3{
-    font-family:Orbitron;
-    font-size:12px;
-    color:var(--lavender);
-    margin-bottom:18px;
-}
-
-.chart-wrap{
-    height:250px;
-    position:relative;
-}
-
-/* INFO */
-
-.info-card{
-    background:var(--panel);
-    border:1px solid var(--border);
-    padding:20px;
-    border-radius:15px;
-    margin-top:20px;
-}
-
-.info-card h3{
-    font-family:Orbitron;
-    font-size:13px;
-    color:var(--lavender);
-    margin-bottom:14px;
-}
-
-.info-card p{
-    color:#c3b5d5;
-    font-size:12px;
-    line-height:1.8;
-}
-
-.hardware-name{
-    display:inline-block;
-    color:var(--lavender);
-    background:rgba(183,138,255,.12);
-    border:1px solid var(--border);
-    border-radius:8px;
-    padding:12px 15px;
-    font-size:12px;
-    margin-top:12px;
-}
-
-.research-note{
-    border-left:3px solid var(--purple);
-    padding:14px 15px;
-    margin-top:15px;
-    background:rgba(183,138,255,.07);
-    border-radius:0 9px 9px 0;
-}
-
-.research-note strong{
-    color:var(--lavender);
-}
-
-.source-list{
-    margin-top:15px;
-    display:flex;
-    flex-direction:column;
-    gap:12px;
-}
-
-.source-list a{
-    color:#cbb1ff;
-    font-size:11px;
-    text-decoration:none;
-}
-
-.source-list a:hover{
-    text-decoration:underline;
-}
-
-.footer-note{
-    text-align:center;
-    color:#81718f;
-    font-size:10px;
-    margin:30px 0 10px;
-    line-height:1.8;
-}
-
-/* POPUP */
-
-/* Centre-screen acknowledgement popup */
-/* CENTRE-SCREEN ALERT POPUP */
-
-.popup {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: min(420px, 90%);
-    padding: 25px;
-    background: linear-gradient(145deg, #211532, #100b1c);
-    border: 1px solid var(--purple);
-    border-radius: 16px;
-    text-align: center;
-    z-index: 9999;
-    box-shadow: 0 0 40px rgba(183,138,255,.3);
-}
-
-.popup.show {
-    display: block;
-    animation: popupIn .3s ease;
-}
-
-.popup.warning {
-    border-color: #ff6496;
-    box-shadow: 0 0 35px rgba(255,80,130,.3);
-}
-
-.popup h3 {
-    color: #ffb1cf;
-    font-size: 15px;
-    margin-bottom: 12px;
-}
-
-.popup p {
-    color: #c7b7d8;
-    font-size: 12px;
-    line-height: 1.7;
-    margin-bottom: 18px;
-}
-
-.popup button {
-    display: inline-block;
-    border: 0;
-    padding: 11px 20px;
-    background: var(--purple2);
-    color: white;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 12px;
-    font-weight: 600;
-}
-
-@keyframes popupIn {
-    from {
-        opacity: 0;
-        transform: translate(-50%, -45%);
-    }
-    to {
-        opacity: 1;
-        transform: translate(-50%, -50%);
-    }
-}
-/* RESPONSIVE */
-
-@media(max-width:1100px){
-    .metrics{grid-template-columns:repeat(2,1fr)}
-}
-
-@media(max-width:800px){
-    .sidebar{
-        width:65px;
-        padding:15px 8px;
-    }
-
-    .logo{font-size:10px}
-    .logo-sub,.nav-title,.nav-link span{display:none}
-    .nav-link{justify-content:center;padding:13px 5px}
-    .nav-link i{font-size:16px}
-    .main{margin-left:65px;padding:18px}
-    .hero{grid-template-columns:1fr}
-    .grid-two{grid-template-columns:1fr}
-}
-
-@media(max-width:520px){
-    .metrics{grid-template-columns:1fr 1fr;gap:9px}
-    .card{padding:13px}
-    .card-value{font-size:19px}
-    .header h1{font-size:19px}
-    .hero{padding:18px}
-}
-
-/* SLEEP MONITOR ACTIVE NAV LINK */
-.sidebar .nav-link.active {
-    background: rgba(170, 100, 255, 0.18);
-    color: #ffffff;
-    border-left: 3px solid #b36bff;
-    box-shadow: 0 0 12px rgba(179, 107, 255, 0.15);
-}
-
-.sidebar .nav-link.active i {
-    color: #b36bff;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cosmo Care | Sleep Monitor</title>
+
+    <link rel="stylesheet" href="cosmo-style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --bg: #080610;
+            --panel: #171126;
+            --purple: #b78aff;
+            --purple2: #9360e8;
+            --lavender: #dfc9ff;
+            --pink: #ed9bff;
+            --text: #f5edff;
+            --muted: #a99abf;
+            --border: rgba(183, 138, 255, .2);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: Inter, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        #stars {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -3;
+        }
+
+        .space-glow {
+            position: fixed;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: .16;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        .glow-one {
+            background: #9a5cff;
+            top: 5%;
+            left: 20%;
+        }
+
+        .glow-two {
+            background: #d36bff;
+            bottom: 5%;
+            right: 5%;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: rgba(12, 8, 21, .96);
+            border-right: 1px solid var(--border);
+            padding: 25px 15px;
+            z-index: 10;
+            overflow-y: auto;
+        }
+
+        .logo {
+            font-family: Orbitron, sans-serif;
+            font-size: 21px;
+            font-weight: 800;
+            color: var(--lavender);
+            text-align: center;
+            margin-bottom: 5px;
+        }
+
+        .logo-sub {
+            text-align: center;
+            color: var(--muted);
+            font-size: 10px;
+            letter-spacing: 2px;
+            margin-bottom: 35px;
+        }
+
+        .nav-title {
+            color: #8d7ca5;
+            font-size: 10px;
+            letter-spacing: 2px;
+            margin: 20px 10px 12px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            margin: 5px 0;
+            border-radius: 10px;
+            text-decoration: none;
+            color: #b9accb;
+            font-size: 12px;
+            transition: .3s;
+        }
+
+        .nav-link i {
+            width: 18px;
+            text-align: center;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(183, 138, 255, .15);
+            color: var(--lavender);
+            box-shadow: 0 0 15px rgba(183, 138, 255, .1);
+        }
+
+        /* MAIN */
+
+        .main {
+            margin-left: 250px;
+            padding: 30px;
+            max-width: 1600px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+
+        .header h1 {
+            font-family: Orbitron, sans-serif;
+            font-size: 25px;
+            color: var(--lavender);
+            letter-spacing: 1px;
+        }
+
+        .header p {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 8px;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(183, 138, 255, .1);
+            border: 1px solid var(--border);
+            padding: 10px 15px;
+            border-radius: 30px;
+            color: var(--lavender);
+            font-size: 11px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #b78aff;
+            box-shadow: 0 0 10px #b78aff;
+        }
+
+        .status.warning {
+            color: #ffb1cf;
+            border-color: rgba(255, 100, 150, .4);
+            background: rgba(255, 80, 130, .1);
+        }
+
+        .status.warning .status-dot {
+            background: #ff578f;
+            box-shadow: 0 0 12px #ff578f;
+        }
+
+        /* HERO */
+
+        .hero {
+            background: linear-gradient(120deg, rgba(48, 28, 76, .9), rgba(19, 13, 32, .95));
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 25px;
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 25px;
+            overflow: hidden;
+        }
+
+        .hero h2 {
+            font-family: Orbitron, sans-serif;
+            color: var(--lavender);
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+
+        .hero p {
+            font-size: 13px;
+            color: #c0b2d3;
+            line-height: 1.8;
+            max-width: 650px;
+        }
+
+        .hero-visual {
+            min-height: 190px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        .moon {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f5e8ff, #b78aff, #7046b3);
+            box-shadow: 0 0 35px rgba(183, 138, 255, .5);
+            animation: moonFloat 5s ease-in-out infinite;
+        }
+
+        @keyframes moonFloat {
+
+            0%,
+            100% {
+                transform: translateY(0)
+            }
+
+            50% {
+                transform: translateY(-14px)
+            }
+        }
+
+        .zzz {
+            position: absolute;
+            color: var(--lavender);
+            font-family: Orbitron;
+            font-weight: 700;
+            animation: floatZ 3s ease-in-out infinite;
+        }
+
+        .z1 {
+            top: 20px;
+            right: 25%;
+            font-size: 22px
+        }
+
+        .z2 {
+            top: 55px;
+            right: 15%;
+            font-size: 16px;
+            animation-delay: 1s
+        }
+
+        .z3 {
+            top: 85px;
+            right: 30%;
+            font-size: 12px;
+            animation-delay: 2s
+        }
+
+        @keyframes floatZ {
+            0% {
+                transform: translateY(10px);
+                opacity: 0
+            }
+
+            40% {
+                opacity: 1
+            }
+
+            100% {
+                transform: translateY(-30px);
+                opacity: 0
+            }
+        }
+
+        /* CONTROLS */
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            padding: 11px 16px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            background: rgba(183, 138, 255, .1);
+            color: var(--lavender);
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            transition: .3s;
+        }
+
+        .btn:hover {
+            background: rgba(183, 138, 255, .25);
+            transform: translateY(-2px);
+        }
+
+        .btn.active {
+            background: var(--purple2);
+            color: white;
+        }
+
+        .btn.high {
+            border-color: rgba(255, 100, 150, .4);
+            color: #ffb1cf;
+        }
+
+        .btn.high.active {
+            background: #a93668;
+            color: white;
+        }
+
+        .btn.stop {
+            border-color: rgba(255, 100, 140, .4);
+            color: #ff9bb7;
+        }
+
+        /* METRICS */
+
+        .section-title {
+            font-family: Orbitron, sans-serif;
+            font-size: 14px;
+            letter-spacing: 1px;
+            color: var(--lavender);
+            margin: 25px 0 15px;
+        }
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 20px;
+            min-width: 0;
+            transition: .3s;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(183, 138, 255, .5);
+        }
+
+        .card-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .card-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 11px;
+            display: grid;
+            place-items: center;
+            color: var(--lavender);
+            background: rgba(183, 138, 255, .15);
+        }
+
+        .card-label {
+            font-size: 11px;
+            color: var(--muted);
+            margin-bottom: 10px;
+        }
+
+        .card-value {
+            font-family: Orbitron, sans-serif;
+            font-size: 25px;
+            color: var(--text);
+            transition: .3s;
+        }
+
+        .card-unit {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 7px;
+        }
+
+        .card.warning {
+            border-color: rgba(255, 100, 150, .5);
+        }
+
+        .card.warning .card-value {
+            color: #ff9bb7;
+        }
+
+        /* GRID */
+
+        .grid-two {
+            display: grid;
+            grid-template-columns: 1.3fr 1fr;
+            gap: 18px;
+            margin-top: 20px;
+        }
+
+        .chart-card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 20px;
+            min-width: 0;
+        }
+
+        .chart-card h3 {
+            font-family: Orbitron;
+            font-size: 12px;
+            color: var(--lavender);
+            margin-bottom: 18px;
+        }
+
+        .chart-wrap {
+            height: 250px;
+            position: relative;
+        }
+
+        /* INFO */
+
+        .info-card {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+        }
+
+        .info-card h3 {
+            font-family: Orbitron;
+            font-size: 13px;
+            color: var(--lavender);
+            margin-bottom: 14px;
+        }
+
+        .info-card p {
+            color: #c3b5d5;
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        .hardware-name {
+            display: inline-block;
+            color: var(--lavender);
+            background: rgba(183, 138, 255, .12);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px 15px;
+            font-size: 12px;
+            margin-top: 12px;
+        }
+
+        .research-note {
+            border-left: 3px solid var(--purple);
+            padding: 14px 15px;
+            margin-top: 15px;
+            background: rgba(183, 138, 255, .07);
+            border-radius: 0 9px 9px 0;
+        }
+
+        .research-note strong {
+            color: var(--lavender);
+        }
+
+        .source-list {
+            margin-top: 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .source-list a {
+            color: #cbb1ff;
+            font-size: 11px;
+            text-decoration: none;
+        }
+
+        .source-list a:hover {
+            text-decoration: underline;
+        }
+
+        .footer-note {
+            text-align: center;
+            color: #81718f;
+            font-size: 10px;
+            margin: 30px 0 10px;
+            line-height: 1.8;
+        }
+
+        /* POPUP */
+
+        /* Centre-screen acknowledgement popup */
+        /* CENTRE-SCREEN ALERT POPUP */
+
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: min(420px, 90%);
+            padding: 25px;
+            background: linear-gradient(145deg, #211532, #100b1c);
+            border: 1px solid var(--purple);
+            border-radius: 16px;
+            text-align: center;
+            z-index: 9999;
+            box-shadow: 0 0 40px rgba(183, 138, 255, .3);
+        }
+
+        .popup.show {
+            display: block;
+            animation: popupIn .3s ease;
+        }
+
+        .popup.warning {
+            border-color: #ff6496;
+            box-shadow: 0 0 35px rgba(255, 80, 130, .3);
+        }
+
+        .popup h3 {
+            color: #ffb1cf;
+            font-size: 15px;
+            margin-bottom: 12px;
+        }
+
+        .popup p {
+            color: #c7b7d8;
+            font-size: 12px;
+            line-height: 1.7;
+            margin-bottom: 18px;
+        }
+
+        .popup button {
+            display: inline-block;
+            border: 0;
+            padding: 11px 20px;
+            background: var(--purple2);
+            color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        @keyframes popupIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -45%);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%);
+            }
+        }
+
+        /* RESPONSIVE */
+
+        @media(max-width:1100px) {
+            .metrics {
+                grid-template-columns: repeat(2, 1fr)
+            }
+        }
+
+        @media(max-width:800px) {
+            .sidebar {
+                width: 65px;
+                padding: 15px 8px;
+            }
+
+            .logo {
+                font-size: 10px
+            }
+
+            .logo-sub,
+            .nav-title,
+            .nav-link span {
+                display: none
+            }
+
+            .nav-link {
+                justify-content: center;
+                padding: 13px 5px
+            }
+
+            .nav-link i {
+                font-size: 16px
+            }
+
+            .main {
+                margin-left: 65px;
+                padding: 18px
+            }
+
+            .hero {
+                grid-template-columns: 1fr
+            }
+
+            .grid-two {
+                grid-template-columns: 1fr
+            }
+        }
+
+        @media(max-width:520px) {
+            .metrics {
+                grid-template-columns: 1fr 1fr;
+                gap: 9px
+            }
+
+            .card {
+                padding: 13px
+            }
+
+            .card-value {
+                font-size: 19px
+            }
+
+            .header h1 {
+                font-size: 19px
+            }
+
+            .hero {
+                padding: 18px
+            }
+        }
+
+        /* SLEEP MONITOR ACTIVE NAV LINK */
+        .sidebar .nav-link.active {
+            background: rgba(170, 100, 255, 0.18);
+            color: #ffffff;
+            border-left: 3px solid #b36bff;
+            box-shadow: 0 0 12px rgba(179, 107, 255, 0.15);
+        }
+
+        .sidebar .nav-link.active i {
+            color: #b36bff;
+        }
+
+        /* MOBILE MENU BUTTON */
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1200;
+            width: 45px;
+            height: 45px;
+            border: 1px solid var(--accent, #00dcff);
+            border-radius: 10px;
+            background: #15151f;
+            color: var(--accent, #00dcff);
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* SIDEBAR OVERLAY */
+        .sidebar-overlay {
+            display: none;
+        }
+
+        /* MOBILE RESPONSIVENESS */
+        @media screen and (max-width: 768px) {
+
+            .mobile-menu-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100vh;
+                width: 255px;
+                z-index: 1100;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.65);
+                z-index: 1000;
+            }
+
+            .main {
+                margin-left: 0 !important;
+                width: 100% !important;
+                padding: 75px 15px 20px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-<canvas id="stars"></canvas>
-
-<div class="space-glow glow-one"></div>
-<div class="space-glow glow-two"></div>
-
-<aside class="sidebar">
-
-    <div class="sidebar-logo">
-        <span>✦</span> COSMO CARE
-    </div>
-
-    <div class="sidebar-menu">
-
-        <a href="index.html" class="nav-link">
-            <i class="fas fa-house"></i>
-            <span>Main Dashboard</span>
-        </a>
-
-        <a href="cardiovascular.html" class="nav-link">
-            <i class="fas fa-heartbeat"></i>
-            <span>Cardiovascular</span>
-        </a>
-
-        <a href="oxygen.html" class="nav-link">
-            <i class="fas fa-lungs"></i>
-            <span>Blood Oxygen</span>
-        </a>
-
-        <a href="sleep.html" class="nav-link active">
-            <i class="fas fa-moon"></i>
-            <span>Sleep Monitor</span>
-        </a>
-
-        <a href="bone-health.html" class="nav-link">
-            <i class="fas fa-bone"></i>
-            <span>Bone Health</span>
-        </a>
-
-        <a href="radiation.html" class="nav-link">
-            <i class="fas fa-radiation"></i>
-            <span>Radiation Monitor</span>
-        </a>
-
-        <a href="air-quality.html" class="nav-link">
-            <i class="fas fa-wind"></i>
-            <span>Air Quality</span>
-        </a>
-
-        <a href="movement.html" class="nav-link">
-            <i class="fas fa-person-walking"></i>
-            <span>Balance & Movement</span>
-        </a>
-
-        <a href="famil-connect.html" class="nav-link">
-            <i class="fas fa-users"></i>
-            <span>Family Connect</span>
-        </a>
-
-        <a href="alerts.html" class="nav-link">
-            <i class="fas fa-bell"></i>
-            <span>Alerts & Warnings</span>
-        </a>
-
-    </div>
-
-</aside>
-
-
-<main class="main">
-
-    <header class="header">
-
-        <div>
-            <h1>SLEEP MONITOR</h1>
-            <p>In-flight astronaut sleep monitoring system</p>
-        </div>
-
-        <div class="status" id="systemStatus">
-            <span class="status-dot"></span>
-            <span id="statusText">NORMAL PROFILE</span>
-        </div>
-
-    </header>
-
-
-    <section class="hero">
-
-        <div>
-            <h2>ASTRONAUT SLEEP ANALYSIS</h2>
-
-            <p>
-                Monitoring astronaut sleep patterns during space missions
-                using NASA-published in-flight research. The system
-                compares a recent in-flight research average with a
-                historical spaceflight sleep-duration reference.
-            </p>
-        </div>
-
-        <div class="hero-visual">
-            <div class="moon"></div>
-            <span class="zzz z1">Z</span>
-            <span class="zzz z2">Z</span>
-            <span class="zzz z3">z</span>
-        </div>
-
-    </section>
-
-
-    <!-- STIMULATION CONTROLS -->
-
-    <div class="controls">
-
-        <button class="btn active" id="normalBtn" onclick="setNormal()">
-            <i class="fa-solid fa-moon"></i>
-            NORMAL STIMULATION
-        </button>
-
-        <button class="btn high" id="highBtn" onclick="setHigh()">
-            <i class="fa-solid fa-triangle-exclamation"></i>
-            HIGH STIMULATION
-        </button>
-
-        <button class="btn stop" onclick="stopSystem()">
-            <i class="fa-solid fa-stop"></i>
-            STOP SYSTEM
-        </button>
-
-        <button class="btn" id="soundBtn" onclick="toggleSound()">
-            <i class="fa-solid fa-volume-high"></i>
-            SOUND ON
-        </button>
-
-    </div>
-
-
-    <h2 class="section-title">
-        <i class="fa-solid fa-chart-line"></i>
-        NASA IN-FLIGHT SLEEP READINGS
-    </h2>
-
-
-    <section class="metrics">
-
-        <div class="card" id="durationCard">
-
-            <div class="card-top">
-                <div class="card-icon"><i class="fa-solid fa-bed"></i></div>
-                <i class="fa-solid fa-moon" style="color:#b78aff"></i>
-            </div>
-
-            <div class="card-label">SLEEP DURATION</div>
-
-            <div class="card-value" id="sleepDuration">7.33</div>
-
-            <div class="card-unit">Hours per night</div>
-
-        </div>
-
-
-        <div class="card" id="deficitCard">
-
-            <div class="card-top">
-                <div class="card-icon"><i class="fa-solid fa-hourglass-half"></i></div>
-                <i class="fa-solid fa-clock" style="color:#b78aff"></i>
-            </div>
-
-            <div class="card-label">SLEEP OPPORTUNITY DEFICIT</div>
-
-            <div class="card-value" id="sleepDeficit">1.17</div>
-
-            <div class="card-unit">Hours below 8.5-hour opportunity</div>
-
-        </div>
-
-
-        <div class="card">
-
-            <div class="card-top">
-                <div class="card-icon"><i class="fa-solid fa-chart-pie"></i></div>
-                <i class="fa-solid fa-percent" style="color:#b78aff"></i>
-            </div>
-
-            <div class="card-label">SLEEP EFFICIENCY</div>
-
-            <div class="card-value" id="efficiency">89.50%</div>
-
-            <div class="card-unit">NASA in-flight research mean</div>
-
-        </div>
-
-
-        <div class="card">
-
-            <div class="card-top">
-                <div class="card-icon"><i class="fa-solid fa-clock"></i></div>
-                <i class="fa-solid fa-chart-line" style="color:#b78aff"></i>
-            </div>
-
-            <div class="card-label">WAKE AFTER SLEEP ONSET</div>
-
-            <div class="card-value" id="waso">28.39</div>
-
-            <div class="card-unit">Minutes</div>
-
-        </div>
-
-    </section>
-
-
-    <div class="grid-two">
-
-        <section class="chart-card">
-
-            <h3>
-                <i class="fa-solid fa-chart-column"></i>
-                SLEEP DURATION PROFILE
-            </h3>
-
-            <div class="chart-wrap">
-                <canvas id="sleepChart"></canvas>
-            </div>
-
-        </section>
-
-
-        <section class="chart-card">
-
-            <h3>
-                <i class="fa-solid fa-satellite"></i>
-                MONITORING STATUS
-            </h3>
-
-            <div style="display:flex;flex-direction:column;gap:20px">
-
-                <div>
-                    <div style="display:flex;justify-content:space-between;font-size:12px">
-                        <span style="color:#cbbbdc">Current profile</span>
-                        <strong id="profileName" style="color:#dfc9ff">NORMAL</strong>
-                    </div>
-                </div>
-
-                <div>
-                    <div style="display:flex;justify-content:space-between;font-size:12px">
-                        <span style="color:#cbbbdc">Sleep duration</span>
-                        <strong id="sleepProgressText" style="color:#dfc9ff">7.33 hours</strong>
-                    </div>
-
-                    <div style="height:9px;background:#30243f;border-radius:20px;margin-top:10px;overflow:hidden">
-                        <div id="sleepProgress" style="height:100%;width:86.2%;background:linear-gradient(90deg,#9360e8,#dfc9ff);border-radius:20px;transition:.5s"></div>
-                    </div>
-                </div>
-
-                <div class="research-note">
-                    <p id="statusDescription">
-                        Normal profile: recent NASA-supported in-flight sleep-duration average.
-                    </p>
-                </div>
-
-            </div>
-
-        </section>
-
-    </div>
-
-
-    <!-- HARDWARE -->
-
-    <section class="info-card">
-
-        <h3>
-            <i class="fa-solid fa-microchip"></i>
-            HARDWARE USED
-        </h3>
-
-        <p>
-            NASA astronaut sleep monitoring research has used a wrist-worn
-            actigraphy device to record activity and support sleep-wake analysis.
-        </p>
-
-        <div class="hardware-name">
-            <i class="fa-solid fa-watch"></i>
-            Philips Respironics Actiwatch
-        </div>
-
-    </section>
-
-
-    <!-- NASA DATA -->
-
-    <section class="info-card">
-
-        <h3>
-            <i class="fa-solid fa-database"></i>
-            NASA DATA & RESEARCH REFERENCES
-        </h3>
-
-        <div class="research-note">
-
-            <p>
-                <strong>Recent in-flight research:</strong><br>
-                Average sleep duration: 7.33 ± 1.16 hours.<br>
-                Sleep efficiency: 89.50 ± 8.84%.<br>
-                WASO: 28.39 ± 15.20 minutes.<br>
-                Participants: 19 astronauts.<br>
-                In-flight observations: 2,137 nights.
-            </p>
-
-        </div>
-
-        <div class="research-note">
-
-            <p>
-                <strong>Historical spaceflight reference:</strong><br>
-                NASA's sleep accommodations technical brief reports
-                approximately six hours of average sleep in several
-                historical spaceflight studies.
-            </p>
-
-        </div>
-
-        <div class="research-note">
-
-            <p>
-                <strong>NASA scheduled sleep opportunity:</strong><br>
-                8.5 hours.
-            </p>
-
-        </div>
-
-        <div class="source-list">
-
-            <a href="https://ntrs.nasa.gov/citations/20230003916" target="_blank">
-                <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                NASA – Astronaut Sleep Duration Research
-            </a>
-
-            <a href="https://human-factors.arc.nasa.gov/publications/Humans_Sufficient_Sleep_Microgravity.pdf" target="_blank">
-                <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                NASA – Humans Are Capable of Achieving Sufficient Sleep in Microgravity
-            </a>
-
-            <a href="https://www.nasa.gov/wp-content/uploads/2023/12/ochmo-tb-041-sleep-accommodations.pdf" target="_blank">
-                <i class="fa-solid fa-arrow-up-right-from-square"></i>
-                NASA – Sleep Accommodations Technical Brief
-            </a>
-
-        </div>
-
-    </section>
-
-
-    <!-- TRANSPARENCY -->
-
-    <section class="info-card">
-
-        <h3>
-            <i class="fa-solid fa-circle-info"></i>
-            DATA TRANSPARENCY
-        </h3>
-
-        <p>
-            Normal and High Stimulation are software profiles based on
-            NASA-published research references. They are not live astronaut
-            measurements. The six-hour profile is a historical research
-            comparison, not an official NASA alarm threshold.
-
-            The dashboard is not currently connected to a physical
-            Actiwatch or NASA live telemetry. The efficiency and WASO
-            readings remain at the recent in-flight research averages
-            because matching high-condition values are not established
-            by the cited comparison.
-        </p>
-
-    </section>
-
-
-    <div class="footer-note">
-
-        COSMO CARE | ASTRONAUT HEALTH MONITORING SYSTEM
-
-        <br>
-
-        NASA IN-FLIGHT SLEEP RESEARCH
-
-        <br>
-
-        Research-based prototype interface · Not a live medical monitor
-
-    </div>
-
-</main>
-
-
-<!-- ALERT POPUP -->
-
-<div class="popup" id="popup">
-
-    <h3>
-        <i class="fa-solid fa-triangle-exclamation"></i>
-        SLEEP MONITOR WARNING
-    </h3>
-
-    <p id="popupMessage"></p>
-
-    <button onclick="acknowledgePopup()">
-        <i class="fa-solid fa-check"></i>
-        Acknowledge
+    <!-- MOBILE MENU BUTTON -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open navigation">
+        <i class="fas fa-bars"></i>
     </button>
 
-</div>
+    <!-- SIDEBAR OVERLAY -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <canvas id="stars"></canvas>
+
+    <div class="space-glow glow-one"></div>
+    <div class="space-glow glow-two"></div>
+
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+            <span>✦</span> COSMO CARE
+        </div>
+
+        <div class="sidebar-menu">
+
+            <a href="index.html" class="nav-link">
+                <i class="fas fa-house"></i>
+                <span>Main Dashboard</span>
+            </a>
+
+            <a href="cardiovascular.html" class="nav-link">
+                <i class="fas fa-heartbeat"></i>
+                <span>Cardiovascular</span>
+            </a>
+
+            <a href="oxygen.html" class="nav-link">
+                <i class="fas fa-lungs"></i>
+                <span>Blood Oxygen</span>
+            </a>
+
+            <a href="sleep.html" class="nav-link active">
+                <i class="fas fa-moon"></i>
+                <span>Sleep Monitor</span>
+            </a>
+
+            <a href="bone-health.html" class="nav-link">
+                <i class="fas fa-bone"></i>
+                <span>Bone Health</span>
+            </a>
+
+            <a href="radiation.html" class="nav-link">
+                <i class="fas fa-radiation"></i>
+                <span>Radiation Monitor</span>
+            </a>
+
+            <a href="air-quality.html" class="nav-link">
+                <i class="fas fa-wind"></i>
+                <span>Air Quality</span>
+            </a>
+
+            <a href="movement.html" class="nav-link">
+                <i class="fas fa-person-walking"></i>
+                <span>Balance & Movement</span>
+            </a>
+
+            <a href="famil-connect.html" class="nav-link">
+                <i class="fas fa-users"></i>
+                <span>Family Connect</span>
+            </a>
+
+            <a href="alerts.html" class="nav-link">
+                <i class="fas fa-bell"></i>
+                <span>Alerts & Warnings</span>
+            </a>
+
+        </div>
+
+    </aside>
 
 
-<script>
+    <main class="main">
 
-/* STAR BACKGROUND */
+        <header class="header">
 
-const canvas=document.getElementById("stars");
-const ctx=canvas.getContext("2d");
+            <div>
+                <h1>SLEEP MONITOR</h1>
+                <p>In-flight astronaut sleep monitoring system</p>
+            </div>
 
-let stars=[];
+            <div class="status" id="systemStatus">
+                <span class="status-dot"></span>
+                <span id="statusText">NORMAL PROFILE</span>
+            </div>
 
-function resizeCanvas(){
+        </header>
 
-    canvas.width=window.innerWidth;
-    canvas.height=window.innerHeight;
 
-    stars=[];
+        <section class="hero">
 
-    for(let i=0;i<130;i++){
+            <div>
+                <h2>ASTRONAUT SLEEP ANALYSIS</h2>
 
-        stars.push({
-            x:Math.random()*canvas.width,
-            y:Math.random()*canvas.height,
-            size:Math.random()*1.8,
-            speed:Math.random()*.35
-        });
+                <p>
+                    Monitoring astronaut sleep patterns during space missions
+                    using NASA-published in-flight research. The system
+                    compares a recent in-flight research average with a
+                    historical spaceflight sleep-duration reference.
+                </p>
+            </div>
 
-    }
+            <div class="hero-visual">
+                <div class="moon"></div>
+                <span class="zzz z1">Z</span>
+                <span class="zzz z2">Z</span>
+                <span class="zzz z3">z</span>
+            </div>
 
-}
+        </section>
 
-function animateStars(){
 
-    ctx.clearRect(0,0,canvas.width,canvas.height);
+        <!-- STIMULATION CONTROLS -->
 
-    stars.forEach(star=>{
+        <div class="controls">
 
-        ctx.beginPath();
+            <button class="btn active" id="normalBtn" onclick="setNormal()">
+                <i class="fa-solid fa-moon"></i>
+                NORMAL STIMULATION
+            </button>
 
-        ctx.arc(star.x,star.y,star.size,0,Math.PI*2);
+            <button class="btn high" id="highBtn" onclick="setHigh()">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                HIGH STIMULATION
+            </button>
 
-        ctx.fillStyle="rgba(223,201,255,.8)";
+            <button class="btn stop" onclick="stopSystem()">
+                <i class="fa-solid fa-stop"></i>
+                STOP SYSTEM
+            </button>
 
-        ctx.fill();
+            <button class="btn" id="soundBtn" onclick="toggleSound()">
+                <i class="fa-solid fa-volume-high"></i>
+                SOUND ON
+            </button>
 
-        star.y-=star.speed;
+        </div>
 
-        if(star.y<0){
-            star.y=canvas.height;
-            star.x=Math.random()*canvas.width;
+
+        <h2 class="section-title">
+            <i class="fa-solid fa-chart-line"></i>
+            NASA IN-FLIGHT SLEEP READINGS
+        </h2>
+
+
+        <section class="metrics">
+
+            <div class="card" id="durationCard">
+
+                <div class="card-top">
+                    <div class="card-icon"><i class="fa-solid fa-bed"></i></div>
+                    <i class="fa-solid fa-moon" style="color:#b78aff"></i>
+                </div>
+
+                <div class="card-label">SLEEP DURATION</div>
+
+                <div class="card-value" id="sleepDuration">7.33</div>
+
+                <div class="card-unit">Hours per night</div>
+
+            </div>
+
+
+            <div class="card" id="deficitCard">
+
+                <div class="card-top">
+                    <div class="card-icon"><i class="fa-solid fa-hourglass-half"></i></div>
+                    <i class="fa-solid fa-clock" style="color:#b78aff"></i>
+                </div>
+
+                <div class="card-label">SLEEP OPPORTUNITY DEFICIT</div>
+
+                <div class="card-value" id="sleepDeficit">1.17</div>
+
+                <div class="card-unit">Hours below 8.5-hour opportunity</div>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-top">
+                    <div class="card-icon"><i class="fa-solid fa-chart-pie"></i></div>
+                    <i class="fa-solid fa-percent" style="color:#b78aff"></i>
+                </div>
+
+                <div class="card-label">SLEEP EFFICIENCY</div>
+
+                <div class="card-value" id="efficiency">89.50%</div>
+
+                <div class="card-unit">NASA in-flight research mean</div>
+
+            </div>
+
+
+            <div class="card">
+
+                <div class="card-top">
+                    <div class="card-icon"><i class="fa-solid fa-clock"></i></div>
+                    <i class="fa-solid fa-chart-line" style="color:#b78aff"></i>
+                </div>
+
+                <div class="card-label">WAKE AFTER SLEEP ONSET</div>
+
+                <div class="card-value" id="waso">28.39</div>
+
+                <div class="card-unit">Minutes</div>
+
+            </div>
+
+        </section>
+
+
+        <div class="grid-two">
+
+            <section class="chart-card">
+
+                <h3>
+                    <i class="fa-solid fa-chart-column"></i>
+                    SLEEP DURATION PROFILE
+                </h3>
+
+                <div class="chart-wrap">
+                    <canvas id="sleepChart"></canvas>
+                </div>
+
+            </section>
+
+
+            <section class="chart-card">
+
+                <h3>
+                    <i class="fa-solid fa-satellite"></i>
+                    MONITORING STATUS
+                </h3>
+
+                <div style="display:flex;flex-direction:column;gap:20px">
+
+                    <div>
+                        <div style="display:flex;justify-content:space-between;font-size:12px">
+                            <span style="color:#cbbbdc">Current profile</span>
+                            <strong id="profileName" style="color:#dfc9ff">NORMAL</strong>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div style="display:flex;justify-content:space-between;font-size:12px">
+                            <span style="color:#cbbbdc">Sleep duration</span>
+                            <strong id="sleepProgressText" style="color:#dfc9ff">7.33 hours</strong>
+                        </div>
+
+                        <div style="height:9px;background:#30243f;border-radius:20px;margin-top:10px;overflow:hidden">
+                            <div id="sleepProgress"
+                                style="height:100%;width:86.2%;background:linear-gradient(90deg,#9360e8,#dfc9ff);border-radius:20px;transition:.5s">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="research-note">
+                        <p id="statusDescription">
+                            Normal profile: recent NASA-supported in-flight sleep-duration average.
+                        </p>
+                    </div>
+
+                </div>
+
+            </section>
+
+        </div>
+
+
+        <!-- HARDWARE -->
+
+        <section class="info-card">
+
+            <h3>
+                <i class="fa-solid fa-microchip"></i>
+                HARDWARE USED
+            </h3>
+
+            <p>
+                NASA astronaut sleep monitoring research has used a wrist-worn
+                actigraphy device to record activity and support sleep-wake analysis.
+            </p>
+
+            <div class="hardware-name">
+                <i class="fa-solid fa-watch"></i>
+                Philips Respironics Actiwatch
+            </div>
+
+        </section>
+
+
+        <!-- NASA DATA -->
+
+        <section class="info-card">
+
+            <h3>
+                <i class="fa-solid fa-database"></i>
+                NASA DATA & RESEARCH REFERENCES
+            </h3>
+
+            <div class="research-note">
+
+                <p>
+                    <strong>Recent in-flight research:</strong><br>
+                    Average sleep duration: 7.33 ± 1.16 hours.<br>
+                    Sleep efficiency: 89.50 ± 8.84%.<br>
+                    WASO: 28.39 ± 15.20 minutes.<br>
+                    Participants: 19 astronauts.<br>
+                    In-flight observations: 2,137 nights.
+                </p>
+
+            </div>
+
+            <div class="research-note">
+
+                <p>
+                    <strong>Historical spaceflight reference:</strong><br>
+                    NASA's sleep accommodations technical brief reports
+                    approximately six hours of average sleep in several
+                    historical spaceflight studies.
+                </p>
+
+            </div>
+
+            <div class="research-note">
+
+                <p>
+                    <strong>NASA scheduled sleep opportunity:</strong><br>
+                    8.5 hours.
+                </p>
+
+            </div>
+
+            <div class="source-list">
+
+                <a href="https://ntrs.nasa.gov/citations/20230003916" target="_blank">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    NASA – Astronaut Sleep Duration Research
+                </a>
+
+                <a href="https://human-factors.arc.nasa.gov/publications/Humans_Sufficient_Sleep_Microgravity.pdf"
+                    target="_blank">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    NASA – Humans Are Capable of Achieving Sufficient Sleep in Microgravity
+                </a>
+
+                <a href="https://www.nasa.gov/wp-content/uploads/2023/12/ochmo-tb-041-sleep-accommodations.pdf"
+                    target="_blank">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    NASA – Sleep Accommodations Technical Brief
+                </a>
+
+            </div>
+
+        </section>
+
+
+        <!-- TRANSPARENCY -->
+
+        <section class="info-card">
+
+            <h3>
+                <i class="fa-solid fa-circle-info"></i>
+                DATA TRANSPARENCY
+            </h3>
+
+            <p>
+                Normal and High Stimulation are software profiles based on
+                NASA-published research references. They are not live astronaut
+                measurements. The six-hour profile is a historical research
+                comparison, not an official NASA alarm threshold.
+
+                The dashboard is not currently connected to a physical
+                Actiwatch or NASA live telemetry. The efficiency and WASO
+                readings remain at the recent in-flight research averages
+                because matching high-condition values are not established
+                by the cited comparison.
+            </p>
+
+        </section>
+
+
+        <div class="footer-note">
+
+            COSMO CARE | ASTRONAUT HEALTH MONITORING SYSTEM
+
+            <br>
+
+            NASA IN-FLIGHT SLEEP RESEARCH
+
+            <br>
+
+            Research-based prototype interface · Not a live medical monitor
+
+        </div>
+
+    </main>
+
+
+    <!-- ALERT POPUP -->
+
+    <div class="popup" id="popup">
+
+        <h3>
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            SLEEP MONITOR WARNING
+        </h3>
+
+        <p id="popupMessage"></p>
+
+        <button onclick="acknowledgePopup()">
+            <i class="fa-solid fa-check"></i>
+            Acknowledge
+        </button>
+
+    </div>
+
+
+    <script>
+
+        /* STAR BACKGROUND */
+
+        const canvas = document.getElementById("stars");
+        const ctx = canvas.getContext("2d");
+
+        let stars = [];
+
+        function resizeCanvas() {
+
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            stars = [];
+
+            for (let i = 0; i < 130; i++) {
+
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 1.8,
+                    speed: Math.random() * .35
+                });
+
+            }
+
         }
 
-    });
+        function animateStars() {
 
-    requestAnimationFrame(animateStars);
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-}
+            stars.forEach(star => {
 
-resizeCanvas();
-animateStars();
+                ctx.beginPath();
 
-window.addEventListener("resize",resizeCanvas);
+                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
 
+                ctx.fillStyle = "rgba(223,201,255,.8)";
 
-/* NASA RESEARCH REFERENCES */
+                ctx.fill();
 
-const normalData={
-    duration:7.33,
-    efficiency:89.50,
-    waso:28.39
-};
+                star.y -= star.speed;
 
-const highData={
-    duration:6.00,
-    efficiency:89.50,
-    waso:28.39
-};
-
-const NASA_SLEEP_OPPORTUNITY=8.5;
-
-
-/* CHART */
-
-const sleepChart=new Chart(
-    document.getElementById("sleepChart"),
-    {
-        type:"bar",
-
-        data:{
-            labels:["Normal profile","High profile"],
-
-            datasets:[{
-                label:"Sleep duration (hours)",
-
-                data:[7.33,6.00],
-
-                backgroundColor:[
-                    "rgba(183,138,255,.85)",
-                    "rgba(255,100,150,.85)"
-                ],
-
-                borderColor:[
-                    "#dfc9ff",
-                    "#ff9bb7"
-                ],
-
-                borderWidth:2,
-                borderRadius:9
-            }]
-        },
-
-        options:{
-            responsive:true,
-            maintainAspectRatio:false,
-
-            plugins:{
-                legend:{
-                    labels:{
-                        color:"#d8c9ed",
-                        font:{size:10}
-                    }
+                if (star.y < 0) {
+                    star.y = canvas.height;
+                    star.x = Math.random() * canvas.width;
                 }
-            },
 
-            scales:{
-                x:{
-                    ticks:{color:"#c7b7d8"},
-                    grid:{display:false}
+            });
+
+            requestAnimationFrame(animateStars);
+
+        }
+
+        resizeCanvas();
+        animateStars();
+
+        window.addEventListener("resize", resizeCanvas);
+
+
+        /* NASA RESEARCH REFERENCES */
+
+        const normalData = {
+            duration: 7.33,
+            efficiency: 89.50,
+            waso: 28.39
+        };
+
+        const highData = {
+            duration: 6.00,
+            efficiency: 89.50,
+            waso: 28.39
+        };
+
+        const NASA_SLEEP_OPPORTUNITY = 8.5;
+
+
+        /* CHART */
+
+        const sleepChart = new Chart(
+            document.getElementById("sleepChart"),
+            {
+                type: "bar",
+
+                data: {
+                    labels: ["Normal profile", "High profile"],
+
+                    datasets: [{
+                        label: "Sleep duration (hours)",
+
+                        data: [7.33, 6.00],
+
+                        backgroundColor: [
+                            "rgba(183,138,255,.85)",
+                            "rgba(255,100,150,.85)"
+                        ],
+
+                        borderColor: [
+                            "#dfc9ff",
+                            "#ff9bb7"
+                        ],
+
+                        borderWidth: 2,
+                        borderRadius: 9
+                    }]
                 },
 
-                y:{
-                    beginAtZero:true,
-                    max:10,
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
 
-                    title:{
-                        display:true,
-                        text:"Hours per night",
-                        color:"#c7b7d8"
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: "#d8c9ed",
+                                font: { size: 10 }
+                            }
+                        }
                     },
 
-                    ticks:{color:"#c7b7d8"},
+                    scales: {
+                        x: {
+                            ticks: { color: "#c7b7d8" },
+                            grid: { display: false }
+                        },
 
-                    grid:{
-                        color:"rgba(255,255,255,.07)"
+                        y: {
+                            beginAtZero: true,
+                            max: 10,
+
+                            title: {
+                                display: true,
+                                text: "Hours per night",
+                                color: "#c7b7d8"
+                            },
+
+                            ticks: { color: "#c7b7d8" },
+
+                            grid: {
+                                color: "rgba(255,255,255,.07)"
+                            }
+                        }
                     }
                 }
             }
-        }
-    }
-);
-
-
-/* UPDATE DASHBOARD */
-
-function updateDashboard(data,mode){
-
-    const deficit=NASA_SLEEP_OPPORTUNITY-data.duration;
-
-    document.getElementById("sleepDuration").textContent=
-        data.duration.toFixed(2);
-
-    document.getElementById("sleepDeficit").textContent=
-        deficit.toFixed(2);
-
-    document.getElementById("efficiency").textContent=
-        data.efficiency.toFixed(2)+"%";
-
-    document.getElementById("waso").textContent=
-        data.waso.toFixed(2);
-
-    document.getElementById("profileName").textContent=
-        mode==="high"?"HIGH STIMULATION":"NORMAL";
-
-    document.getElementById("sleepProgressText").textContent=
-        data.duration.toFixed(2)+" hours";
-
-    document.getElementById("sleepProgress").style.width=
-        (data.duration/NASA_SLEEP_OPPORTUNITY*100)+"%";
-
-    document.getElementById("sleepProgress").style.background=
-        mode==="high"
-        ?"linear-gradient(90deg,#a93668,#ff9bb7)"
-        :"linear-gradient(90deg,#9360e8,#dfc9ff)";
-
-    document.getElementById("durationCard").classList.toggle(
-        "warning",mode==="high"
-    );
-
-    document.getElementById("deficitCard").classList.toggle(
-        "warning",mode==="high"
-    );
-
-    const status=document.getElementById("systemStatus");
-
-    status.classList.toggle("warning",mode==="high");
-
-    document.getElementById("statusText").textContent=
-        mode==="high"?"WARNING PROFILE":"NORMAL PROFILE";
-
-    document.getElementById("statusDescription").textContent=
-        mode==="high"
-        ?"High profile: sleep duration is set to the approximately six-hour historical spaceflight research average. This is a research comparison, not a live astronaut measurement."
-        :"Normal profile: sleep duration is set to the recent NASA-supported in-flight research average.";
-
-}
-
-
-/* ALERT STORAGE */
-
-function saveSleepAlert(){
-
-    const now=new Date();
-
-    const alertData={
-
-        id:"SLEEP-"+Date.now(),
-
-        source:"Sleep Monitor",
-
-        title:"Reduced Sleep Duration – Warning",
-
-        message:
-            "High stimulation profile activated. Sleep duration is set to 6 hours, based on NASA's historical average across several spaceflight studies. This is a research-based simulation, not a live astronaut reading.",
-
-        severity:"warning",
-
-        status:"active",
-
-        type:"sleep",
-
-        acknowledged:false,
-
-        time:now.toLocaleString(),
-
-        timestamp:now.toISOString()
-
-    };
-
-    let alerts=[];
-
-    try{
-        alerts=JSON.parse(
-            localStorage.getItem("cosmoCareAlerts")
-        )||[];
-    }catch(error){
-        alerts=[];
-    }
-
-    alerts.unshift(alertData);
-
-    localStorage.setItem(
-        "cosmoCareAlerts",
-        JSON.stringify(alerts.slice(0,100))
-    );
-
-    window.dispatchEvent(
-        new CustomEvent(
-            "cosmoCareAlertAdded",
-            {detail:alertData}
-        )
-    );
-
-}
-
-
-/* SOUND SYSTEM */
-
-let soundEnabled=true;
-let alarmInterval=null;
-let audioContext=null;
-
-function playWarningSound(){
-
-    if(!soundEnabled)return;
-
-    try{
-
-        audioContext=audioContext||
-            new(window.AudioContext||window.webkitAudioContext)();
-
-        if(audioContext.state==="suspended"){
-            audioContext.resume();
-        }
-
-        const now=audioContext.currentTime;
-
-        const oscillator=audioContext.createOscillator();
-        const gain=audioContext.createGain();
-
-        oscillator.type="square";
-
-        oscillator.frequency.setValueAtTime(880,now);
-        oscillator.frequency.setValueAtTime(620,now+.2);
-
-        gain.gain.setValueAtTime(.12,now);
-
-        gain.gain.exponentialRampToValueAtTime(
-            .001,
-            now+.4
         );
 
-        oscillator.connect(gain);
-        gain.connect(audioContext.destination);
 
-        oscillator.start(now);
-        oscillator.stop(now+.42);
+        /* UPDATE DASHBOARD */
 
-    }catch(error){
-        console.log("Audio unavailable:",error);
-    }
+        function updateDashboard(data, mode) {
 
-}
+            const deficit = NASA_SLEEP_OPPORTUNITY - data.duration;
 
-function startAlarm(){
+            document.getElementById("sleepDuration").textContent =
+                data.duration.toFixed(2);
 
-    if(!soundEnabled)return;
+            document.getElementById("sleepDeficit").textContent =
+                deficit.toFixed(2);
 
-    stopAlarm();
+            document.getElementById("efficiency").textContent =
+                data.efficiency.toFixed(2) + "%";
 
-    playWarningSound();
+            document.getElementById("waso").textContent =
+                data.waso.toFixed(2);
 
-    alarmInterval=setInterval(()=>{
-        playWarningSound();
-    },1000);
+            document.getElementById("profileName").textContent =
+                mode === "high" ? "HIGH STIMULATION" : "NORMAL";
 
-}
+            document.getElementById("sleepProgressText").textContent =
+                data.duration.toFixed(2) + " hours";
 
-function stopAlarm(){
+            document.getElementById("sleepProgress").style.width =
+                (data.duration / NASA_SLEEP_OPPORTUNITY * 100) + "%";
 
-    if(alarmInterval){
-        clearInterval(alarmInterval);
-        alarmInterval=null;
-    }
+            document.getElementById("sleepProgress").style.background =
+                mode === "high"
+                    ? "linear-gradient(90deg,#a93668,#ff9bb7)"
+                    : "linear-gradient(90deg,#9360e8,#dfc9ff)";
 
-}
+            document.getElementById("durationCard").classList.toggle(
+                "warning", mode === "high"
+            );
 
+            document.getElementById("deficitCard").classList.toggle(
+                "warning", mode === "high"
+            );
 
-/* SOUND BUTTON */
+            const status = document.getElementById("systemStatus");
 
-function toggleSound(){
+            status.classList.toggle("warning", mode === "high");
 
-    soundEnabled=!soundEnabled;
+            document.getElementById("statusText").textContent =
+                mode === "high" ? "WARNING PROFILE" : "NORMAL PROFILE";
 
-    document.getElementById("soundBtn").innerHTML=
-        soundEnabled
-        ?'<i class="fa-solid fa-volume-high"></i> SOUND ON'
-        :'<i class="fa-solid fa-volume-xmark"></i> SOUND OFF';
+            document.getElementById("statusDescription").textContent =
+                mode === "high"
+                    ? "High profile: sleep duration is set to the approximately six-hour historical spaceflight research average. This is a research comparison, not a live astronaut measurement."
+                    : "Normal profile: sleep duration is set to the recent NASA-supported in-flight research average.";
 
-    if(!soundEnabled){
-        stopAlarm();
-    }
-    else if(highActive){
-        startAlarm();
-    }
+        }
 
-}
 
+        /* ALERT STORAGE */
 
-/* POPUP */
+        function saveSleepAlert() {
 
-function showPopup(message){
+            const now = new Date();
 
-    const popup=document.getElementById("popup");
+            const alertData = {
 
-    document.getElementById("popupMessage").textContent=message;
+                id: "SLEEP-" + Date.now(),
 
-    popup.classList.add("show","warning");
+                source: "Sleep Monitor",
 
-}
+                title: "Reduced Sleep Duration – Warning",
 
-function acknowledgePopup(){
+                message:
+                    "High stimulation profile activated. Sleep duration is set to 6 hours, based on NASA's historical average across several spaceflight studies. This is a research-based simulation, not a live astronaut reading.",
 
-    document.getElementById("popup").classList.remove("show");
+                severity: "warning",
 
-    // Acknowledgement hides the popup.
-    // The warning sound continues until Normal or Stop is selected.
+                status: "active",
 
-}
+                type: "sleep",
 
+                acknowledged: false,
 
-/* NORMAL STIMULATION */
+                time: now.toLocaleString(),
 
-let highActive=false;
+                timestamp: now.toISOString()
 
-function setNormal(){
+            };
 
-    highActive=false;
+            let alerts = [];
 
-    stopAlarm();
+            try {
+                alerts = JSON.parse(
+                    localStorage.getItem("cosmoCareAlerts")
+                ) || [];
+            } catch (error) {
+                alerts = [];
+            }
 
-    document.getElementById("popup").classList.remove("show");
+            alerts.unshift(alertData);
 
-    document.getElementById("normalBtn").classList.add("active");
+            localStorage.setItem(
+                "cosmoCareAlerts",
+                JSON.stringify(alerts.slice(0, 100))
+            );
 
-    document.getElementById("highBtn").classList.remove("active");
+            window.dispatchEvent(
+                new CustomEvent(
+                    "cosmoCareAlertAdded",
+                    { detail: alertData }
+                )
+            );
 
-    updateDashboard(normalData,"normal");
+        }
 
-}
 
+        /* SOUND SYSTEM */
 
-/* HIGH STIMULATION */
+        let soundEnabled = true;
+        let alarmInterval = null;
+        let audioContext = null;
 
-function setHigh(){
+        function playWarningSound() {
 
-    if(highActive)return;
+            if (!soundEnabled) return;
 
-    highActive=true;
+            try {
 
-    document.getElementById("highBtn").classList.add("active");
+                audioContext = audioContext ||
+                    new (window.AudioContext || window.webkitAudioContext)();
 
-    document.getElementById("normalBtn").classList.remove("active");
+                if (audioContext.state === "suspended") {
+                    audioContext.resume();
+                }
 
-    updateDashboard(highData,"high");
+                const now = audioContext.currentTime;
 
-    showPopup(
-        "Reduced sleep-duration warning profile activated. The displayed 6-hour value is based on NASA's historical average across several spaceflight studies. This is a simulated research comparison, not a live astronaut measurement."
-    );
+                const oscillator = audioContext.createOscillator();
+                const gain = audioContext.createGain();
 
-    saveSleepAlert();
+                oscillator.type = "square";
 
-    startAlarm();
+                oscillator.frequency.setValueAtTime(880, now);
+                oscillator.frequency.setValueAtTime(620, now + .2);
 
-}
+                gain.gain.setValueAtTime(.12, now);
 
+                gain.gain.exponentialRampToValueAtTime(
+                    .001,
+                    now + .4
+                );
 
-/* STOP SYSTEM */
+                oscillator.connect(gain);
+                gain.connect(audioContext.destination);
 
-function stopSystem(){
+                oscillator.start(now);
+                oscillator.stop(now + .42);
 
-    highActive=false;
+            } catch (error) {
+                console.log("Audio unavailable:", error);
+            }
 
-    stopAlarm();
+        }
 
-    document.getElementById("popup").classList.remove("show");
+        function startAlarm() {
 
-    document.getElementById("normalBtn").classList.remove("active");
+            if (!soundEnabled) return;
 
-    document.getElementById("highBtn").classList.remove("active");
+            stopAlarm();
 
-    document.getElementById("sleepDuration").textContent="--";
+            playWarningSound();
 
-    document.getElementById("sleepDeficit").textContent="--";
+            alarmInterval = setInterval(() => {
+                playWarningSound();
+            }, 1000);
 
-    document.getElementById("efficiency").textContent="--";
+        }
 
-    document.getElementById("waso").textContent="--";
+        function stopAlarm() {
 
-    document.getElementById("profileName").textContent="STOPPED";
+            if (alarmInterval) {
+                clearInterval(alarmInterval);
+                alarmInterval = null;
+            }
 
-    document.getElementById("sleepProgressText").textContent="--";
+        }
 
-    document.getElementById("sleepProgress").style.width="0%";
 
-    document.getElementById("statusText").textContent="SYSTEM STOPPED";
+        /* SOUND BUTTON */
 
-    document.getElementById("systemStatus").classList.remove("warning");
+        function toggleSound() {
 
-    document.getElementById("statusDescription").textContent=
-        "Sleep monitoring system stopped. Select Normal or High Stimulation to restart.";
+            soundEnabled = !soundEnabled;
 
-    document.getElementById("durationCard").classList.remove("warning");
+            document.getElementById("soundBtn").innerHTML =
+                soundEnabled
+                    ? '<i class="fa-solid fa-volume-high"></i> SOUND ON'
+                    : '<i class="fa-solid fa-volume-xmark"></i> SOUND OFF';
 
-    document.getElementById("deficitCard").classList.remove("warning");
+            if (!soundEnabled) {
+                stopAlarm();
+            }
+            else if (highActive) {
+                startAlarm();
+            }
 
-}
+        }
 
 
-/* INITIALIZE */
+        /* POPUP */
 
-updateDashboard(normalData,"normal");
+        function showPopup(message) {
 
-</script>
+            const popup = document.getElementById("popup");
+
+            document.getElementById("popupMessage").textContent = message;
+
+            popup.classList.add("show", "warning");
+
+        }
+
+        function acknowledgePopup() {
+
+            document.getElementById("popup").classList.remove("show");
+
+            // Acknowledgement hides the popup.
+            // The warning sound continues until Normal or Stop is selected.
+
+        }
+
+
+        /* NORMAL STIMULATION */
+
+        let highActive = false;
+
+        function setNormal() {
+
+            highActive = false;
+
+            stopAlarm();
+
+            document.getElementById("popup").classList.remove("show");
+
+            document.getElementById("normalBtn").classList.add("active");
+
+            document.getElementById("highBtn").classList.remove("active");
+
+            updateDashboard(normalData, "normal");
+
+        }
+
+
+        /* HIGH STIMULATION */
+
+        function setHigh() {
+
+            if (highActive) return;
+
+            highActive = true;
+
+            document.getElementById("highBtn").classList.add("active");
+
+            document.getElementById("normalBtn").classList.remove("active");
+
+            updateDashboard(highData, "high");
+
+            showPopup(
+                "Reduced sleep-duration warning profile activated. The displayed 6-hour value is based on NASA's historical average across several spaceflight studies. This is a simulated research comparison, not a live astronaut measurement."
+            );
+
+            saveSleepAlert();
+
+            startAlarm();
+
+        }
+
+
+        /* STOP SYSTEM */
+
+        function stopSystem() {
+
+            highActive = false;
+
+            stopAlarm();
+
+            document.getElementById("popup").classList.remove("show");
+
+            document.getElementById("normalBtn").classList.remove("active");
+
+            document.getElementById("highBtn").classList.remove("active");
+
+            document.getElementById("sleepDuration").textContent = "--";
+
+            document.getElementById("sleepDeficit").textContent = "--";
+
+            document.getElementById("efficiency").textContent = "--";
+
+            document.getElementById("waso").textContent = "--";
+
+            document.getElementById("profileName").textContent = "STOPPED";
+
+            document.getElementById("sleepProgressText").textContent = "--";
+
+            document.getElementById("sleepProgress").style.width = "0%";
+
+            document.getElementById("statusText").textContent = "SYSTEM STOPPED";
+
+            document.getElementById("systemStatus").classList.remove("warning");
+
+            document.getElementById("statusDescription").textContent =
+                "Sleep monitoring system stopped. Select Normal or High Stimulation to restart.";
+
+            document.getElementById("durationCard").classList.remove("warning");
+
+            document.getElementById("deficitCard").classList.remove("warning");
+
+        }
+
+
+        /* INITIALIZE */
+
+        updateDashboard(normalData, "normal");
+
+    </script>
+
+    <script>
+        const menuBtn = document.getElementById("mobileMenuBtn");
+        const sidebar = document.querySelector(".sidebar");
+        const overlay = document.getElementById("sidebarOverlay");
+
+        menuBtn.addEventListener("click", () => {
+            sidebar.classList.toggle("open");
+            overlay.classList.toggle("active");
+        });
+
+        overlay.addEventListener("click", closeMenu);
+
+        document.querySelectorAll(".sidebar .nav-link").forEach(link => {
+            link.addEventListener("click", closeMenu);
+        });
+
+        function closeMenu() {
+            sidebar.classList.remove("open");
+            overlay.classList.remove("active");
+        }
+    </script>
 
 </body>
+
 </html>

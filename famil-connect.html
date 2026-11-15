@@ -4,11 +4,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Cosmo Care | Family Connect</title>
 
     <link rel="stylesheet" href="cosmo-style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
@@ -16,119 +20,25 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
     <style>
+        :root {
+            --accent: #ff329e;
+            --accent-light: #ff79c6;
+            --bg: #100914;
+            --card: #1b101c;
+            --border: rgba(255, 50, 158, .22);
+            --text: #fff;
+            --muted: #b9aebc;
+        }
+
         * {
-            margin: 0;
-            padding: 0;
             box-sizing: border-box;
         }
 
-        :root {
-            --pink: #ff3d96;
-            --light-pink: #ff83bd;
-            --border: rgba(255, 61, 150, 0.2);
-        }
-
         body {
-            background: #080609;
-            color: white;
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
             font-family: 'Poppins', sans-serif;
-            overflow-x: hidden;
-        }
-
-        button {
-            font-family: inherit;
-            cursor: pointer;
-        }
-
-        /* BACKGROUND */
-
-        .background {
-            position: fixed;
-            inset: 0;
-            overflow: hidden;
-            z-index: -2;
-        }
-
-        .glow {
-            position: absolute;
-            width: 400px;
-            height: 400px;
-            background: rgba(255, 61, 150, 0.12);
-            filter: blur(120px);
-            border-radius: 50%;
-        }
-
-        .glow.one {
-            top: 10%;
-            left: 20%;
-        }
-
-        .glow.two {
-            bottom: 5%;
-            right: 10%;
-        }
-
-        .stars {
-            position: absolute;
-            width: 3px;
-            height: 3px;
-            background: white;
-            border-radius: 50%;
-            box-shadow:
-                100px 200px white,
-                300px 100px #ff83bd,
-                500px 400px white,
-                700px 200px white,
-                900px 500px #ff83bd,
-                1100px 100px white,
-                1300px 300px white;
-            animation: twinkle 3s infinite alternate;
-        }
-
-        @keyframes twinkle {
-            from {
-                opacity: 0.2;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        /* FAMILY ANIMATION */
-
-        .family-animation {
-            position: fixed;
-            right: 4%;
-            bottom: 5%;
-            display: flex;
-            gap: 20px;
-            align-items: center;
-            opacity: 0.15;
-            z-index: -1;
-            animation: floating 5s ease-in-out infinite;
-            pointer-events: none;
-        }
-
-        .family-animation i {
-            font-size: 75px;
-            color: var(--pink);
-        }
-
-        .family-animation .child {
-            font-size: 45px;
-        }
-
-        @keyframes floating {
-
-            0%,
-            100% {
-                transform: translateY(0);
-            }
-
-            50% {
-                transform: translateY(-20px);
-            }
         }
 
         /* SIDEBAR */
@@ -137,876 +47,667 @@
             position: fixed;
             top: 0;
             left: 0;
-            width: 250px;
             height: 100vh;
-            background: rgba(15, 10, 17, 0.96);
+            width: 255px;
+            padding: 25px 18px;
+            background: #130c18;
             border-right: 1px solid var(--border);
-            padding: 25px 15px;
-            z-index: 100;
-            transition: 0.3s;
+            overflow-y: auto;
+            z-index: 1100;
         }
 
-        .logo {
-            text-align: center;
-            font-size: 23px;
+        .sidebar-logo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 19px;
             font-weight: 700;
-            color: var(--pink);
-            margin-bottom: 40px;
-            letter-spacing: 2px;
+            margin-bottom: 35px;
+            color: white;
         }
 
-        .logo i {
-            margin-right: 8px;
+        .sidebar-logo span {
+            color: var(--accent);
         }
 
-        .sidebar h4 {
-            color: #777;
-            font-size: 11px;
-            letter-spacing: 2px;
-            margin: 20px 12px;
+        .sidebar-menu {
+            width: 100%;
         }
 
-        .sidebar a {
+        .sidebar .nav-link {
             display: flex;
             align-items: center;
-            gap: 14px;
-            padding: 13px 14px;
-            margin: 7px 0;
+            gap: 13px;
+            height: 46px;
+            padding: 0 12px;
+            margin-bottom: 10px;
+            color: #c4bac8;
             text-decoration: none;
-            color: #aaa;
-            font-size: 13px;
-            border-radius: 9px;
-            transition: 0.3s;
+            font-size: 14px;
+            border-radius: 8px;
+            transition: background .3s, color .3s;
         }
 
-        .sidebar a i {
-            width: 20px;
+        .sidebar .nav-link i {
+            width: 16px;
+            min-width: 16px;
             font-size: 16px;
         }
 
-        .sidebar a:hover,
-        .sidebar a.active {
-            background: rgba(255, 61, 150, 0.15);
-            color: var(--pink);
-            box-shadow: inset 3px 0 var(--pink);
+        .sidebar .nav-link:hover {
+            background: rgba(255, 50, 158, .12);
+            color: white;
         }
 
-        .sidebar-bottom {
-            position: absolute;
-            bottom: 25px;
-            left: 20px;
-            color: #888;
-            font-size: 11px;
+        .sidebar .nav-link.active {
+            background: rgba(190, 140, 255, .18);
+            color: white;
+            border-left: 3px solid #c69aff;
+            box-shadow: 0 0 12px rgba(198, 154, 255, .15);
+        }
+
+        .sidebar .nav-link.active i {
+            color: #c69aff;
         }
 
         /* MAIN */
 
         .main {
-            margin-left: 250px;
-            padding: 30px 35px;
+            margin-left: 255px;
+            width: calc(100% - 255px);
+            padding: 35px;
+            min-height: 100vh;
         }
 
-        .topbar {
+        .page-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 35px;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
         }
 
-        .topbar h2 {
-            font-size: 23px;
-            font-weight: 500;
+        .page-header h1 {
+            font-size: 27px;
+            margin: 0;
         }
 
-        .topbar h2 span {
-            color: var(--pink);
+        .page-header h1 span {
+            color: var(--accent);
         }
 
         .status {
-            color: #54e5a0;
-            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: #55e9a6;
+            font-size: 13px;
         }
 
-        .status::before {
-            content: "";
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background: #54e5a0;
+        .status-dot {
+            height: 9px;
+            width: 9px;
             border-radius: 50%;
-            margin-right: 7px;
-        }
-
-        .menu-btn {
-            display: none;
-            font-size: 22px;
-            color: var(--pink);
-            cursor: pointer;
+            background: #55e9a6;
+            box-shadow: 0 0 10px #55e9a6;
         }
 
         /* HERO */
 
         .hero {
-            background: linear-gradient(120deg,
-                    rgba(255, 61, 150, 0.16),
-                    rgba(25, 12, 27, 0.9));
+            padding: 35px;
+            min-height: 220px;
+            border-radius: 22px;
+            background: linear-gradient(135deg, #35132c, #180d20);
             border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
             margin-bottom: 25px;
+            position: relative;
             overflow: hidden;
         }
 
-        .hero h1 {
-            font-size: 28px;
-            margin-bottom: 10px;
+        .hero h2 {
+            font-size: 30px;
+            margin: 0 0 12px;
         }
 
-        .hero h1 span {
-            color: var(--pink);
+        .hero h2 span {
+            color: var(--accent);
         }
 
         .hero p {
-            font-size: 13px;
-            color: #aaa;
-            max-width: 500px;
+            max-width: 650px;
             line-height: 1.8;
+            color: var(--muted);
         }
 
-        .hero-visual {
-            font-size: 85px;
-            color: var(--pink);
-            animation: astronautFloat 4s infinite ease-in-out;
-            filter: drop-shadow(0 0 20px rgba(255, 61, 150, 0.5));
-        }
-
-        @keyframes astronautFloat {
-
-            0%,
-            100% {
-                transform: translateY(0) rotate(-5deg);
-            }
-
-            50% {
-                transform: translateY(-15px) rotate(5deg);
-            }
+        .hero-icon {
+            font-size: 42px;
+            color: var(--accent);
+            margin-top: 12px;
         }
 
         /* MAILBOX */
 
-        .mailbox-display {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            padding: 17px;
+        .mailbox {
             margin-bottom: 25px;
-            border: 1px solid rgba(255, 61, 150, 0.3);
-            border-radius: 12px;
-            background: rgba(255, 61, 150, 0.07);
+            padding: 20px;
+            border-radius: 15px;
+            background: rgba(255, 50, 158, .06);
+            border: 1px solid var(--border);
         }
 
-        .mailbox-icon {
-            width: 48px;
-            height: 48px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 10px;
-            background: rgba(255, 61, 150, 0.15);
-            color: var(--pink);
-            font-size: 21px;
-        }
-
-        .mailbox-display small {
-            color: #999;
-            font-size: 9px;
-            letter-spacing: 1.5px;
-        }
-
-        .mailbox-display h4 {
-            color: white;
-            font-size: 13px;
-            margin: 4px 0;
-            overflow-wrap: anywhere;
-        }
-
-        .mailbox-display span {
-            color: #54e5a0;
+        .mailbox small {
+            color: #a99bac;
+            letter-spacing: 2px;
             font-size: 10px;
         }
 
-        /* GRID */
+        .mailbox h3 {
+            margin: 10px 0;
+            overflow-wrap: anywhere;
+        }
 
-        .grid {
+        .mailbox p {
+            color: #55e9a6;
+            font-size: 12px;
+        }
+
+        /* GRID AND CARDS */
+
+        .content-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: repeat(2, minmax(0, 1fr));
             gap: 22px;
         }
 
         .card {
-            background: rgba(23, 16, 25, 0.88);
+            background: var(--card);
             border: 1px solid var(--border);
-            border-radius: 17px;
-            padding: 24px;
-            transition: 0.3s;
+            border-radius: 18px;
+            padding: 25px;
             min-width: 0;
         }
 
-        .card:hover {
-            transform: translateY(-3px);
-            border-color: var(--pink);
-            box-shadow: 0 0 25px rgba(255, 61, 150, 0.12);
+        .card h3 {
+            font-size: 17px;
+            margin: 0 0 25px;
         }
 
-        .card-heading {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
+        .card h3 i {
+            color: var(--accent);
+            margin-right: 10px;
         }
 
-        .card-heading h3 {
-            font-size: 15px;
-            font-weight: 500;
+        /* AUTHENTICATION */
+
+        .auth-panel {
+            display: none;
+            margin-bottom: 25px;
+            padding: 25px;
+            background: linear-gradient(135deg, #25142c, #1b101c);
+            border: 1px solid rgba(198, 154, 255, .4);
+            border-radius: 17px;
         }
 
-        .card-heading i {
-            color: var(--pink);
-            font-size: 19px;
+        .auth-panel h3 {
+            margin: 0 0 10px;
+            color: #e2caff;
         }
 
-        /* INPUTS */
-
-        label {
-            display: block;
-            font-size: 12px;
-            color: #bbb;
-            margin-bottom: 8px;
+        .auth-panel p {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.7;
         }
 
-        input,
-        textarea {
+        .auth-panel input {
             width: 100%;
-            padding: 13px;
-            margin-bottom: 17px;
-            border-radius: 9px;
-            border: 1px solid var(--border);
-            background: #0e0a10;
+            max-width: 500px;
+            padding: 14px;
+            margin: 10px 0 15px;
+            background: #100b13;
             color: white;
+            border: 1px solid var(--border);
+            border-radius: 9px;
             font-family: inherit;
-            font-size: 12px;
             outline: none;
         }
 
-        input:focus,
-        textarea:focus {
-            border-color: var(--pink);
-            box-shadow: 0 0 10px rgba(255, 61, 150, 0.12);
+        .auth-panel input:focus {
+            border-color: #c69aff;
         }
 
-        textarea {
-            resize: vertical;
+        .auth-info {
+            color: #c69aff !important;
+            font-size: 12px !important;
+        }
+
+        /* FORMS */
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--muted);
+            font-size: 13px;
+            margin-bottom: 9px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 15px;
+            background: #100b13;
+            color: white;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 10px rgba(255, 50, 158, .12);
+        }
+
+        .form-group textarea {
             min-height: 130px;
+            resize: vertical;
         }
 
         /* BUTTONS */
 
-        .primary-btn {
-            background: linear-gradient(90deg, #ff3d96, #e72c80);
+        .btn {
+            padding: 14px 20px;
             border: none;
-            padding: 13px 22px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #ff329e, #d91d83);
             color: white;
-            border-radius: 9px;
+            font-family: inherit;
             font-weight: 600;
-            font-size: 12px;
-            transition: 0.3s;
+            cursor: pointer;
+            transition: .3s;
         }
 
-        .primary-btn:hover {
-            box-shadow: 0 0 20px rgba(255, 61, 150, 0.5);
+        .btn:hover {
             transform: translateY(-2px);
+            box-shadow: 0 5px 18px rgba(255, 50, 158, .2);
         }
 
-        .secondary-btn {
-            background: transparent;
-            border: 1px solid var(--pink);
-            color: var(--pink);
-            padding: 10px 17px;
-            border-radius: 8px;
-            font-size: 11px;
+        .btn:disabled {
+            opacity: .6;
+            cursor: not-allowed;
+            transform: none;
         }
 
-        .secondary-btn:hover {
-            background: rgba(255, 61, 150, 0.1);
-        }
-
-        .full {
+        .full-btn {
             width: 100%;
         }
 
-        button:disabled {
-            opacity: 0.55;
-            cursor: not-allowed;
+        .sync-btn {
+            margin-bottom: 20px;
         }
 
-        /* MESSAGE LIST */
-
-        .message-list {
-            max-height: 350px;
-            overflow-y: auto;
+        .secondary-btn {
+            background: linear-gradient(135deg, #9d72d9, #7550ae);
         }
+
+        .logout-btn {
+            padding: 9px 14px;
+            background: rgba(255, 55, 85, .12);
+            border: 1px solid rgba(255, 55, 85, .3);
+            color: #ff8294;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: inherit;
+        }
+
+        /* MESSAGES */
 
         .message-item {
-            background: #100b12;
-            border-left: 3px solid var(--pink);
-            padding: 14px;
-            border-radius: 8px;
-            margin-bottom: 12px;
-            animation: messageAppear 0.3s ease;
-        }
-
-        @keyframes messageAppear {
-            from {
-                opacity: 0;
-                transform: translateY(8px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+            padding: 17px;
+            background: #120c16;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 15px;
+            overflow-wrap: anywhere;
         }
 
         .message-item h4 {
-            font-size: 12px;
-            margin-bottom: 7px;
-            color: white;
-            overflow-wrap: anywhere;
+            color: var(--accent-light);
+            margin: 0 0 10px;
         }
 
         .message-item p {
-            color: #999;
-            font-size: 11px;
+            color: #d0c4d2;
+            font-size: 13px;
             line-height: 1.7;
-            overflow-wrap: anywhere;
-            margin-bottom: 5px;
-            white-space: pre-wrap;
         }
 
         .message-item small {
-            color: var(--pink);
-            font-size: 10px;
+            color: #998b9c;
+            font-size: 11px;
         }
 
-        /* DELETE */
-
         .message-actions {
-            display: flex;
-            justify-content: flex-end;
-            margin-top: 12px;
+            margin-top: 15px;
         }
 
         .delete-btn {
-            background: rgba(255, 65, 85, 0.10);
-            border: 1px solid rgba(255, 65, 85, 0.35);
-            color: #ff6478;
-            padding: 8px 13px;
+            padding: 9px 13px;
+            background: rgba(255, 55, 85, .12);
+            border: 1px solid rgba(255, 55, 85, .3);
+            color: #ff667e;
             border-radius: 7px;
-            font-size: 10px;
-            transition: 0.25s;
+            cursor: pointer;
         }
-
-        .delete-btn:hover {
-            background: #ff4155;
-            color: white;
-        }
-
-        /* EMPTY */
 
         .empty {
+            padding: 25px 10px;
             text-align: center;
-            padding: 30px 10px;
-            color: #777;
-            font-size: 12px;
+            color: var(--muted);
+            font-size: 13px;
         }
 
-        .empty i {
-            display: block;
-            font-size: 35px;
-            color: var(--pink);
-            margin-bottom: 15px;
-        }
+        /* AUTHENTICATED ACCOUNT BAR */
 
-        /* CONNECTION */
-
-        .connection-row {
-            display: flex;
+        .account-bar {
+            display: none;
             justify-content: space-between;
-            gap: 10px;
-            margin-bottom: 18px;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding: 14px 18px;
+            margin-bottom: 20px;
+            background: rgba(85, 233, 166, .06);
+            border: 1px solid rgba(85, 233, 166, .22);
+            border-radius: 12px;
         }
 
-        .connection-row span:first-child {
-            color: #aaa;
+        .account-bar p {
+            margin: 0;
             font-size: 12px;
+            color: #55e9a6;
+            overflow-wrap: anywhere;
         }
 
-        .connection-row span:last-child {
-            color: #54e5a0;
-            font-size: 11px;
-            text-align: right;
+        .account-bar small {
+            display: block;
+            margin-top: 5px;
+            color: var(--muted);
         }
 
         /* TOAST */
 
-        .toast {
+        #toast {
+            display: none;
             position: fixed;
-            top: 25px;
+            bottom: 25px;
             right: 25px;
-            max-width: calc(100% - 40px);
-            background: #1b101a;
-            border: 1px solid var(--pink);
+            z-index: 2000;
+            background: #26152a;
             color: white;
+            border: 1px solid var(--accent);
             padding: 15px 22px;
             border-radius: 10px;
-            font-size: 12px;
-            z-index: 999;
-            display: none;
-            box-shadow: 0 0 20px rgba(255, 61, 150, 0.2);
+            max-width: 350px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, .4);
         }
 
-        /* RESPONSIVE */
+        /* MOBILE */
 
-        @media(max-width:1000px) {
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1200;
+            width: 45px;
+            height: 45px;
+            border: 1px solid var(--accent);
+            border-radius: 10px;
+            background: #15101b;
+            color: var(--accent);
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .sidebar-overlay {
+            display: none;
+        }
+
+        @media(max-width:900px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media(max-width:768px) {
+            .mobile-menu-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
 
             .sidebar {
                 transform: translateX(-100%);
+                transition: transform .3s ease;
             }
 
             .sidebar.open {
                 transform: translateX(0);
             }
 
+            .sidebar-overlay.active {
+                display: block;
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, .65);
+                z-index: 1000;
+            }
+
             .main {
                 margin-left: 0;
-                padding: 22px;
-            }
-
-            .menu-btn {
-                display: block;
-            }
-        }
-
-        @media(max-width:650px) {
-
-            .grid {
-                grid-template-columns: 1fr;
+                width: 100%;
+                padding: 80px 15px 25px;
             }
 
             .hero {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 20px;
+                padding: 25px;
             }
 
-            .hero-visual {
-                font-size: 55px;
+            .hero h2 {
+                font-size: 24px;
             }
 
-            .topbar h2 {
-                font-size: 17px;
+            .card {
+                padding: 20px;
             }
 
-            .main {
-                padding: 17px;
+            .page-header h1 {
+                font-size: 22px;
             }
-
-            .family-animation {
-                display: none;
-            }
-        }
-
-        .spam-notice {
-            display: flex;
-            align-items: flex-start;
-            gap: 15px;
-            padding: 18px 20px;
-            margin: 20px 0;
-            border: 1px solid rgba(255, 105, 180, 0.3);
-            border-radius: 14px;
-            background: rgba(255, 105, 180, 0.07);
-        }
-
-        .spam-icon {
-            font-size: 26px;
-        }
-
-        .spam-content h3 {
-            color: #ff91c8;
-            font-size: 15px;
-            margin: 0 0 8px;
-        }
-
-        .spam-content p {
-            color: #d6c5d0;
-            font-size: 13px;
-            line-height: 1.7;
-            margin: 0 0 10px;
-        }
-
-        .spam-content span {
-            color: #dda8da;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        @media (max-width: 600px) {
-            .spam-notice {
-                padding: 14px;
-                gap: 10px;
-            }
-        }
-
-        /* FAMILY CONNECT ACTIVE NAV LINK */
-        .sidebar .nav-link.active {
-            background: rgba(190, 140, 255, 0.18);
-            color: #ffffff;
-            border-left: 3px solid #ff9afd;
-            box-shadow: 0 0 12px rgba(198, 154, 255, 0.15);
-        }
-
-        .sidebar .nav-link.active i {
-            color: #ff9ae9;
         }
     </style>
 </head>
 
 <body>
 
-    <div class="background">
-        <div class="glow one"></div>
-        <div class="glow two"></div>
-        <div class="stars"></div>
-    </div>
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open navigation">
+        <i class="fas fa-bars"></i>
+    </button>
 
-    <div class="family-animation">
-        <i class="fa-solid fa-user-astronaut"></i>
-        <i class="fa-solid fa-heart"></i>
-        <i class="fa-solid fa-people-group child"></i>
-    </div>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-    <!-- SIDEBAR -->
-
-    <aside class="sidebar">
-
-        <div class="sidebar-logo">
-            <span>✦</span> COSMO CARE
-        </div>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-logo"><span>✦</span> COSMO CARE</div>
 
         <div class="sidebar-menu">
-
-            <a href="index.html" class="nav-link">
-                <i class="fas fa-house"></i>
-                <span>Main Dashboard</span>
-            </a>
-
-            <a href="cardiovascular.html" class="nav-link">
-                <i class="fas fa-heartbeat"></i>
-                <span>Cardiovascular</span>
-            </a>
-
-            <a href="oxygen.html" class="nav-link">
-                <i class="fas fa-lungs"></i>
-                <span>Blood Oxygen</span>
-            </a>
-
-            <a href="sleep.html" class="nav-link">
-                <i class="fas fa-moon"></i>
-                <span>Sleep Monitor</span>
-            </a>
-
-            <a href="bone-health.html" class="nav-link">
-                <i class="fas fa-bone"></i>
-                <span>Bone Health</span>
-            </a>
-
-            <a href="radiation.html" class="nav-link">
-                <i class="fas fa-radiation"></i>
-                <span>Radiation Monitor</span>
-            </a>
-
-            <a href="air-quality.html" class="nav-link">
-                <i class="fas fa-wind"></i>
-                <span>Air Quality</span>
-            </a>
-
-            <a href="movement.html" class="nav-link">
-                <i class="fas fa-person-walking"></i>
-                <span>Balance & Movement</span>
-            </a>
-
-            <a href="famil-connect.html" class="nav-link active">
-                <i class="fas fa-users"></i>
-                <span>Family Connect</span>
-            </a>
-
-            <a href="alerts.html" class="nav-link">
-                <i class="fas fa-bell"></i>
-                <span>Alerts & Warnings</span>
-            </a>
-
+            <a href="index.html" class="nav-link"><i class="fas fa-house"></i><span>Main Dashboard</span></a>
+            <a href="cardiovascular.html" class="nav-link"><i
+                    class="fas fa-heartbeat"></i><span>Cardiovascular</span></a>
+            <a href="oxygen.html" class="nav-link"><i class="fas fa-lungs"></i><span>Blood Oxygen</span></a>
+            <a href="sleep.html" class="nav-link"><i class="fas fa-moon"></i><span>Sleep Monitor</span></a>
+            <a href="bone-health.html" class="nav-link"><i class="fas fa-bone"></i><span>Bone Health</span></a>
+            <a href="radiation.html" class="nav-link"><i class="fas fa-radiation"></i><span>Radiation Monitor</span></a>
+            <a href="air-quality.html" class="nav-link"><i class="fas fa-wind"></i><span>Air Quality</span></a>
+            <a href="movement.html" class="nav-link"><i class="fas fa-person-walking"></i><span>Balance &
+                    Movement</span></a>
+            <a href="famil-connect.html" class="nav-link active"><i class="fas fa-users"></i><span>Family
+                    Connect</span></a>
+            <a href="alerts.html" class="nav-link"><i class="fas fa-bell"></i><span>Alerts & Warnings</span></a>
         </div>
-
     </aside>
 
     <main class="main">
 
-        <div class="topbar">
-
-            <div style="display:flex;align-items:center;gap:18px;">
-
-                <i class="fa-solid fa-bars menu-btn" onclick="toggleSidebar()"></i>
-
-                <h2>Family <span>Connect</span></h2>
-
+        <div class="page-header">
+            <h1>Family <span>Connect</span></h1>
+            <div class="status">
+                <span class="status-dot"></span>
+                Communication Centre
             </div>
-
-            <span class="status">Communication Centre</span>
-
         </div>
 
+        <!-- AUTHENTICATION PANEL -->
+
+        <section class="auth-panel" id="authPanel">
+            <h3><i class="fas fa-shield-halved"></i> Secure Cosmo Care Login</h3>
+
+            <p>
+                Sign in using the email address registered to your original
+                Cosmo Care Supabase account. No password is required.
+            </p>
+
+            <form id="loginForm">
+                <input type="email" id="loginEmail" placeholder="Enter your registered email address"
+                    autocomplete="email" required>
+
+                <button type="submit" class="btn" id="loginBtn">
+                    <i class="fas fa-envelope"></i>
+                    Send Secure Login Link
+                </button>
+            </form>
+
+            <p class="auth-info" id="authMessage">
+                A secure login link will be sent to your registered email.
+            </p>
+        </section>
+
+        <!-- ACCOUNT BAR -->
+
+        <section class="account-bar" id="accountBar">
+            <div>
+                <p><i class="fas fa-circle-check"></i> Authenticated account</p>
+                <small id="accountEmail">Checking account...</small>
+                <small id="accountId"></small>
+            </div>
+
+            <button class="logout-btn" id="logoutBtn">
+                <i class="fas fa-right-from-bracket"></i> Sign Out
+            </button>
+        </section>
 
         <!-- HERO -->
 
         <section class="hero">
+            <h2>Miles Apart,<br><span>Hearts Connected.</span></h2>
 
-            <div>
+            <p>
+                Space may separate astronauts from their loved ones,
+                but Cosmo Care keeps their connection alive.
+                Send messages, share moments and stay connected
+                with your family across the universe.
+            </p>
 
-                <h1>
-                    Miles Apart,<br>
-                    <span>Hearts Connected.</span>
-                </h1>
-
-                <p>
-                    Space may separate astronauts from their loved ones,
-                    but Cosmo Care keeps their connection alive.
-                    Send messages, share moments and stay connected
-                    with your family across the universe.
-                </p>
-
+            <div class="hero-icon">
+                <i class="fas fa-user-astronaut"></i>
             </div>
-
-            <div class="hero-visual">
-                <i class="fa-solid fa-user-astronaut"></i>
-            </div>
-
         </section>
 
+        <!-- MAILBOX -->
 
-        <!-- FIXED MAILBOX -->
+        <section class="mailbox">
+            <small>OFFICIAL COSMO CARE MAILBOX</small>
+            <h3 id="cosmoGmail">cosmocare.connect@gmail.com</h3>
+            <p><i class="fas fa-circle-check"></i> Communication account</p>
+        </section>
 
-        <div class="mailbox-display">
+        <!-- CONTENT -->
 
-            <div class="mailbox-icon">
-                <i class="fa-solid fa-envelope-circle-check"></i>
-            </div>
-
-            <div>
-
-                <small>OFFICIAL COSMO CARE MAILBOX</small>
-
-                <h4 id="cosmoGmail">
-                    cosmocare.connect@gmail.com
-
-                </h4>
-
-                <span>
-                    <i class="fa-solid fa-lock"></i>
-                    Fixed communication account
-                </span>
-
-            </div>
-
-        </div>
-
-        <!-- Gmail Spam Folder Notice -->
-        <div class="spam-notice">
-            <div class="spam-icon">📩</div>
-
-            <div class="spam-content">
-                <h3>Important: Check Your Spam Folder</h3>
-                <p>
-                    Family replies are automatically checked in both your Gmail
-                    Inbox and Spam folder. If a family message is missing from
-                    the dashboard, please check the Spam label in your connected
-                    Gmail account.
-                </p>
-                <span>✓ Inbox monitored &nbsp; ✓ Spam monitored</span>
-            </div>
-        </div>
-
-
-        <div class="grid">
-
+        <div class="content-grid">
 
             <!-- SEND MESSAGE -->
 
             <section class="card">
-
-                <div class="card-heading">
-                    <h3>Send a Message to Family</h3>
-                    <i class="fa-solid fa-paper-plane"></i>
-                </div>
+                <h3><i class="fas fa-paper-plane"></i> Send a Message to Family</h3>
 
                 <form id="messageForm">
 
-                    <label>Family Member Name</label>
+                    <div class="form-group">
+                        <label for="familyName">Family Member Name</label>
+                        <input type="text" id="familyName" placeholder="Enter family member name" required>
+                    </div>
 
-                    <input type="text" id="familyName" placeholder="Enter family member name" required>
+                    <div class="form-group">
+                        <label for="familyEmail">Family Gmail Address</label>
+                        <input type="email" id="familyEmail" placeholder="Enter Gmail address" required>
+                    </div>
 
-                    <label>Family Gmail Address</label>
+                    <div class="form-group">
+                        <label for="subject">Message Subject</label>
+                        <input type="text" id="subject" placeholder="Enter subject" required>
+                    </div>
 
-                    <input type="email" id="familyEmail" placeholder="example@gmail.com" required>
+                    <div class="form-group">
+                        <label for="message">Your Message</label>
+                        <textarea id="message" placeholder="Write your message..." required></textarea>
+                    </div>
 
-                    <label>Message Subject</label>
-
-                    <input type="text" id="subject" placeholder="A message from space" required>
-
-                    <label>Your Message</label>
-
-                    <textarea id="message" placeholder="Write something special for your family..." required></textarea>
-
-                    <button class="primary-btn full" type="submit" id="sendBtn">
-                        <i class="fa-solid fa-paper-plane"></i>
-                        Send Message
+                    <button type="submit" class="btn full-btn" id="sendBtn">
+                        <i class="fas fa-paper-plane"></i> Send Message
                     </button>
 
                 </form>
-
             </section>
-
-
-            <!-- RECEIVED MESSAGES -->
-
-            <section class="card">
-
-                <div class="card-heading">
-                    <h3>Messages From Family</h3>
-                    <i class="fa-solid fa-envelope-open-text"></i>
-                </div>
-
-                <p style="font-size:12px;color:#999;line-height:1.9;margin-bottom:20px;">
-
-                    View replies from your family members.
-                    Incoming replies are retrieved through the
-                    Cosmo Care Gmail synchronization system.
-
-                </p>
-
-                <div class="message-list" id="receivedMessages">
-
-                    <div class="empty">
-                        <i class="fa-solid fa-inbox"></i>
-                        Loading family replies...
-                    </div>
-
-                </div>
-
-                <button class="secondary-btn full" onclick="syncGmail()" id="syncBtn" style="margin-top:15px;">
-
-                    <i class="fa-solid fa-rotate"></i>
-                    Sync Gmail Messages
-
-                </button>
-
-            </section>
-
 
             <!-- SENT MESSAGES -->
 
             <section class="card">
+                <h3><i class="fas fa-envelope"></i> Messages Sent</h3>
 
-                <div class="card-heading">
-                    <h3>Sent Messages</h3>
-                    <i class="fa-solid fa-clock-rotate-left"></i>
+                <div id="sentMessages">
+                    <div class="empty">Sign in to view sent messages.</div>
                 </div>
-
-                <div class="message-list" id="sentMessages">
-
-                    <div class="empty">
-                        Loading sent messages...
-                    </div>
-
-                </div>
-
-                <button class="secondary-btn full" onclick="loadMessages()" style="margin-top:15px;">
-
-                    <i class="fa-solid fa-rotate"></i>
-                    Refresh History
-
-                </button>
-
             </section>
 
-
-            <!-- STATUS -->
+            <!-- RECEIVED MESSAGES -->
 
             <section class="card">
+                <h3><i class="fas fa-inbox"></i> Messages From Family</h3>
 
-                <div class="card-heading">
-                    <h3>Communication Status</h3>
-                    <i class="fa-solid fa-satellite-dish"></i>
+                <button class="btn full-btn sync-btn" id="syncBtn">
+                    <i class="fas fa-rotate"></i> Sync Gmail Messages
+                </button>
+
+                <div id="receivedMessages">
+                    <div class="empty">Sign in to view family replies.</div>
                 </div>
-
-                <p style="font-size:12px;color:#aaa;margin-bottom:20px;line-height:1.8;">
-
-                    Secure communication between astronauts
-                    and their loved ones.
-
-                </p>
-
-                <div class="connection-row">
-                    <span>Supabase Authentication</span>
-                    <span>Integrated</span>
-                </div>
-
-                <div class="connection-row">
-                    <span>Supabase Database</span>
-                    <span>Integrated</span>
-                </div>
-
-                <div class="connection-row">
-                    <span>Gmail API</span>
-                    <span>Connected</span>
-                </div>
-
-                <div class="connection-row">
-                    <span>Automatic Reply Sync</span>
-                    <span>60 Second Interval</span>
-                </div>
-
-                <div class="connection-row">
-                    <span>Message Deletion</span>
-                    <span>Enabled</span>
-                </div>
-
             </section>
 
         </div>
 
     </main>
 
-
-    <div class="toast" id="toast"></div>
-
+    <div id="toast" role="status" aria-live="polite"></div>
 
     <script>
 
         /* ==========================================
-           1. CONFIGURATION
+           1. SUPABASE CONFIGURATION
         ========================================== */
 
         const SUPABASE_URL =
@@ -1018,40 +719,61 @@
         const COSMOCARE_GMAIL =
             "cosmocare.connect@gmail.com";
 
-        const supabaseClient =
-            window.supabase.createClient(
-                SUPABASE_URL,
-                SUPABASE_ANON_KEY
-            );
+        const ORIGINAL_PROFILE_USER_ID =
+            "5ca97814-95d7-4902-909e-572d3f7961cd";
+
+        const supabaseClient = window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_ANON_KEY,
+            {
+                auth: {
+                    persistSession: true,
+                    autoRefreshToken: true,
+                    detectSessionInUrl: true,
+                    storage: window.localStorage
+                }
+            }
+        );
 
         let gmailSyncTimer = null;
         let syncing = false;
+        let appInitialised = false;
+        let toastTimer = null;
 
 
         /* ==========================================
            2. SIDEBAR
         ========================================== */
 
-        function toggleSidebar() {
+        const menuBtn = document.getElementById("mobileMenuBtn");
+        const sidebar = document.getElementById("sidebar");
+        const overlay = document.getElementById("sidebarOverlay");
 
-            document.getElementById("sidebar")
-                .classList.toggle("open");
+        menuBtn.addEventListener("click", () => {
+            sidebar.classList.toggle("open");
+            overlay.classList.toggle("active");
+        });
 
+        function closeMenu() {
+            sidebar.classList.remove("open");
+            overlay.classList.remove("active");
         }
+
+        overlay.addEventListener("click", closeMenu);
+
+        document.querySelectorAll(".sidebar .nav-link").forEach(link => {
+            link.addEventListener("click", closeMenu);
+        });
 
 
         /* ==========================================
            3. TOAST
         ========================================== */
 
-        let toastTimer;
-
         function showToast(message) {
-
             const toast = document.getElementById("toast");
 
             toast.textContent = message;
-
             toast.style.display = "block";
 
             clearTimeout(toastTimer);
@@ -1059,134 +781,261 @@
             toastTimer = setTimeout(() => {
                 toast.style.display = "none";
             }, 4000);
-
         }
 
 
         /* ==========================================
-           4. SESSION
+           4. SESSION HELPERS
         ========================================== */
 
         async function getCurrentSession() {
-
-            const { data, error } =
-                await supabaseClient.auth.getSession();
+            const { data, error } = await supabaseClient.auth.getSession();
 
             if (error) {
-                console.error(error);
+                console.error("Session error:", error);
                 return null;
             }
 
             return data.session;
+        }
+
+        async function requireSession() {
+            const session = await getCurrentSession();
+
+            if (!session) {
+                showToast("Please sign in first.");
+                return null;
+            }
+
+            return session;
+        }
+
+
+        /* ==========================================
+           5. LOGIN WITH EMAIL OTP
+        ========================================== */
+
+        async function authenticateUser(email) {
+
+            const { error } = await supabaseClient.auth.signInWithOtp({
+                email: email.trim(),
+                options: {
+                    shouldCreateUser: false,
+                    emailRedirectTo: window.location.origin +
+                        window.location.pathname
+                }
+            });
+
+            if (error) throw error;
+
+            return true;
+        }
+
+        document.getElementById("loginForm").addEventListener("submit", async function (e) {
+
+            e.preventDefault();
+
+            const email = document.getElementById("loginEmail").value.trim();
+            const button = document.getElementById("loginBtn");
+            const message = document.getElementById("authMessage");
+
+            if (!email) {
+                showToast("Enter your registered email.");
+                return;
+            }
+
+            button.disabled = true;
+            button.innerHTML =
+                '<i class="fas fa-spinner fa-spin"></i> Sending Login Link...';
+
+            try {
+
+                await authenticateUser(email);
+
+                message.textContent =
+                    "Login link sent. Open your email and click the link using this browser.";
+
+                showToast("Secure login link sent successfully!");
+
+            } catch (error) {
+
+                console.error("OTP error:", error);
+
+                message.textContent =
+                    error.message || "Unable to send login link.";
+
+                showToast(error.message || "Login link could not be sent.");
+
+            } finally {
+
+                button.disabled = false;
+
+                button.innerHTML =
+                    '<i class="fas fa-envelope"></i> Send Secure Login Link';
+
+            }
+
+        });
+
+
+        /* ==========================================
+           6. AUTHENTICATION UI
+        ========================================== */
+
+        function showLoginPanel() {
+
+            document.getElementById("authPanel").style.display = "block";
+            document.getElementById("accountBar").style.display = "none";
+
+            document.getElementById("sentMessages").innerHTML =
+                '<div class="empty">Please sign in to view sent messages.</div>';
+
+            document.getElementById("receivedMessages").innerHTML =
+                '<div class="empty">Please sign in to view family replies.</div>';
+
+            document.getElementById("sendBtn").disabled = true;
+            document.getElementById("syncBtn").disabled = true;
+
+        }
+
+        function showAuthenticatedAccount(session) {
+
+            document.getElementById("authPanel").style.display = "none";
+            document.getElementById("accountBar").style.display = "flex";
+
+            document.getElementById("accountEmail").textContent =
+                session.user.email || "Authenticated Supabase user";
+
+            document.getElementById("accountId").textContent =
+                "User ID: " + session.user.id;
+
+            document.getElementById("sendBtn").disabled = false;
+            document.getElementById("syncBtn").disabled = false;
 
         }
 
 
         /* ==========================================
-           5. SEND MESSAGE
+           7. VERIFY ORIGINAL ACCOUNT
         ========================================== */
 
-        document.getElementById("messageForm")
-            .addEventListener("submit", async function (e) {
+        async function verifyOriginalAccount(session) {
 
-                e.preventDefault();
+            if (!session) return false;
 
-                const session = await getCurrentSession();
+            const currentUserId = session.user.id;
 
-                if (!session) {
-                    showToast("Authentication session required.");
-                    return;
-                }
+            console.log("Logged-in User ID:", currentUserId);
 
-                const name =
-                    document.getElementById("familyName").value.trim();
+            if (currentUserId !== ORIGINAL_PROFILE_USER_ID) {
 
-                const email =
-                    document.getElementById("familyEmail").value.trim();
+                showLoginPanel();
 
-                const subject =
-                    document.getElementById("subject").value.trim();
+                document.getElementById("authMessage").textContent =
+                    "Wrong account. Sign in using the email registered to your original astronaut profile.";
 
-                const message =
-                    document.getElementById("message").value.trim();
+                showToast("Please sign in using the original astronaut account.");
 
-                if (!name || !email || !subject || !message) {
-                    showToast("Complete all fields.");
-                    return;
-                }
+                return false;
 
-                const button = document.getElementById("sendBtn");
+            }
 
-                button.disabled = true;
+            showAuthenticatedAccount(session);
 
-                button.innerHTML =
-                    '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
+            return true;
 
-                try {
-
-                    const { data, error } =
-                        await supabaseClient.functions.invoke(
-                            "send-family-message",
-                            {
-                                body: {
-                                    familyName: name,
-                                    familyEmail: email,
-                                    subject: subject,
-                                    message: message
-                                }
-                            }
-                        );
-
-                    if (error) throw error;
-
-                    if (!data || !data.success) {
-                        throw new Error(
-                            data?.error || "Message could not be sent."
-                        );
-                    }
-
-                    showToast("Message sent successfully!");
-
-                    document.getElementById("messageForm").reset();
-
-                    await loadMessages();
-
-                }
-
-                catch (error) {
-
-                    console.error(error);
-
-                    showToast(error.message || "Unable to send message.");
-
-                }
-
-                finally {
-
-                    button.disabled = false;
-
-                    button.innerHTML =
-                        '<i class="fa-solid fa-paper-plane"></i> Send Message';
-
-                }
-
-            });
+        }
 
 
         /* ==========================================
-           6. CREATE MESSAGE CARD
+           8. SEND MESSAGE
+        ========================================== */
+
+        document.getElementById("messageForm").addEventListener("submit", async function (e) {
+
+            e.preventDefault();
+
+            const session = await requireSession();
+
+            if (!session) return;
+
+            if (session.user.id !== ORIGINAL_PROFILE_USER_ID) {
+                showToast("Please sign in using the original astronaut account.");
+                return;
+            }
+
+            const name = document.getElementById("familyName").value.trim();
+            const email = document.getElementById("familyEmail").value.trim();
+            const subject = document.getElementById("subject").value.trim();
+            const message = document.getElementById("message").value.trim();
+
+            if (!name || !email || !subject || !message) {
+                showToast("Complete all fields.");
+                return;
+            }
+
+            const button = document.getElementById("sendBtn");
+
+            button.disabled = true;
+            button.innerHTML =
+                '<i class="fas fa-spinner fa-spin"></i> Sending...';
+
+            try {
+
+                const { data, error } =
+                    await supabaseClient.functions.invoke(
+                        "send-family-message",
+                        {
+                            body: {
+                                familyName: name,
+                                familyEmail: email,
+                                subject: subject,
+                                message: message
+                            }
+                        }
+                    );
+
+                if (error) throw error;
+
+                if (!data || !data.success) {
+                    throw new Error(data?.error || "Message could not be sent.");
+                }
+
+                showToast("Message sent successfully!");
+
+                document.getElementById("messageForm").reset();
+
+                await loadMessages();
+
+            } catch (error) {
+
+                console.error("Send message error:", error);
+
+                showToast(error.message || "Unable to send message.");
+
+            } finally {
+
+                button.disabled = false;
+
+                button.innerHTML =
+                    '<i class="fas fa-paper-plane"></i> Send Message';
+
+            }
+
+        });
+
+
+        /* ==========================================
+           9. CREATE MESSAGE CARD
         ========================================== */
 
         function createMessageCard(item, direction) {
 
             const element = document.createElement("div");
-
             element.className = "message-item";
 
             const heading = document.createElement("h4");
-
-            heading.textContent =
-                item.subject || "Family Message";
+            heading.textContent = item.subject || "Family Message";
 
             const person = document.createElement("p");
 
@@ -1213,32 +1062,25 @@
             }
 
             const body = document.createElement("p");
-
-            body.textContent =
-                item.message || item.body || "";
+            body.textContent = item.message || item.body || "";
 
             const date = document.createElement("small");
 
-            date.textContent =
-                item.created_at
-                    ? new Date(item.created_at).toLocaleString()
-                    : "Message received";
+            date.textContent = item.created_at
+                ? new Date(item.created_at).toLocaleString()
+                : "Message received";
 
             const actions = document.createElement("div");
-
             actions.className = "message-actions";
 
             const deleteButton = document.createElement("button");
 
             deleteButton.className = "delete-btn";
-
             deleteButton.innerHTML =
-                '<i class="fa-solid fa-trash"></i> Delete Message';
+                '<i class="fas fa-trash"></i> Delete Message';
 
             deleteButton.addEventListener("click", () => {
-
                 deleteMessage(item.id, direction, deleteButton);
-
             });
 
             actions.appendChild(deleteButton);
@@ -1257,38 +1099,31 @@
 
 
         /* ==========================================
-           7. LOAD SENT MESSAGES
+           10. LOAD SENT MESSAGES
         ========================================== */
 
         async function loadMessages() {
 
             const session = await getCurrentSession();
 
-            if (!session) return;
+            if (!session || session.user.id !== ORIGINAL_PROFILE_USER_ID) return;
 
-            const container =
-                document.getElementById("sentMessages");
+            const container = document.getElementById("sentMessages");
 
-            const { data, error } =
-                await supabaseClient
-
-                    .from("family_messages")
-
-                    .select("*")
-
-                    .eq("user_id", session.user.id)
-
-                    .eq("direction", "sent")
-
-                    .order("created_at", { ascending: false })
-
-                    .limit(50);
+            const { data, error } = await supabaseClient
+                .from("family_messages")
+                .select("*")
+                .eq("user_id", session.user.id)
+                .eq("direction", "sent")
+                .order("created_at", { ascending: false })
+                .limit(50);
 
             if (error) {
 
                 console.error("Sent messages error:", error);
 
-                showToast("Unable to load sent messages.");
+                container.innerHTML =
+                    '<div class="empty">Unable to load sent messages.</div>';
 
                 return;
 
@@ -1306,49 +1141,38 @@
             }
 
             data.forEach(item => {
-
-                container.appendChild(
-                    createMessageCard(item, "sent")
-                );
-
+                container.appendChild(createMessageCard(item, "sent"));
             });
 
         }
 
 
         /* ==========================================
-           8. LOAD RECEIVED MESSAGES
+           11. LOAD RECEIVED MESSAGES
         ========================================== */
 
         async function loadReceivedMessages() {
 
             const session = await getCurrentSession();
 
-            if (!session) return;
+            if (!session || session.user.id !== ORIGINAL_PROFILE_USER_ID) return;
 
-            const container =
-                document.getElementById("receivedMessages");
+            const container = document.getElementById("receivedMessages");
 
-            const { data, error } =
-                await supabaseClient
-
-                    .from("family_messages")
-
-                    .select("*")
-
-                    .eq("user_id", session.user.id)
-
-                    .eq("direction", "received")
-
-                    .order("created_at", { ascending: false })
-
-                    .limit(100);
+            const { data, error } = await supabaseClient
+                .from("family_messages")
+                .select("*")
+                .eq("user_id", session.user.id)
+                .eq("direction", "received")
+                .order("created_at", { ascending: false })
+                .limit(100);
 
             if (error) {
 
                 console.error("Received messages error:", error);
 
-                showToast("Unable to load received messages.");
+                container.innerHTML =
+                    '<div class="empty">Unable to load received messages.</div>';
 
                 return;
 
@@ -1359,95 +1183,66 @@
             if (!data || data.length === 0) {
 
                 container.innerHTML =
-                    '<div class="empty">' +
-                    '<i class="fa-solid fa-inbox"></i>' +
-                    'No family replies received yet.' +
-                    '</div>';
+                    '<div class="empty"><i class="fas fa-inbox"></i><br>No family replies received yet.</div>';
 
                 return;
 
             }
 
             data.forEach(item => {
-
-                container.appendChild(
-                    createMessageCard(item, "received")
-                );
-
+                container.appendChild(createMessageCard(item, "received"));
             });
 
         }
 
 
         /* ==========================================
-           9. DELETE MESSAGE
+           12. DELETE MESSAGE
         ========================================== */
 
         async function deleteMessage(messageId, direction, button) {
 
-            const confirmed = confirm(
-                "Delete this message from Cosmo Care?"
-            );
+            if (!confirm("Delete this message from Cosmo Care?")) return;
 
-            if (!confirmed) return;
+            const session = await requireSession();
 
-            const session = await getCurrentSession();
+            if (!session) return;
 
-            if (!session) {
-
-                showToast("Your session has expired.");
-
+            if (session.user.id !== ORIGINAL_PROFILE_USER_ID) {
+                showToast("Original astronaut account required.");
                 return;
-
             }
 
             button.disabled = true;
 
             button.innerHTML =
-                '<i class="fa-solid fa-spinner fa-spin"></i> Deleting...';
+                '<i class="fas fa-spinner fa-spin"></i> Deleting...';
 
             try {
 
-                const { data, error } =
-                    await supabaseClient
-
-                        .from("family_messages")
-
-                        .delete()
-
-                        .eq("id", messageId)
-
-                        .eq("user_id", session.user.id)
-
-                        .eq("direction", direction)
-
-                        .select("id");
+                const { data, error } = await supabaseClient
+                    .from("family_messages")
+                    .delete()
+                    .eq("id", messageId)
+                    .eq("user_id", session.user.id)
+                    .eq("direction", direction)
+                    .select("id");
 
                 if (error) throw error;
 
                 if (!data || data.length === 0) {
-
-                    throw new Error(
-                        "No message was deleted. Check Supabase DELETE permissions and RLS."
-                    );
-
+                    throw new Error("Message was not deleted. Check Supabase DELETE permissions and RLS.");
                 }
 
                 showToast("Message deleted successfully!");
 
                 if (direction === "sent") {
-
                     await loadMessages();
-
                 } else {
-
                     await loadReceivedMessages();
-
                 }
 
-            }
-
-            catch (error) {
+            } catch (error) {
 
                 console.error("Delete message error:", error);
 
@@ -1456,7 +1251,7 @@
                 button.disabled = false;
 
                 button.innerHTML =
-                    '<i class="fa-solid fa-trash"></i> Delete Message';
+                    '<i class="fas fa-trash"></i> Delete Message';
 
             }
 
@@ -1464,21 +1259,20 @@
 
 
         /* ==========================================
-           10. GMAIL SYNCHRONIZATION
+           13. GMAIL SYNCHRONIZATION
         ========================================== */
 
         async function syncGmail() {
 
             if (syncing) return;
 
-            const session = await getCurrentSession();
+            const session = await requireSession();
 
-            if (!session) {
+            if (!session) return;
 
-                showToast("Authentication session required.");
-
+            if (session.user.id !== ORIGINAL_PROFILE_USER_ID) {
+                showToast("Original astronaut account required.");
                 return;
-
             }
 
             syncing = true;
@@ -1488,7 +1282,7 @@
             button.disabled = true;
 
             button.innerHTML =
-                '<i class="fa-solid fa-spinner fa-spin"></i> Synchronizing...';
+                '<i class="fas fa-spinner fa-spin"></i> Synchronizing...';
 
             try {
 
@@ -1498,8 +1292,7 @@
                         {
                             body: {},
                             headers: {
-                                Authorization:
-                                    `Bearer ${session.access_token}`
+                                Authorization: `Bearer ${session.access_token}`
                             }
                         }
                     );
@@ -1507,54 +1300,39 @@
                 if (error) throw error;
 
                 if (!data || !data.success) {
-
-                    throw new Error(
-                        data?.error || "Gmail synchronization failed."
-                    );
-
+                    throw new Error(data?.error || "Gmail synchronization failed.");
                 }
-
-                // IMPORTANT:
-                // Load messages from the database.
-                // Do not depend on Gmail response objects for database IDs.
 
                 await loadReceivedMessages();
 
-                console.log(
-                    "Gmail synchronization completed:",
-                    data
-                );
+                console.log("Gmail synchronization completed:", data);
 
                 showToast("Family messages synchronized!");
 
-            }
-
-            catch (error) {
+            } catch (error) {
 
                 console.error("Gmail sync error:", error);
 
-                showToast(
-                    error.message || "Gmail synchronization failed."
-                );
+                showToast(error.message || "Gmail synchronization failed.");
 
-            }
-
-            finally {
+            } finally {
 
                 syncing = false;
 
                 button.disabled = false;
 
                 button.innerHTML =
-                    '<i class="fa-solid fa-rotate"></i> Sync Gmail Messages';
+                    '<i class="fas fa-rotate"></i> Sync Gmail Messages';
 
             }
 
         }
 
+        document.getElementById("syncBtn").addEventListener("click", syncGmail);
+
 
         /* ==========================================
-           11. AUTOMATIC SYNCHRONIZATION
+           14. AUTOMATIC SYNCHRONIZATION
         ========================================== */
 
         function startAutomaticSync() {
@@ -1563,7 +1341,14 @@
                 clearInterval(gmailSyncTimer);
             }
 
-            gmailSyncTimer = setInterval(() => {
+            // Synchronize every 60 seconds while the page is open.
+            gmailSyncTimer = setInterval(async () => {
+
+                const session = await getCurrentSession();
+
+                if (!session || session.user.id !== ORIGINAL_PROFILE_USER_ID) {
+                    return;
+                }
 
                 syncGmail();
 
@@ -1571,9 +1356,18 @@
 
         }
 
+        function stopAutomaticSync() {
+
+            if (gmailSyncTimer) {
+                clearInterval(gmailSyncTimer);
+                gmailSyncTimer = null;
+            }
+
+        }
+
 
         /* ==========================================
-           12. INITIALISE
+           15. INITIALISE APPLICATION
         ========================================== */
 
         async function initialiseApp() {
@@ -1585,23 +1379,36 @@
 
             if (!session) {
 
-                document.getElementById("sentMessages").innerHTML =
-                    '<div class="empty">An authenticated session is required.</div>';
+                appInitialised = false;
 
-                document.getElementById("receivedMessages").innerHTML =
-                    '<div class="empty">An authenticated session is required.</div>';
-
-                showToast("No active Supabase session.");
+                showLoginPanel();
 
                 return;
 
             }
 
+            const valid = await verifyOriginalAccount(session);
+
+            if (!valid) {
+
+                appInitialised = false;
+
+                return;
+
+            }
+
+            if (appInitialised) return;
+
+            appInitialised = true;
+
+            console.log("Cosmo Care Family Connect initialised.");
+
             await loadMessages();
 
-            await syncGmail();
-
             await loadReceivedMessages();
+
+            // First Gmail sync after successful authentication.
+            await syncGmail();
 
             startAutomaticSync();
 
@@ -1609,34 +1416,95 @@
 
 
         /* ==========================================
-           13. AUTH STATE
+           16. SIGN OUT
         ========================================== */
 
-        supabaseClient.auth.onAuthStateChange(
-            (event) => {
+        document.getElementById("logoutBtn").addEventListener("click", async () => {
+
+            stopAutomaticSync();
+
+            appInitialised = false;
+
+            const { error } = await supabaseClient.auth.signOut();
+
+            if (error) {
+
+                console.error("Sign out error:", error);
+
+                showToast(error.message || "Unable to sign out.");
+
+                return;
+
+            }
+
+            showLoginPanel();
+
+            showToast("Signed out successfully.");
+
+        });
+
+
+        /* ==========================================
+           17. AUTH STATE LISTENER
+        ========================================== */
+
+        supabaseClient.auth.onAuthStateChange((event, session) => {
+
+            console.log("Supabase auth event:", event);
+
+            // Defer application work outside the auth callback.
+            setTimeout(async () => {
 
                 if (event === "SIGNED_OUT") {
 
-                    if (gmailSyncTimer) {
-                        clearInterval(gmailSyncTimer);
-                        gmailSyncTimer = null;
-                    }
+                    stopAutomaticSync();
 
-                    document.getElementById("sentMessages").innerHTML =
-                        '<div class="empty">Session expired.</div>';
+                    appInitialised = false;
 
-                    document.getElementById("receivedMessages").innerHTML =
-                        '<div class="empty">Session expired.</div>';
+                    showLoginPanel();
+
+                    return;
 
                 }
 
-            }
-        );
+                if (
+                    event === "SIGNED_IN" ||
+                    event === "TOKEN_REFRESHED" ||
+                    event === "INITIAL_SESSION"
+                ) {
+
+                    if (!session) return;
+
+                    await initialiseApp();
+
+                }
+
+            }, 0);
+
+        });
 
 
-        /* START */
+        /* ==========================================
+           18. START APPLICATION
+        ========================================== */
 
         initialiseApp();
+
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const overlay = document.querySelector('.sidebar-overlay');
+
+            if (!sidebar) {
+                console.error("Sidebar element not found!");
+                return;
+            }
+
+            sidebar.classList.toggle('open');
+
+            if (overlay) {
+                overlay.classList.toggle('active');
+            }
+        }
 
     </script>
 

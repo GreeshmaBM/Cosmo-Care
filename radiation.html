@@ -1,4 +1,3 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 
@@ -786,10 +785,79 @@
         .sidebar .nav-link.active i {
             color: #211800 !important;
         }
+
+        /* MOBILE MENU BUTTON */
+        .mobile-menu-btn {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1200;
+            width: 45px;
+            height: 45px;
+            border: 1px solid var(--accent, #00dcff);
+            border-radius: 10px;
+            background: #15151f;
+            color: var(--accent, #00dcff);
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* SIDEBAR OVERLAY */
+        .sidebar-overlay {
+            display: none;
+        }
+
+        /* MOBILE RESPONSIVENESS */
+        @media screen and (max-width: 768px) {
+
+            .mobile-menu-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100vh;
+                width: 255px;
+                z-index: 1100;
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .sidebar-overlay.active {
+                display: block;
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.65);
+                z-index: 1000;
+            }
+
+            .main {
+                margin-left: 0 !important;
+                width: 100% !important;
+                padding: 75px 15px 20px;
+            }
+        }
     </style>
 </head>
 
 <body>
+
+    <!-- MOBILE MENU BUTTON -->
+    <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Open navigation">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- SIDEBAR OVERLAY -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
     <canvas id="stars"></canvas>
 
@@ -2017,7 +2085,28 @@
 
     </script>
 
+    <script>
+        const menuBtn = document.getElementById("mobileMenuBtn");
+        const sidebar = document.querySelector(".sidebar");
+        const overlay = document.getElementById("sidebarOverlay");
+
+        menuBtn.addEventListener("click", () => {
+            sidebar.classList.toggle("open");
+            overlay.classList.toggle("active");
+        });
+
+        overlay.addEventListener("click", closeMenu);
+
+        document.querySelectorAll(".sidebar .nav-link").forEach(link => {
+            link.addEventListener("click", closeMenu);
+        });
+
+        function closeMenu() {
+            sidebar.classList.remove("open");
+            overlay.classList.remove("active");
+        }
+    </script>
+
 </body>
 
 </html>
-```

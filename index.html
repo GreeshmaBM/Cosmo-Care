@@ -1470,16 +1470,33 @@
 
 
         /* MOBILE SIDEBAR */
-
         function toggleSidebar() {
+            const sidebar =
+                document.querySelector('.sidebar') ||
+                document.querySelector('.side-panel') ||
+                document.querySelector('aside');
 
-            const sidebar = document.getElementById("sidebar");
-            const overlay = document.getElementById("sidebarOverlay");
+            const overlay =
+                document.querySelector('.sidebar-overlay') ||
+                document.querySelector('.menu-overlay');
 
-            sidebar.classList.toggle("open");
-            overlay.classList.toggle("show");
+            if (!sidebar) {
+                console.error("Sidebar HTML element not found!");
+                return;
+            }
 
+            sidebar.classList.toggle('open');
+
+            if (overlay) {
+                overlay.classList.toggle('active', sidebar.classList.contains('open'));
+            }
+
+            document.body.classList.toggle(
+                'sidebar-open',
+                sidebar.classList.contains('open')
+            );
         }
+
 
 
         /* CLOSE SIDEBAR WHEN LINK IS CLICKED ON MOBILE */
