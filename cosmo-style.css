@@ -1,0 +1,586 @@
+/* ==========================================
+   COSMO CARE — GLOBAL DESIGN SYSTEM
+   ========================================== */
+
+:root {
+    --cosmo-bg: #080d1b;
+    --cosmo-surface: rgba(19, 27, 48, 0.82);
+    --cosmo-surface-light: rgba(255, 255, 255, 0.055);
+
+    --cosmo-primary: #58c7ff;
+    --cosmo-secondary: #a78bfa;
+
+    --cosmo-text: #f4f7ff;
+    --cosmo-muted: #9ba9c4;
+
+    --cosmo-border: rgba(255, 255, 255, 0.10);
+
+    --cosmo-radius: 18px;
+    --cosmo-transition: 0.3s ease;
+}
+
+/* RESET */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    color: var(--cosmo-text);
+}
+
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+/* SCROLLBAR */
+
+::-webkit-scrollbar {
+    width: 7px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--cosmo-bg);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(120, 160, 220, 0.35);
+    border-radius: 20px;
+}
+
+/* TEXT */
+
+.cosmo-muted {
+    color: var(--cosmo-muted);
+}
+
+.cosmo-title {
+    font-size: clamp(24px, 3vw, 34px);
+    font-weight: 750;
+    letter-spacing: -0.7px;
+}
+
+.cosmo-subtitle {
+    color: var(--cosmo-muted);
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+/* GLASS CARDS */
+
+.cosmo-card {
+    background: var(--cosmo-surface);
+    border: 1px solid var(--cosmo-border);
+    border-radius: var(--cosmo-radius);
+    padding: 22px;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    transition: var(--cosmo-transition);
+}
+
+.cosmo-card:hover {
+    border-color: rgba(88, 199, 255, 0.35);
+    transform: translateY(-3px);
+}
+
+/* BUTTONS */
+
+.cosmo-btn {
+    border: none;
+    outline: none;
+    border-radius: 10px;
+    padding: 12px 20px;
+    font-weight: 650;
+    cursor: pointer;
+    transition: var(--cosmo-transition);
+}
+
+.cosmo-btn-primary {
+    background: linear-gradient(135deg, #258dff, #7665ff);
+    color: white;
+    box-shadow: 0 5px 20px rgba(65, 120, 255, 0.2);
+}
+
+.cosmo-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(65, 120, 255, 0.35);
+}
+
+/* INPUTS */
+
+.cosmo-input {
+    width: 100%;
+    padding: 13px 15px;
+    color: var(--cosmo-text);
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid var(--cosmo-border);
+    border-radius: 10px;
+    outline: none;
+    transition: var(--cosmo-transition);
+}
+
+.cosmo-input:focus {
+    border-color: var(--cosmo-primary);
+    box-shadow: 0 0 0 3px rgba(88, 199, 255, 0.10);
+}
+
+/* STATUS BADGES */
+
+.cosmo-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 6px 11px;
+    border-radius: 30px;
+    font-size: 11px;
+    font-weight: 700;
+    background: rgba(88, 199, 255, 0.10);
+    color: var(--cosmo-primary);
+}
+
+/* ANIMATIONS */
+
+@keyframes cosmoFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.cosmo-animate {
+    animation: cosmoFadeUp 0.6s ease both;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+    .cosmo-card {
+        padding: 16px;
+        border-radius: 14px;
+    }
+
+    .cosmo-title {
+        font-size: 25px;
+    }
+
+    .cosmo-btn {
+        padding: 11px 16px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}
+
+/* ==========================================
+   COSMO CARE - UNIVERSAL SIDEBAR
+   Same design across every dashboard
+========================================== */
+
+:root {
+    --sidebar-width: 255px;
+    --sidebar-bg: #091321;
+    --sidebar-accent: #38bdf8;
+    --sidebar-glow: rgba(56, 189, 248, 0.15);
+    --sidebar-border: rgba(255, 255, 255, 0.08);
+}
+
+/* SIDEBAR THEMES */
+
+.theme-blue {
+    --sidebar-accent: #38bdf8;
+    --sidebar-glow: rgba(56, 189, 248, 0.18);
+}
+
+.theme-red {
+    --sidebar-accent: #ff4d64;
+    --sidebar-glow: rgba(255, 77, 100, 0.18);
+}
+
+.theme-cyan {
+    --sidebar-accent: #22d3ee;
+    --sidebar-glow: rgba(34, 211, 238, 0.18);
+}
+
+.theme-purple {
+    --sidebar-accent: #a78bfa;
+    --sidebar-glow: rgba(167, 139, 250, 0.18);
+}
+
+.theme-yellow {
+    --sidebar-accent: #facc15;
+    --sidebar-glow: rgba(250, 204, 21, 0.18);
+}
+
+.theme-orange {
+    --sidebar-accent: #fb923c;
+    --sidebar-glow: rgba(251, 146, 60, 0.18);
+}
+
+.theme-teal {
+    --sidebar-accent: #2dd4bf;
+    --sidebar-glow: rgba(45, 212, 191, 0.18);
+}
+
+.theme-green {
+    --sidebar-accent: #4ade80;
+    --sidebar-glow: rgba(74, 222, 128, 0.18);
+}
+
+.theme-lavender {
+    --sidebar-accent: #c4b5fd;
+    --sidebar-glow: rgba(196, 181, 253, 0.18);
+}
+
+/* MAIN SIDEBAR */
+
+.sidebar {
+    width: var(--sidebar-width);
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--sidebar-border);
+
+    padding: 25px 18px;
+
+    display: flex;
+    flex-direction: column;
+
+    overflow-y: auto;
+
+    transition: border-color 0.3s ease;
+    box-sizing: border-box;
+}
+
+/* SIDEBAR BRAND */
+
+.sidebar .logo,
+.sidebar .sidebar-logo {
+    color: white;
+    font-size: 23px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    margin-bottom: 35px;
+}
+
+.sidebar .logo span,
+.sidebar .sidebar-logo span {
+    color: var(--sidebar-accent);
+}
+
+/* NAVIGATION */
+
+.sidebar nav,
+.sidebar .nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.sidebar nav a,
+.sidebar .nav-links a {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+
+    padding: 13px 14px;
+
+    color: #a8b4c7;
+    text-decoration: none;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    border-radius: 10px;
+    border: 1px solid transparent;
+
+    transition: all 0.25s ease;
+}
+
+/* ICONS */
+
+.sidebar nav a i,
+.sidebar .nav-links a i {
+    width: 20px;
+    text-align: center;
+    font-size: 16px;
+}
+
+/* HOVER */
+
+.sidebar nav a:hover,
+.sidebar .nav-links a:hover {
+    color: white;
+    background: var(--sidebar-glow);
+    border-color: var(--sidebar-border);
+    transform: translateX(3px);
+}
+
+/* ACTIVE PAGE */
+
+.sidebar nav a.active,
+.sidebar .nav-links a.active {
+    color: white;
+    background: var(--sidebar-glow);
+    border-left: 3px solid var(--sidebar-accent);
+    box-shadow: inset 0 0 18px var(--sidebar-glow);
+}
+
+.sidebar nav a.active i,
+.sidebar .nav-links a.active i {
+    color: var(--sidebar-accent);
+}
+
+/* MAIN CONTENT ALIGNMENT */
+
+.main {
+    margin-left: var(--sidebar-width);
+    width: calc(100% - var(--sidebar-width));
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+/* MOBILE */
+
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .main {
+        margin-left: 0;
+        width: 100%;
+    }
+}
+
+.sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.sidebar-menu .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    padding: 13px 14px;
+
+    color: #a8b4c7;
+    text-decoration: none;
+    font-size: 14px;
+
+    border-radius: 10px;
+    border-left: 3px solid transparent;
+
+    transition: 0.3s ease;
+}
+
+.sidebar-menu .nav-link i {
+    width: 20px;
+    text-align: center;
+}
+
+.sidebar-menu .nav-link:hover {
+    color: white;
+    background: var(--sidebar-glow);
+}
+
+.sidebar-menu .nav-link.active {
+    color: white;
+    background: var(--sidebar-glow);
+    border-left-color: var(--sidebar-accent);
+}
+
+.sidebar-menu .nav-link.active i {
+    color: var(--sidebar-accent);
+}
+
+/* ==========================================
+   COSMO CARE - FIXED SIDEBAR SPACING
+========================================== */
+
+.sidebar {
+    width: 255px !important;
+    min-width: 255px !important;
+    max-width: 255px !important;
+
+    padding: 25px 18px !important;
+    box-sizing: border-box !important;
+}
+
+.sidebar-menu {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 9px !important;
+}
+
+.sidebar-menu .nav-link {
+    width: 100% !important;
+    min-height: 44px !important;
+    height: 44px !important;
+
+    display: flex !important;
+    align-items: center !important;
+
+    gap: 13px !important;
+    padding: 0 14px !important;
+
+    box-sizing: border-box !important;
+
+    font-family: 'Inter', sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    line-height: 1 !important;
+    letter-spacing: 0 !important;
+
+    white-space: nowrap !important;
+    text-decoration: none !important;
+
+    border-radius: 10px !important;
+}
+
+.sidebar-menu .nav-link i {
+    width: 20px !important;
+    min-width: 20px !important;
+
+    font-size: 16px !important;
+    line-height: 1 !important;
+    text-align: center !important;
+}
+
+.sidebar-menu .nav-link span {
+    font-size: 14px !important;
+    line-height: 1 !important;
+    font-weight: 500 !important;
+    letter-spacing: 0 !important;
+}
+
+/* Keep sidebar logo consistent */
+
+.sidebar-logo {
+    font-size: 23px !important;
+    font-weight: 800 !important;
+    margin-bottom: 35px !important;
+    line-height: 1.2 !important;
+}
+
+/* Main content alignment */
+
+.main {
+    margin-left: 255px !important;
+    width: calc(100% - 255px) !important;
+    box-sizing: border-box !important;
+}
+
+/* Mobile */
+
+@media (max-width: 768px) {
+    .sidebar {
+        width: 255px !important;
+        min-width: 255px !important;
+        transform: translateX(-100%);
+    }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .main {
+        margin-left: 0 !important;
+        width: 100% !important;
+    }
+}
+
+/* =================================
+   COSMO CARE - FIXED NAVIGATION
+================================= */
+
+/* Fixed gap between dashboard links */
+.sidebar-menu {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+}
+
+/* Every dashboard navigation link */
+.sidebar-menu a.nav-link {
+    display: flex !important;
+    align-items: center !important;
+
+    height: 46px !important;
+    min-height: 46px !important;
+
+    padding: 0 14px !important;
+    margin: 0 !important;
+
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    line-height: 20px !important;
+    letter-spacing: 0 !important;
+
+    box-sizing: border-box !important;
+}
+
+/* Navigation text */
+.sidebar-menu a.nav-link span {
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    line-height: 20px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Navigation icons */
+.sidebar-menu a.nav-link i {
+    width: 20px !important;
+    min-width: 20px !important;
+
+    font-size: 16px !important;
+    line-height: 20px !important;
+
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+/* Prevent individual page styles changing link sizes */
+.sidebar-menu a.nav-link,
+.sidebar-menu a.nav-link span,
+.sidebar-menu a.nav-link i {
+    transform: none;
+}
+
+/* Keep active and hover links same size */
+.sidebar-menu a.nav-link:hover,
+.sidebar-menu a.nav-link.active {
+    font-size: 14px !important;
+    height: 46px !important;
+}

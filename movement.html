@@ -1,0 +1,2024 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmo Care | Balance & Movement</title>
+
+    <link rel="stylesheet" href="cosmo-style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --orange: #ff781f;
+            --orange-light: #ff9b45;
+            --bg: #080808;
+            --card: #121212;
+            --border: rgba(255, 120, 31, 0.22);
+            --text: #f5f5f5;
+            --muted: #999;
+            --green: #37d996;
+            --red: #ff4545;
+            --yellow: #ffc14d;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ANIMATED BACKGROUND */
+
+        .background {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            overflow: hidden;
+            background:
+                radial-gradient(circle at 15% 20%, rgba(255, 100, 20, .12), transparent 28%),
+                radial-gradient(circle at 85% 75%, rgba(255, 120, 31, .10), transparent 30%),
+                #080808;
+        }
+
+        .glow {
+            position: absolute;
+            width: 380px;
+            height: 380px;
+            border-radius: 50%;
+            background: rgba(255, 105, 20, .08);
+            filter: blur(100px);
+            animation: floatGlow 12s infinite alternate ease-in-out;
+        }
+
+        .glow.one {
+            top: -120px;
+            left: 15%;
+        }
+
+        .glow.two {
+            right: -100px;
+            bottom: -100px;
+            animation-delay: 3s;
+        }
+
+        @keyframes floatGlow {
+            from {
+                transform: translate(0, 0) scale(1);
+            }
+
+            to {
+                transform: translate(90px, 70px) scale(1.35);
+            }
+        }
+
+        .particles {
+            position: absolute;
+            inset: 0;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: var(--orange);
+            border-radius: 50%;
+            opacity: .5;
+            box-shadow: 0 0 12px var(--orange);
+            animation: particleMove linear infinite;
+        }
+
+        @keyframes particleMove {
+            from {
+                transform: translateY(110vh);
+                opacity: 0;
+            }
+
+            15% {
+                opacity: .7;
+            }
+
+            85% {
+                opacity: .5;
+            }
+
+            to {
+                transform: translateY(-20vh);
+                opacity: 0;
+            }
+        }
+
+        /* LAYOUT */
+
+        .app {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background: rgba(10, 10, 10, .94);
+            border-right: 1px solid var(--border);
+            padding: 27px 17px;
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 10;
+            backdrop-filter: blur(15px);
+            overflow-y: auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 10px 30px;
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 25px;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, #ff9b45, #e34e00);
+            border-radius: 13px;
+            display: grid;
+            place-items: center;
+            color: #111;
+            font-size: 21px;
+            box-shadow: 0 0 22px rgba(255, 120, 31, .35);
+        }
+
+        .logo h2 {
+            font-size: 19px;
+            font-weight: 800;
+        }
+
+        .logo span {
+            color: var(--orange);
+        }
+
+        .logo small {
+            display: block;
+            color: #888;
+            font-size: 9px;
+            letter-spacing: 2px;
+            margin-top: 4px;
+        }
+
+        .nav-title {
+            color: #666;
+            font-size: 10px;
+            letter-spacing: 2px;
+            padding: 10px 12px;
+            margin-bottom: 7px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 13px 12px;
+            color: #aaa;
+            text-decoration: none;
+            font-size: 12px;
+            border-radius: 9px;
+            margin-bottom: 5px;
+            transition: .3s;
+        }
+
+        .nav-link i {
+            width: 17px;
+            text-align: center;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(255, 120, 31, .12);
+            color: var(--orange-light);
+            border-left: 3px solid var(--orange);
+            box-shadow: inset 0 0 15px rgba(255, 120, 31, .05);
+        }
+
+        .main {
+            margin-left: 250px;
+            width: calc(100% - 250px);
+            padding: 30px 35px 50px;
+        }
+
+        /* HEADER */
+
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+
+        .header h1 {
+            font-size: 27px;
+            font-weight: 800;
+        }
+
+        .header h1 span {
+            color: var(--orange);
+        }
+
+        .header p {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 8px;
+        }
+
+        .live-status {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            padding: 10px 15px;
+            border: 1px solid var(--border);
+            border-radius: 30px;
+            background: rgba(255, 120, 31, .07);
+            font-size: 11px;
+            color: var(--orange-light);
+        }
+
+        .live-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--green);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--green);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            50% {
+                opacity: .3;
+                transform: scale(.75);
+            }
+        }
+
+        /* GENERAL CARDS */
+
+        .card {
+            background: linear-gradient(145deg, rgba(23, 23, 23, .96), rgba(12, 12, 12, .96));
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 21px;
+            position: relative;
+            overflow: hidden;
+            transition: .3s;
+            animation: cardAppear .7s ease both;
+        }
+
+        .card:hover {
+            border-color: rgba(255, 120, 31, .55);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 35px rgba(255, 100, 20, .07);
+        }
+
+        .card::before {
+            content: "";
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 120, 31, .06);
+            filter: blur(45px);
+            right: -30px;
+            top: -30px;
+        }
+
+        @keyframes cardAppear {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card-label {
+            font-size: 11px;
+            color: #999;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .card-label i {
+            color: var(--orange);
+        }
+
+        .metric {
+            font-size: 29px;
+            font-weight: 800;
+        }
+
+        .metric small {
+            font-size: 12px;
+            color: #888;
+            font-weight: 500;
+        }
+
+        .subtext {
+            color: #888;
+            font-size: 10px;
+            margin-top: 8px;
+        }
+
+        /* TOP METRICS */
+
+        .metrics {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .metric-icon {
+            width: 37px;
+            height: 37px;
+            border-radius: 11px;
+            background: rgba(255, 120, 31, .12);
+            display: grid;
+            place-items: center;
+            color: var(--orange);
+            margin-bottom: 15px;
+        }
+
+        /* CONTROL PANEL */
+
+        .control-panel {
+            margin-bottom: 20px;
+            border: 1px solid var(--border);
+            background: linear-gradient(110deg, #17100c, #101010 65%);
+            border-radius: 17px;
+            padding: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .control-info h3 {
+            font-size: 15px;
+            margin-bottom: 8px;
+        }
+
+        .control-info p {
+            color: #888;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+
+        .buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 12px 17px;
+            border: 1px solid transparent;
+            border-radius: 9px;
+            font-size: 11px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: .25s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.15);
+        }
+
+        .normal-btn {
+            color: var(--green);
+            border-color: rgba(55, 217, 150, .35);
+            background: rgba(55, 217, 150, .09);
+        }
+
+        .high-btn {
+            color: #111;
+            background: linear-gradient(135deg, #ff9b45, #ff5b12);
+            box-shadow: 0 0 18px rgba(255, 100, 20, .2);
+        }
+
+        .stop-btn {
+            color: #ff6868;
+            background: rgba(255, 60, 60, .09);
+            border-color: rgba(255, 60, 60, .3);
+        }
+
+        .sound-btn {
+            color: #ddd;
+            background: #242424;
+            border-color: #444;
+        }
+
+        .btn.selected {
+            outline: 2px solid var(--orange);
+            outline-offset: 3px;
+        }
+
+        /* WARNING */
+
+        .warning-banner {
+            display: none;
+            align-items: center;
+            gap: 14px;
+            padding: 17px 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 69, 69, .6);
+            border-radius: 13px;
+            background: rgba(120, 20, 20, .18);
+            animation: warningPulse 1.2s infinite alternate;
+        }
+
+        .warning-banner.show {
+            display: flex;
+        }
+
+        .warning-banner i {
+            color: var(--red);
+            font-size: 23px;
+        }
+
+        .warning-banner h3 {
+            font-size: 13px;
+            color: #ff6565;
+            margin-bottom: 5px;
+        }
+
+        .warning-banner p {
+            font-size: 11px;
+            color: #d6aaaa;
+        }
+
+        @keyframes warningPulse {
+            from {
+                box-shadow: 0 0 5px rgba(255, 40, 40, .1);
+            }
+
+            to {
+                box-shadow: 0 0 22px rgba(255, 40, 40, .22);
+            }
+        }
+
+        /* MAIN GRID */
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1.15fr .85fr;
+            gap: 18px;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 18px;
+        }
+
+        .section-title span {
+            color: var(--orange);
+        }
+
+        /* BALANCE SCORE */
+
+        .score-area {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 35px;
+            padding: 15px 0;
+            flex-wrap: wrap;
+        }
+
+        .score-ring {
+            width: 155px;
+            height: 155px;
+            border-radius: 50%;
+            display: grid;
+            place-items: center;
+            position: relative;
+            background: conic-gradient(var(--orange) 0deg, #292929 0deg);
+            transition: background .4s;
+        }
+
+        .score-ring::before {
+            content: "";
+            position: absolute;
+            width: 125px;
+            height: 125px;
+            background: #121212;
+            border-radius: 50%;
+        }
+
+        .score-inner {
+            position: relative;
+            text-align: center;
+        }
+
+        .score-number {
+            font-size: 35px;
+            font-weight: 800;
+        }
+
+        .score-inner small {
+            display: block;
+            color: #888;
+            font-size: 9px;
+            margin-top: 4px;
+        }
+
+        .score-details {
+            min-width: 140px;
+        }
+
+        .score-details h3 {
+            font-size: 14px;
+            margin-bottom: 9px;
+        }
+
+        .score-details p {
+            color: #888;
+            font-size: 11px;
+            line-height: 1.7;
+        }
+
+        .state-tag {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 7px 12px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            color: var(--green);
+            background: rgba(55, 217, 150, .1);
+        }
+
+        /* SENSOR CHANNELS */
+
+        .sensor-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .sensor-box {
+            padding: 17px 12px;
+            background: rgba(255, 255, 255, .025);
+            border: 1px solid rgba(255, 255, 255, .07);
+            border-radius: 12px;
+            text-align: center;
+            transition: .3s;
+        }
+
+        .sensor-box:hover {
+            border-color: var(--orange);
+        }
+
+        .sensor-box i {
+            color: var(--orange);
+            font-size: 16px;
+            margin-bottom: 12px;
+        }
+
+        .sensor-box h4 {
+            color: #999;
+            font-size: 10px;
+            margin-bottom: 9px;
+        }
+
+        .sensor-value {
+            font-size: 19px;
+            font-weight: 800;
+        }
+
+        .sensor-unit {
+            color: #777;
+            font-size: 9px;
+            margin-top: 5px;
+        }
+
+        /* CHART */
+
+        .chart-card {
+            margin-bottom: 20px;
+        }
+
+        .chart-container {
+            height: 250px;
+            position: relative;
+        }
+
+        /* HISTORY */
+
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 11px;
+            min-width: 600px;
+        }
+
+        .history-table th {
+            color: var(--orange-light);
+            text-align: left;
+            padding: 13px 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .history-table td {
+            color: #bbb;
+            padding: 13px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, .05);
+        }
+
+        .history-table tr:hover td {
+            background: rgba(255, 120, 31, .04);
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        .badge {
+            padding: 5px 9px;
+            border-radius: 15px;
+            font-size: 9px;
+            font-weight: 700;
+        }
+
+        .badge.normal {
+            background: rgba(55, 217, 150, .12);
+            color: var(--green);
+        }
+
+        .badge.high {
+            background: rgba(255, 69, 69, .12);
+            color: #ff7777;
+        }
+
+        .badge.stopped {
+            background: rgba(160, 160, 160, .12);
+            color: #aaa;
+        }
+
+        /* FOOTER */
+
+        .footer {
+            text-align: center;
+            color: #666;
+            font-size: 10px;
+            padding: 25px 0 5px;
+            line-height: 1.8;
+        }
+
+        /* RESPONSIVE */
+
+        @media(max-width:1100px) {
+            .metrics {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media(max-width:750px) {
+            .sidebar {
+                position: relative;
+                width: 100%;
+                height: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .app {
+                display: block;
+            }
+
+            .main {
+                margin-left: 0;
+                width: 100%;
+                padding: 22px 15px;
+            }
+
+            .header {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .metrics {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .sensor-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .score-area {
+                gap: 20px;
+            }
+        }
+
+        @media(max-width:420px) {
+            .metrics {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* BALANCE & MOVEMENT ACTIVE NAV LINK */
+        .sidebar .nav-link.active {
+            background: rgba(220, 147, 0, 0.18);
+            color: #ffffff;
+            border-left: 3px solid #dc7200;
+            box-shadow: 0 0 12px rgba(220, 169, 0, 0.15);
+        }
+
+        .sidebar .nav-link.active i {
+            color: #dc9600;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="background">
+        <div class="glow one"></div>
+        <div class="glow two"></div>
+        <div class="particles" id="particles"></div>
+    </div>
+
+    <div class="app">
+
+        <!-- SIDEBAR -->
+
+        <aside class="sidebar">
+
+            <div class="sidebar-logo">
+                <span>✦</span> COSMO CARE
+            </div>
+
+            <div class="sidebar-menu">
+
+                <a href="index.html" class="nav-link">
+                    <i class="fas fa-house"></i>
+                    <span>Main Dashboard</span>
+                </a>
+
+                <a href="cardiovascular.html" class="nav-link">
+                    <i class="fas fa-heartbeat"></i>
+                    <span>Cardiovascular</span>
+                </a>
+
+                <a href="oxygen.html" class="nav-link">
+                    <i class="fas fa-lungs"></i>
+                    <span>Blood Oxygen</span>
+                </a>
+
+                <a href="sleep.html" class="nav-link">
+                    <i class="fas fa-moon"></i>
+                    <span>Sleep Monitor</span>
+                </a>
+
+                <a href="bone-health.html" class="nav-link">
+                    <i class="fas fa-bone"></i>
+                    <span>Bone Health</span>
+                </a>
+
+                <a href="radiation.html" class="nav-link">
+                    <i class="fas fa-radiation"></i>
+                    <span>Radiation Monitor</span>
+                </a>
+
+                <a href="air-quality.html" class="nav-link">
+                    <i class="fas fa-wind"></i>
+                    <span>Air Quality</span>
+                </a>
+
+                <a href="movement.html" class="nav-link active">
+                    <i class="fas fa-person-walking"></i>
+                    <span>Balance & Movement</span>
+                </a>
+
+                <a href="famil-connect.html" class="nav-link">
+                    <i class="fas fa-users"></i>
+                    <span>Family Connect</span>
+                </a>
+
+                <a href="alerts.html" class="nav-link">
+                    <i class="fas fa-bell"></i>
+                    <span>Alerts & Warnings</span>
+                </a>
+
+            </div>
+
+        </aside>
+        <!-- MAIN CONTENT -->
+
+        <main class="main">
+
+            <div class="header">
+                <div>
+                    <h1>Balance <span>& Movement</span></h1>
+                    <p>Movement analysis and balance stability monitoring system</p>
+                </div>
+
+                <div class="live-status">
+                    <span class="live-dot" id="liveDot"></span>
+                    <span id="headerStatus">SYSTEM STOPPED</span>
+                </div>
+            </div>
+
+
+            <!-- METRICS -->
+
+            <div class="metrics">
+
+                <div class="card">
+                    <div class="metric-icon">
+                        <i class="fa-solid fa-gauge-high"></i>
+                    </div>
+                    <div class="card-label">BALANCE SCORE</div>
+                    <div class="metric" id="balanceMetric">0<small> /100</small></div>
+                    <div class="subtext">Movement stability indicator</div>
+                </div>
+
+                <div class="card">
+                    <div class="metric-icon">
+                        <i class="fa-solid fa-wave-square"></i>
+                    </div>
+                    <div class="card-label">PEAK ACCELERATION</div>
+                    <div class="metric" id="accelMetric">0.00<small> m/s²</small></div>
+                    <div class="subtext">Resultant acceleration magnitude</div>
+                </div>
+
+                <div class="card">
+                    <div class="metric-icon">
+                        <i class="fa-solid fa-bolt"></i>
+                    </div>
+                    <div class="card-label">PEAK JERK</div>
+                    <div class="metric" id="jerkMetric">0.00<small> m/s³</small></div>
+                    <div class="subtext">Rate of acceleration change</div>
+                </div>
+
+                <div class="card">
+                    <div class="metric-icon">
+                        <i class="fa-solid fa-arrows-spin"></i>
+                    </div>
+                    <div class="card-label">SHOCK TRANSMISSION</div>
+                    <div class="metric" id="shockMetric">0.00<small> ratio</small></div>
+                    <div class="subtext">Movement shock indicator</div>
+                </div>
+
+            </div>
+
+
+            <!-- STIMULATION CONTROLS -->
+
+            <div class="control-panel">
+
+                <div class="control-info">
+                    <h3><i class="fa-solid fa-sliders" style="color:var(--orange)"></i>
+                        Movement Stimulation Control</h3>
+
+                    <p>
+                        Select a stimulation mode to simulate movement sensor readings.
+                        High stimulation activates the warning system.
+                    </p>
+                </div>
+
+                <div class="buttons">
+
+                    <button class="btn normal-btn" id="normalBtn">
+                        <i class="fa-solid fa-play"></i>
+                        NORMAL STIMULATION
+                    </button>
+
+                    <button class="btn high-btn" id="highBtn">
+                        <i class="fa-solid fa-bolt"></i>
+                        HIGH STIMULATION
+                    </button>
+
+                    <button class="btn stop-btn" id="stopBtn">
+                        <i class="fa-solid fa-stop"></i>
+                        STOP
+                    </button>
+
+                    <button class="btn sound-btn" id="soundBtn">
+                        <i class="fa-solid fa-volume-high"></i>
+                        SOUND ON
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- WARNING BANNER -->
+
+            <div class="warning-banner" id="warningBanner">
+
+                <i class="fa-solid fa-triangle-exclamation"></i>
+
+                <div>
+                    <h3>HIGH MOVEMENT STIMULATION WARNING</h3>
+                    <p>
+                        Elevated movement activity detected in the simulated sensor channels.
+                        Please review the movement readings.
+                    </p>
+                </div>
+
+            </div>
+
+
+            <!-- BALANCE AND SENSOR GRID -->
+
+            <div class="content-grid">
+
+                <div class="card">
+
+                    <div class="section-title">
+                        <span>Balance</span> Stability Analysis
+                    </div>
+
+                    <div class="score-area">
+
+                        <div class="score-ring" id="scoreRing">
+                            <div class="score-inner">
+                                <div class="score-number" id="scoreNumber">0</div>
+                                <small>STABILITY SCORE</small>
+                            </div>
+                        </div>
+
+                        <div class="score-details">
+
+                            <h3 id="movementStatus">System Stopped</h3>
+
+                            <p id="movementDescription">
+                                Stimulation is currently stopped.
+                                Sensor channels are displaying zero.
+                            </p>
+
+                            <div class="state-tag" id="stateTag">
+                                STOPPED
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="card">
+
+                    <div class="section-title">
+                        <span>Movement</span> Parameters
+                    </div>
+
+                    <div class="sensor-grid">
+
+                        <div class="sensor-box">
+                            <i class="fa-solid fa-arrows-left-right"></i>
+                            <h4>Peak Vertical Acceleration</h4>
+                            <div class="sensor-value" id="verticalAccel">0.00</div>
+                            <div class="sensor-unit">m/s²</div>
+                        </div>
+
+                        <div class="sensor-box">
+                            <i class="fa-solid fa-bolt"></i>
+                            <h4>Peak Jerk</h4>
+                            <div class="sensor-value" id="peakJerk">0.00</div>
+                            <div class="sensor-unit">m/s³</div>
+                        </div>
+
+                        <div class="sensor-box">
+                            <i class="fa-solid fa-wave-square"></i>
+                            <h4>Shock Ratio</h4>
+                            <div class="sensor-value" id="shockRatio">0.00</div>
+                            <div class="sensor-unit">Ratio</div>
+                        </div>
+
+                        <div class="sensor-box">
+                            <i class="fa-solid fa-person-walking"></i>
+                            <h4>Movement Level</h4>
+                            <div class="sensor-value" id="movementLevel">0</div>
+                            <div class="sensor-unit">Index</div>
+                        </div>
+
+                        <div class="sensor-box">
+                            <i class="fa-solid fa-compass"></i>
+                            <h4>Balance Variation</h4>
+                            <div class="sensor-value" id="balanceVariation">0.00</div>
+                            <div class="sensor-unit">Index</div>
+                        </div>
+
+                        <div class="sensor-box">
+                            <i class="fa-solid fa-clock"></i>
+                            <h4>Last Update</h4>
+                            <div class="sensor-value" id="lastUpdate" style="font-size:14px">--:--:--</div>
+                            <div class="sensor-unit">Local time</div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- ACCELEROMETER -->
+
+            <div class="card" style="margin-bottom:20px">
+
+                <div class="section-title">
+                    <span>Accelerometer</span> Sensor Channels
+                </div>
+
+                <div class="sensor-grid">
+
+                    <div class="sensor-box">
+                        <i class="fa-solid fa-arrows-left-right"></i>
+                        <h4>ACCELEROMETER X</h4>
+                        <div class="sensor-value" id="accX">0.00</div>
+                        <div class="sensor-unit">m/s²</div>
+                    </div>
+
+                    <div class="sensor-box">
+                        <i class="fa-solid fa-arrows-up-down"></i>
+                        <h4>ACCELEROMETER Y</h4>
+                        <div class="sensor-value" id="accY">0.00</div>
+                        <div class="sensor-unit">m/s²</div>
+                    </div>
+
+                    <div class="sensor-box">
+                        <i class="fa-solid fa-arrow-up"></i>
+                        <h4>ACCELEROMETER Z</h4>
+                        <div class="sensor-value" id="accZ">0.00</div>
+                        <div class="sensor-unit">m/s²</div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- GYROSCOPE -->
+
+            <div class="card" style="margin-bottom:20px">
+
+                <div class="section-title">
+                    <span>Gyroscope</span> Sensor Channels
+                </div>
+
+                <div class="sensor-grid">
+
+                    <div class="sensor-box">
+                        <i class="fa-solid fa-rotate"></i>
+                        <h4>GYROSCOPE X</h4>
+                        <div class="sensor-value" id="gyroX">0.00</div>
+                        <div class="sensor-unit">°/s</div>
+                    </div>
+
+                    <div class="sensor-box">
+                        <i class="fa-solid fa-rotate"></i>
+                        <h4>GYROSCOPE Y</h4>
+                        <div class="sensor-value" id="gyroY">0.00</div>
+                        <div class="sensor-unit">°/s</div>
+                    </div>
+
+                    <div class="sensor-box">
+                        <i class="fa-solid fa-rotate"></i>
+                        <h4>GYROSCOPE Z</h4>
+                        <div class="sensor-value" id="gyroZ">0.00</div>
+                        <div class="sensor-unit">°/s</div>
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- CHART -->
+
+            <div class="card chart-card">
+
+                <div class="section-title">
+                    <span>Movement</span> Activity Monitoring
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="movementChart"></canvas>
+                </div>
+
+            </div>
+
+
+            <!-- HISTORY -->
+
+            <div class="card">
+
+                <div class="section-title">
+                    <span>Stimulation</span> Activity History
+                </div>
+
+                <div class="table-wrap">
+
+                    <table class="history-table">
+
+                        <thead>
+                            <tr>
+                                <th>TIME</th>
+                                <th>MODE</th>
+                                <th>ACCELERATION</th>
+                                <th>JERK</th>
+                                <th>BALANCE SCORE</th>
+                                <th>STATUS</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="historyBody">
+                            <tr>
+                                <td colspan="6" style="text-align:center;color:#777">
+                                    No stimulation records yet.
+                                </td>
+                            </tr>
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+
+            <!-- DATASET INFORMATION -->
+
+            <div class="card" style="margin-top:20px">
+
+                <div class="section-title">
+                    <span>Research</span> Foundation & Data Sources
+                </div>
+
+                <p style="font-size:12px;color:#aaa;line-height:1.9">
+
+                    This prototype uses movement-analysis parameters informed by NASA
+                    research on astronaut gait and post-flight movement control.
+
+                    <br><br>
+
+                    <strong style="color:var(--orange-light)">
+                        1. NASA Technical Report
+                    </strong>
+
+                    <br>
+
+                    Using Tri-Axial Accelerometers to Assess the Dynamic Control of
+                    Head Posture During Gait.
+
+                    <br>
+
+                    <a href="https://ntrs.nasa.gov/archive/nasa/casi.ntrs.nasa.gov/20030064062.pdf" target="_blank"
+                        style="color:var(--orange-light)">
+                        View NASA research paper
+                    </a>
+
+                    <br><br>
+
+                    <strong style="color:var(--orange-light)">
+                        2. NASA Research
+                    </strong>
+
+                    <br>
+
+                    Countermeasure research related to post-flight gait dysfunction.
+
+                    <br>
+
+                    <a href="https://ntrs.nasa.gov/citations/20060028192" target="_blank"
+                        style="color:var(--orange-light)">
+                        View NASA research
+                    </a>
+
+                    <br><br>
+
+                    <strong style="color:var(--orange-light)">
+                        Prototype data note:
+                    </strong>
+
+                    The readings displayed here are simulated sensor outputs based on
+                    research-informed movement parameters. They are not live astronaut
+                    measurements or original numerical records downloaded from NASA.
+                    The balance score and stimulation thresholds are prototype
+                    indicators, not clinically validated medical thresholds.
+
+                </p>
+
+            </div>
+
+
+            <div class="footer">
+                COSMO CARE | ASTRONAUT HEALTH MONITORING SYSTEM
+                <br>
+                Balance & Movement Monitoring Module
+            </div>
+
+        </main>
+    </div>
+
+
+    <script>
+
+        /* --------------------------------
+           ANIMATED BACKGROUND PARTICLES
+        -------------------------------- */
+
+        const particleContainer = document.getElementById("particles");
+
+        for (let i = 0; i < 45; i++) {
+
+            const particle = document.createElement("div");
+
+            particle.className = "particle";
+
+            particle.style.left = Math.random() * 100 + "%";
+            particle.style.animationDuration = (8 + Math.random() * 14) + "s";
+            particle.style.animationDelay = (-Math.random() * 15) + "s";
+            particle.style.opacity = Math.random() * .6;
+
+            particleContainer.appendChild(particle);
+        }
+
+
+        /* --------------------------------
+           CHART CONFIGURATION
+        -------------------------------- */
+
+        const labels = [];
+        const accelData = [];
+        const jerkData = [];
+
+        const ctx = document.getElementById("movementChart");
+
+        const chart = new Chart(ctx, {
+
+            type: "line",
+
+            data: {
+
+                labels: labels,
+
+                datasets: [
+
+                    {
+                        label: "Acceleration",
+                        data: accelData,
+                        borderColor: "#ff781f",
+                        backgroundColor: "rgba(255,120,31,.10)",
+                        borderWidth: 2,
+                        tension: .4,
+                        fill: true,
+                        pointRadius: 2
+                    },
+
+                    {
+                        label: "Jerk",
+                        data: jerkData,
+                        borderColor: "#ffc14d",
+                        backgroundColor: "rgba(255,193,77,.05)",
+                        borderWidth: 2,
+                        tension: .4,
+                        fill: false,
+                        pointRadius: 2
+                    }
+
+                ]
+
+            },
+
+            options: {
+
+                responsive: true,
+                maintainAspectRatio: false,
+
+                animation: {
+                    duration: 300
+                },
+
+                plugins: {
+
+                    legend: {
+                        labels: {
+                            color: "#bbb",
+                            font: {
+                                size: 11
+                            }
+                        }
+                    }
+
+                },
+
+                scales: {
+
+                    x: {
+                        ticks: {
+                            color: "#888",
+                            maxTicksLimit: 8
+                        },
+                        grid: {
+                            color: "rgba(255,255,255,.04)"
+                        }
+                    },
+
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            color: "#888"
+                        },
+                        grid: {
+                            color: "rgba(255,255,255,.06)"
+                        }
+                    }
+
+                }
+
+            }
+
+        });
+
+
+        /* --------------------------------
+           APPLICATION STATE
+        -------------------------------- */
+
+        let currentMode = "STOPPED";
+        let timer = null;
+        let tick = 0;
+        let soundEnabled = true;
+        let audioContext = null;
+        let alarmTimer = null;
+        let lastAlertMode = null;
+
+        const historyBody = document.getElementById("historyBody");
+
+
+        /* --------------------------------
+           SENSOR ELEMENTS
+        -------------------------------- */
+
+        const sensorIds = [
+            "accX",
+            "accY",
+            "accZ",
+            "gyroX",
+            "gyroY",
+            "gyroZ"
+        ];
+
+
+        /* --------------------------------
+           READING GENERATOR
+        
+           Normal mode = lower movement values.
+           High mode = elevated movement values.
+           Stopped = all values zero.
+        -------------------------------- */
+
+        function generateReading() {
+
+            tick++;
+
+            if (currentMode === "STOPPED") {
+
+                return {
+                    ax: 0,
+                    ay: 0,
+                    az: 0,
+                    gx: 0,
+                    gy: 0,
+                    gz: 0,
+                    acceleration: 0,
+                    jerk: 0,
+                    shock: 0,
+                    movement: 0,
+                    variation: 0,
+                    balance: 0
+                };
+
+            }
+
+            const wave = Math.sin(tick * .7);
+            const wave2 = Math.cos(tick * .45);
+
+            let reading = {};
+
+            if (currentMode === "NORMAL") {
+
+                reading.ax = 0.35 + wave * 0.12;
+                reading.ay = 0.28 + wave2 * 0.10;
+                reading.az = 0.65 + wave * 0.08;
+
+                reading.gx = 2.5 + wave * 0.8;
+                reading.gy = 2.0 + wave2 * 0.7;
+                reading.gz = 3.0 + wave * 0.6;
+
+                reading.acceleration = 0.95 + Math.abs(wave) * 0.15;
+                reading.jerk = 0.35 + Math.abs(wave2) * 0.12;
+                reading.shock = 0.18 + Math.abs(wave) * 0.04;
+                reading.movement = 35 + Math.round(Math.abs(wave) * 8);
+                reading.variation = 0.20 + Math.abs(wave2) * 0.08;
+                reading.balance = 90 + Math.round(wave * 3);
+
+            }
+
+            else if (currentMode === "HIGH") {
+
+                reading.ax = 1.85 + wave * 0.55;
+                reading.ay = 1.60 + wave2 * 0.45;
+                reading.az = 2.75 + wave * 0.65;
+
+                reading.gx = 18 + wave * 5;
+                reading.gy = 15 + wave2 * 4;
+                reading.gz = 21 + wave * 6;
+
+                reading.acceleration = 4.8 + Math.abs(wave) * 1.2;
+                reading.jerk = 3.2 + Math.abs(wave2) * 1.0;
+                reading.shock = 0.75 + Math.abs(wave) * 0.12;
+                reading.movement = 85 + Math.round(Math.abs(wave) * 10);
+                reading.variation = 1.20 + Math.abs(wave2) * 0.35;
+                reading.balance = 62 + Math.round(wave * 4);
+
+            }
+
+            return reading;
+        }
+
+
+        /* --------------------------------
+           UPDATE DISPLAY
+        -------------------------------- */
+
+        function updateDisplay(r) {
+
+            document.getElementById("accX").textContent = r.ax.toFixed(2);
+            document.getElementById("accY").textContent = r.ay.toFixed(2);
+            document.getElementById("accZ").textContent = r.az.toFixed(2);
+
+            document.getElementById("gyroX").textContent = r.gx.toFixed(2);
+            document.getElementById("gyroY").textContent = r.gy.toFixed(2);
+            document.getElementById("gyroZ").textContent = r.gz.toFixed(2);
+
+            document.getElementById("balanceMetric").innerHTML =
+                r.balance + "<small> /100</small>";
+
+            document.getElementById("scoreNumber").textContent = r.balance;
+
+            document.getElementById("accelMetric").innerHTML =
+                r.acceleration.toFixed(2) + "<small> m/s²</small>";
+
+            document.getElementById("jerkMetric").innerHTML =
+                r.jerk.toFixed(2) + "<small> m/s³</small>";
+
+            document.getElementById("shockMetric").innerHTML =
+                r.shock.toFixed(2) + "<small> ratio</small>";
+
+            document.getElementById("verticalAccel").textContent =
+                r.az.toFixed(2);
+
+            document.getElementById("peakJerk").textContent =
+                r.jerk.toFixed(2);
+
+            document.getElementById("shockRatio").textContent =
+                r.shock.toFixed(2);
+
+            document.getElementById("movementLevel").textContent =
+                r.movement;
+
+            document.getElementById("balanceVariation").textContent =
+                r.variation.toFixed(2);
+
+            document.getElementById("lastUpdate").textContent =
+                new Date().toLocaleTimeString();
+
+
+            const ring = document.getElementById("scoreRing");
+
+            ring.style.background =
+                `conic-gradient(var(--orange) ${r.balance * 3.6}deg, #292929 0deg)`;
+
+
+            const status = document.getElementById("movementStatus");
+            const description = document.getElementById("movementDescription");
+            const tag = document.getElementById("stateTag");
+
+            if (currentMode === "STOPPED") {
+
+                status.textContent = "System Stopped";
+
+                description.textContent =
+                    "Stimulation is stopped. All sensor channels are set to zero.";
+
+                tag.textContent = "STOPPED";
+                tag.style.color = "#aaa";
+                tag.style.background = "rgba(160,160,160,.12)";
+
+            }
+
+            else if (currentMode === "NORMAL") {
+
+                status.textContent = "Normal Movement";
+
+                description.textContent =
+                    "Normal stimulation is active. Movement readings are within the prototype's normal operating range.";
+
+                tag.textContent = "NORMAL";
+                tag.style.color = "var(--green)";
+                tag.style.background = "rgba(55,217,150,.1)";
+
+            }
+
+            else {
+
+                status.textContent = "Elevated Movement";
+
+                description.textContent =
+                    "High stimulation is active. Elevated movement readings have triggered a warning.";
+
+                tag.textContent = "HIGH WARNING";
+                tag.style.color = "#ff7777";
+                tag.style.background = "rgba(255,69,69,.12)";
+
+            }
+
+            document.getElementById("headerStatus").textContent =
+                currentMode === "STOPPED" ? "SYSTEM STOPPED" :
+                    currentMode === "NORMAL" ? "NORMAL STIMULATION" :
+                        "HIGH STIMULATION";
+
+            document.getElementById("liveDot").style.background =
+                currentMode === "HIGH" ? "#ff4545" :
+                    currentMode === "NORMAL" ? "#37d996" : "#777";
+
+        }
+
+
+        /* --------------------------------
+           CHART UPDATE
+        -------------------------------- */
+
+        function updateChart(r) {
+
+            const time = new Date().toLocaleTimeString();
+
+            labels.push(time);
+            accelData.push(r.acceleration);
+            jerkData.push(r.jerk);
+
+            if (labels.length > 15) {
+
+                labels.shift();
+                accelData.shift();
+                jerkData.shift();
+
+            }
+
+            chart.update();
+
+        }
+
+
+        /* --------------------------------
+           ZERO ALL SENSOR READINGS
+        -------------------------------- */
+
+        function resetAllReadings() {
+
+            const zeroReading = {
+                ax: 0,
+                ay: 0,
+                az: 0,
+                gx: 0,
+                gy: 0,
+                gz: 0,
+                acceleration: 0,
+                jerk: 0,
+                shock: 0,
+                movement: 0,
+                variation: 0,
+                balance: 0
+            };
+
+            updateDisplay(zeroReading);
+
+            labels.length = 0;
+            accelData.length = 0;
+            jerkData.length = 0;
+
+            for (let i = 0; i < 8; i++) {
+
+                labels.push("--");
+                accelData.push(0);
+                jerkData.push(0);
+
+            }
+
+            chart.update();
+
+        }
+
+
+        /* --------------------------------
+           WARNING SOUND
+        -------------------------------- */
+
+        function playWarningSound() {
+
+            if (!soundEnabled) return;
+
+            try {
+
+                if (!audioContext) {
+
+                    audioContext = new (
+                        window.AudioContext ||
+                        window.webkitAudioContext
+                    )();
+
+                }
+
+                if (audioContext.state === "suspended") {
+                    audioContext.resume();
+                }
+
+                const oscillator = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+
+                oscillator.type = "square";
+
+                oscillator.frequency.setValueAtTime(
+                    880,
+                    audioContext.currentTime
+                );
+
+                oscillator.frequency.setValueAtTime(
+                    620,
+                    audioContext.currentTime + 0.18
+                );
+
+                gain.gain.setValueAtTime(
+                    0.0001,
+                    audioContext.currentTime
+                );
+
+                gain.gain.exponentialRampToValueAtTime(
+                    0.18,
+                    audioContext.currentTime + 0.03
+                );
+
+                gain.gain.exponentialRampToValueAtTime(
+                    0.0001,
+                    audioContext.currentTime + 0.35
+                );
+
+                oscillator.connect(gain);
+                gain.connect(audioContext.destination);
+
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.36);
+
+            }
+
+            catch (error) {
+
+                console.log("Audio warning:", error);
+
+            }
+
+        }
+
+
+        function startAlarm() {
+
+            stopAlarm();
+
+            if (!soundEnabled) return;
+
+            playWarningSound();
+
+            alarmTimer = setInterval(() => {
+
+                if (currentMode === "HIGH" && soundEnabled) {
+                    playWarningSound();
+                }
+
+            }, 900);
+
+        }
+
+
+        function stopAlarm() {
+
+            if (alarmTimer) {
+
+                clearInterval(alarmTimer);
+                alarmTimer = null;
+
+            }
+
+        }
+
+
+        /* --------------------------------
+           COSMO CARE ALERT INTEGRATION
+        -------------------------------- */
+
+        function sendMovementAlert() {
+
+            if (currentMode !== "HIGH") return;
+
+            if (lastAlertMode === "HIGH") return;
+
+            lastAlertMode = "HIGH";
+
+            try {
+
+                const key = "cosmoCareAlerts";
+
+                const existing = JSON.parse(
+                    localStorage.getItem(key) || "[]"
+                );
+
+                existing.unshift({
+
+                    id: "MOV-" + Date.now(),
+
+                    title: "High Movement Stimulation",
+
+                    message:
+                        "Elevated movement sensor readings detected in the Balance & Movement module.",
+
+                    source: "Balance & Movement",
+
+                    severity: "warning",
+
+                    timestamp: new Date().toISOString(),
+
+                    status: "unread"
+
+                });
+
+                localStorage.setItem(
+                    key,
+                    JSON.stringify(existing)
+                );
+
+            }
+
+            catch (error) {
+
+                console.log("Alert storage error:", error);
+
+            }
+
+        }
+
+
+        /* --------------------------------
+           HISTORY TABLE
+        -------------------------------- */
+
+        function addHistory(r) {
+
+            const row = document.createElement("tr");
+
+            let badge = "stopped";
+
+            if (currentMode === "NORMAL") badge = "normal";
+            if (currentMode === "HIGH") badge = "high";
+
+            row.innerHTML = `
+
+        <td>${new Date().toLocaleTimeString()}</td>
+
+        <td>${currentMode}</td>
+
+        <td>${r.acceleration.toFixed(2)} m/s²</td>
+
+        <td>${r.jerk.toFixed(2)} m/s³</td>
+
+        <td>${r.balance}</td>
+
+        <td>
+            <span class="badge ${badge}">
+                ${currentMode}
+            </span>
+        </td>
+
+    `;
+
+            if (historyBody.children.length === 1 &&
+                historyBody.children[0].children.length === 1) {
+
+                historyBody.innerHTML = "";
+
+            }
+
+            historyBody.prepend(row);
+
+            while (historyBody.children.length > 12) {
+
+                historyBody.removeChild(historyBody.lastChild);
+
+            }
+
+        }
+
+
+        /* --------------------------------
+           MODE CONTROL
+        -------------------------------- */
+
+        function stopSimulationTimer() {
+
+            if (timer) {
+
+                clearInterval(timer);
+                timer = null;
+
+            }
+
+        }
+
+
+        function updateSimulation() {
+
+            if (currentMode === "STOPPED") return;
+
+            const reading = generateReading();
+
+            updateDisplay(reading);
+            updateChart(reading);
+            addHistory(reading);
+
+        }
+
+
+        function setMode(mode) {
+
+            stopSimulationTimer();
+            stopAlarm();
+
+            currentMode = mode;
+
+            document.getElementById("normalBtn").classList.remove("selected");
+            document.getElementById("highBtn").classList.remove("selected");
+            document.getElementById("stopBtn").classList.remove("selected");
+
+            document.getElementById("warningBanner").classList.remove("show");
+
+            if (mode === "STOPPED") {
+
+                document.getElementById("stopBtn").classList.add("selected");
+
+                lastAlertMode = null;
+
+                resetAllReadings();
+
+                addHistory(generateReading());
+
+                return;
+
+            }
+
+
+            if (mode === "NORMAL") {
+
+                document.getElementById("normalBtn").classList.add("selected");
+
+                lastAlertMode = null;
+
+            }
+
+
+            if (mode === "HIGH") {
+
+                document.getElementById("highBtn").classList.add("selected");
+
+                document.getElementById("warningBanner").classList.add("show");
+
+                sendMovementAlert();
+
+                startAlarm();
+
+            }
+
+
+            // Generate the first reading immediately.
+
+            updateSimulation();
+
+
+            // Continue updating readings while stimulation is active.
+
+            timer = setInterval(() => {
+
+                updateSimulation();
+
+            }, 2000);
+
+        }
+
+
+        /* --------------------------------
+           BUTTON EVENTS
+        -------------------------------- */
+
+        document.getElementById("normalBtn").addEventListener(
+            "click",
+            () => setMode("NORMAL")
+        );
+
+
+        document.getElementById("highBtn").addEventListener(
+            "click",
+            () => setMode("HIGH")
+        );
+
+
+        document.getElementById("stopBtn").addEventListener(
+            "click",
+            () => setMode("STOPPED")
+        );
+
+
+        document.getElementById("soundBtn").addEventListener(
+            "click",
+            () => {
+
+                soundEnabled = !soundEnabled;
+
+                const button = document.getElementById("soundBtn");
+
+                if (soundEnabled) {
+
+                    button.innerHTML =
+                        '<i class="fa-solid fa-volume-high"></i> SOUND ON';
+
+                    if (currentMode === "HIGH") {
+                        startAlarm();
+                    }
+
+                }
+
+                else {
+
+                    button.innerHTML =
+                        '<i class="fa-solid fa-volume-xmark"></i> SOUND OFF';
+
+                    stopAlarm();
+
+                }
+
+            }
+        );
+
+
+        /* --------------------------------
+           INITIAL STATE
+        -------------------------------- */
+
+        // Dashboard opens in STOPPED mode.
+        // Every sensor channel starts at zero.
+
+        setMode("STOPPED");
+
+    </script>
+
+</body>
+
+</html>

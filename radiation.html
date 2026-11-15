@@ -1,0 +1,2023 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmo Care | Radiation Monitor</title>
+
+    <link rel="stylesheet" href="cosmo-style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --bg: #100e08;
+            --panel: rgba(35, 29, 13, 0.88);
+            --panel2: rgba(48, 39, 16, 0.82);
+            --yellow: #ffd43b;
+            --yellow2: #f5a900;
+            --gold: #ffb52e;
+            --red: #ff5364;
+            --cyan: #73e7dc;
+            --text: #fff8df;
+            --muted: #b7a879;
+            --border: rgba(255, 212, 59, 0.19);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* BACKGROUND */
+
+        #stars {
+            position: fixed;
+            inset: 0;
+            z-index: -5;
+            pointer-events: none;
+        }
+
+        .background-glow {
+            position: fixed;
+            width: 430px;
+            height: 430px;
+            border-radius: 50%;
+            filter: blur(130px);
+            opacity: .15;
+            z-index: -4;
+            pointer-events: none;
+        }
+
+        .glow-one {
+            background: #e6a900;
+            top: -160px;
+            left: 25%;
+        }
+
+        .glow-two {
+            background: #ff7b00;
+            bottom: -190px;
+            right: 5%;
+        }
+
+        .radiation-symbol {
+            position: fixed;
+            z-index: -3;
+            color: rgba(255, 212, 59, .075);
+            pointer-events: none;
+            animation: floatRadiation 12s ease-in-out infinite;
+        }
+
+        .radiation-symbol.one {
+            font-size: 180px;
+            top: 15%;
+            right: 8%;
+        }
+
+        .radiation-symbol.two {
+            font-size: 110px;
+            bottom: 12%;
+            left: 28%;
+            animation-delay: -4s;
+        }
+
+        .radiation-symbol.three {
+            font-size: 75px;
+            top: 55%;
+            right: 38%;
+            animation-delay: -7s;
+        }
+
+        @keyframes floatRadiation {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+                opacity: .45;
+            }
+
+            50% {
+                transform: translateY(-25px) rotate(25deg);
+                opacity: 1;
+            }
+        }
+
+        .background-ring {
+            position: fixed;
+            width: 480px;
+            height: 480px;
+            border: 1px solid rgba(255, 212, 59, .07);
+            border-radius: 50%;
+            top: 48%;
+            left: 62%;
+            transform: translate(-50%, -50%);
+            z-index: -3;
+            pointer-events: none;
+            animation: ringRotate 35s linear infinite;
+        }
+
+        .background-ring::before,
+        .background-ring::after {
+            content: "";
+            position: absolute;
+            inset: 35px;
+            border: 1px dashed rgba(255, 212, 59, .09);
+            border-radius: 50%;
+        }
+
+        .background-ring::after {
+            inset: 85px;
+        }
+
+        @keyframes ringRotate {
+            to {
+                transform: translate(-50%, -50%) rotate(360deg);
+            }
+        }
+
+        /* MAIN CONTENT
+   Sidebar styling is intentionally not overridden here.
+   The common cosmo-style.css controls the sidebar. */
+
+        .main {
+            margin-left: 255px;
+            width: calc(100% - 255px);
+            padding: 30px 35px 50px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+        }
+
+        .page-title h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(19px, 2.5vw, 27px);
+            letter-spacing: 1px;
+            color: var(--yellow);
+        }
+
+        .page-title p {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 9px;
+        }
+
+        .system-status {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: var(--yellow);
+            background: rgba(255, 212, 59, .08);
+            border: 1px solid var(--border);
+            padding: 11px 16px;
+            border-radius: 30px;
+            font-size: 11px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--yellow);
+            border-radius: 50%;
+            box-shadow: 0 0 12px var(--yellow);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            50% {
+                opacity: .3;
+                transform: scale(.7);
+            }
+        }
+
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 22px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, .22);
+            backdrop-filter: blur(12px);
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 13px;
+            letter-spacing: 1px;
+            margin-bottom: 18px;
+            color: var(--yellow);
+        }
+
+        .section-subtitle {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: -10px;
+            margin-bottom: 18px;
+            line-height: 1.7;
+        }
+
+        /* CONTROL PANEL */
+
+        .control-panel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 22px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 9px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: .25s;
+        }
+
+        .control-btn {
+            border: 1px solid var(--border);
+            padding: 11px 15px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, .035);
+            color: var(--text);
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 18px rgba(255, 212, 59, .1);
+        }
+
+        .normal-btn {
+            border-color: var(--yellow);
+            color: var(--yellow);
+        }
+
+        .normal-btn:hover {
+            background: rgba(255, 212, 59, .13);
+        }
+
+        .high-btn {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .high-btn:hover {
+            background: rgba(255, 181, 46, .13);
+        }
+
+        .stop-btn {
+            border-color: var(--red);
+            color: var(--red);
+        }
+
+        .stop-btn:hover {
+            background: rgba(255, 83, 100, .13);
+        }
+
+        .sound-btn {
+            border-color: var(--cyan);
+            color: var(--cyan);
+        }
+
+        .sound-btn:hover {
+            background: rgba(115, 231, 220, .12);
+        }
+
+        .mode-label {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .mode-label strong {
+            color: var(--yellow);
+        }
+
+        /* METRICS */
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .metric-card {
+            background: var(--panel2);
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: .3s;
+        }
+
+        .metric-card::after {
+            content: "";
+            position: absolute;
+            width: 90px;
+            height: 90px;
+            border: 1px solid rgba(255, 212, 59, .08);
+            border-radius: 50%;
+            right: -35px;
+            bottom: -40px;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--yellow);
+        }
+
+        .metric-icon {
+            font-size: 19px;
+            color: var(--yellow);
+            margin-bottom: 15px;
+        }
+
+        .metric-name {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .metric-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 25px;
+            margin: 12px 0 5px;
+        }
+
+        .metric-unit {
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        .metric-status {
+            display: inline-block;
+            margin-top: 14px;
+            padding: 5px 9px;
+            border-radius: 20px;
+            background: rgba(255, 212, 59, .1);
+            color: var(--yellow);
+            font-size: 9px;
+            letter-spacing: 1px;
+        }
+
+        .metric-status.warning {
+            background: rgba(255, 181, 46, .13);
+            color: var(--gold);
+        }
+
+        .metric-status.critical {
+            background: rgba(255, 83, 100, .13);
+            color: var(--red);
+        }
+
+        /* CONTENT GRID */
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1.1fr .9fr;
+            gap: 18px;
+            margin-bottom: 20px;
+        }
+
+        /* RADIATION VISUAL */
+
+        .radiation-area {
+            min-height: 330px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .radiation-orbit {
+            position: absolute;
+            width: 265px;
+            height: 265px;
+            border: 1px solid rgba(255, 212, 59, .28);
+            border-radius: 50%;
+            animation: orbitRotate 18s linear infinite;
+        }
+
+        .radiation-orbit::before,
+        .radiation-orbit::after {
+            content: "";
+            position: absolute;
+            inset: 22px;
+            border: 1px dashed rgba(255, 212, 59, .25);
+            border-radius: 50%;
+        }
+
+        .radiation-orbit::after {
+            inset: 48px;
+            border-style: solid;
+            opacity: .6;
+        }
+
+        @keyframes orbitRotate {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .radiation-core {
+            width: 170px;
+            height: 170px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: radial-gradient(circle, rgba(255, 212, 59, .2), rgba(255, 212, 59, .025) 70%);
+            border: 1px solid rgba(255, 212, 59, .32);
+            box-shadow: 0 0 35px rgba(255, 212, 59, .12);
+            animation: corePulse 3s ease-in-out infinite;
+            z-index: 1;
+        }
+
+        .radiation-core i {
+            font-size: 95px;
+            color: var(--yellow);
+            filter: drop-shadow(0 0 17px rgba(255, 212, 59, .6));
+            animation: symbolSpin 22s linear infinite;
+        }
+
+        @keyframes corePulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.08);
+            }
+        }
+
+        @keyframes symbolSpin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .radiation-caption {
+            position: absolute;
+            bottom: 19px;
+            color: var(--muted);
+            font-size: 10px;
+            letter-spacing: 2px;
+        }
+
+        /* SENSOR RESPONSE */
+
+        .sensor-list {
+            display: flex;
+            flex-direction: column;
+            gap: 13px;
+        }
+
+        .sensor-item {
+            background: rgba(255, 255, 255, .025);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+        }
+
+        .sensor-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            font-size: 11px;
+            margin-bottom: 12px;
+        }
+
+        .sensor-top span:last-child {
+            color: var(--yellow);
+        }
+
+        .progress {
+            width: 100%;
+            height: 7px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, .08);
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            width: 25%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--yellow2), var(--yellow));
+            border-radius: 20px;
+            transition: width .6s ease;
+        }
+
+        .footer-note {
+            color: #9d8d62;
+            font-size: 10px;
+            line-height: 1.7;
+            margin-top: 18px;
+        }
+
+        /* CHART */
+
+        .chart-panel {
+            margin-bottom: 20px;
+        }
+
+        .chart-container {
+            height: 250px;
+        }
+
+        /* HISTORY */
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .history-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: rgba(255, 255, 255, .025);
+            border-radius: 8px;
+            font-size: 11px;
+        }
+
+        .history-row span:last-child {
+            color: var(--muted);
+            white-space: nowrap;
+        }
+
+        /* RESEARCH LINKS */
+
+        .dataset-note {
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.8;
+        }
+
+        .dataset-note a {
+            color: var(--yellow);
+            text-decoration: none;
+        }
+
+        .dataset-note a:hover {
+            text-decoration: underline;
+        }
+
+        /* WARNING POPUP */
+
+        .warning-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, .78);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            padding: 20px;
+            backdrop-filter: blur(7px);
+        }
+
+        .warning-overlay.show {
+            display: flex;
+        }
+
+        .warning-box {
+            width: 100%;
+            max-width: 430px;
+            background: #211b0c;
+            border: 1px solid var(--red);
+            border-radius: 17px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 0 45px rgba(255, 83, 100, .2);
+            animation: popup .35s ease;
+        }
+
+        @keyframes popup {
+            from {
+                opacity: 0;
+                transform: scale(.85);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .warning-icon {
+            color: var(--red);
+            font-size: 43px;
+            margin-bottom: 18px;
+            animation: warningPulse 1s infinite;
+        }
+
+        @keyframes warningPulse {
+            50% {
+                transform: scale(1.13);
+            }
+        }
+
+        .warning-box h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--red);
+            font-size: 17px;
+            margin-bottom: 14px;
+        }
+
+        .warning-box p {
+            color: #e0d4b1;
+            font-size: 12px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .ack-btn {
+            background: var(--red);
+            color: white;
+            border: none;
+            border-radius: 7px;
+            padding: 12px 25px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .ack-btn:hover {
+            background: #e83c50;
+            transform: translateY(-2px);
+        }
+
+        /* TOAST */
+
+        .toast {
+            position: fixed;
+            right: 25px;
+            bottom: 25px;
+            background: #28200d;
+            border: 1px solid var(--yellow);
+            color: var(--text);
+            border-radius: 10px;
+            padding: 14px 18px;
+            font-size: 11px;
+            z-index: 120;
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+            transition: .3s;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* RESPONSIVE CONTENT ONLY */
+
+        @media(max-width:1100px) {
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media(max-width:850px) {
+            .main {
+                padding: 22px 18px;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media(max-width:500px) {
+            .metrics-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 9px;
+            }
+
+            .metric-card {
+                padding: 13px;
+            }
+
+            .metric-value {
+                font-size: 19px;
+            }
+
+            .panel {
+                padding: 16px;
+            }
+
+            .control-btn {
+                padding: 10px;
+                font-size: 10px;
+            }
+
+            .history-row {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+
+        /* RADIATION PAGE ONLY - YELLOW SIDEBAR */
+        .sidebar {
+            background: linear-gradient(180deg, #241d0b, #15120a) !important;
+            border-right: 1px solid rgba(255, 209, 102, 0.25);
+        }
+
+        .sidebar-logo {
+            color: #ffd166 !important;
+        }
+
+        .sidebar-logo span {
+            color: #ffb000 !important;
+        }
+
+        .sidebar .nav-link {
+            color: #d8cba9 !important;
+        }
+
+        .sidebar .nav-link i {
+            color: #ffd166 !important;
+        }
+
+        .sidebar .nav-link:hover {
+            background: rgba(255, 209, 102, 0.12) !important;
+        }
+
+        .sidebar .nav-link.active {
+            background: linear-gradient(90deg, #ffd166, #ffb000) !important;
+            color: #211800 !important;
+        }
+
+        .sidebar .nav-link.active i {
+            color: #211800 !important;
+        }
+    </style>
+</head>
+
+<body>
+
+    <canvas id="stars"></canvas>
+
+    <div class="background-glow glow-one"></div>
+    <div class="background-glow glow-two"></div>
+
+    <div class="background-ring"></div>
+
+    <i class="fa-solid fa-radiation radiation-symbol one"></i>
+    <i class="fa-solid fa-radiation radiation-symbol two"></i>
+    <i class="fa-solid fa-radiation radiation-symbol three"></i>
+
+
+    <!-- SIDEBAR: KEEP THIS HTML THE SAME AS YOUR OTHER DASHBOARDS -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+            <span>✦</span> COSMO CARE
+        </div>
+
+        <div class="sidebar-menu">
+
+            <a href="index.html" class="nav-link">
+                <i class="fas fa-house"></i>
+                <span>Main Dashboard</span>
+            </a>
+
+            <a href="cardiovascular.html" class="nav-link">
+                <i class="fas fa-heartbeat"></i>
+                <span>Cardiovascular</span>
+            </a>
+
+            <a href="oxygen.html" class="nav-link">
+                <i class="fas fa-lungs"></i>
+                <span>Blood Oxygen</span>
+            </a>
+
+            <a href="sleep.html" class="nav-link">
+                <i class="fas fa-moon"></i>
+                <span>Sleep Monitor</span>
+            </a>
+
+            <a href="bone-health.html" class="nav-link">
+                <i class="fas fa-bone"></i>
+                <span>Bone Health</span>
+            </a>
+
+            <a href="radiation.html" class="nav-link active">
+                <i class="fas fa-radiation"></i>
+                <span>Radiation Monitor</span>
+            </a>
+
+            <a href="air-quality.html" class="nav-link">
+                <i class="fas fa-wind"></i>
+                <span>Air Quality</span>
+            </a>
+
+            <a href="movement.html" class="nav-link">
+                <i class="fas fa-person-walking"></i>
+                <span>Balance & Movement</span>
+            </a>
+
+            <a href="famil-connect.html" class="nav-link">
+                <i class="fas fa-users"></i>
+                <span>Family Connect</span>
+            </a>
+
+            <a href="alerts.html" class="nav-link">
+                <i class="fas fa-bell"></i>
+                <span>Alerts & Warnings</span>
+            </a>
+
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+
+    <main class="main">
+
+        <div class="topbar">
+
+            <div class="page-title">
+                <h1>RADIATION MONITOR</h1>
+                <p>Space radiation exposure and shielding monitoring system</p>
+            </div>
+
+            <div class="system-status">
+                <span class="status-dot" id="statusDot"></span>
+                <span id="systemStatus">SYSTEM ACTIVE</span>
+            </div>
+
+        </div>
+
+
+        <!-- CONTROL PANEL -->
+
+        <section class="panel control-panel">
+
+            <div>
+                <div class="section-title">RADIATION CONTROL CENTER</div>
+
+                <div class="mode-label">
+                    Current Mode:
+                    <strong id="modeText">NORMAL STIMULATION</strong>
+                </div>
+            </div>
+
+            <div class="button-group">
+
+                <button class="control-btn normal-btn" onclick="setNormal()">
+                    <i class="fa-solid fa-shield-halved"></i> NORMAL
+                </button>
+
+                <button class="control-btn high-btn" onclick="setHigh()">
+                    <i class="fa-solid fa-radiation"></i> HIGH STIMULATION
+                </button>
+
+                <button class="control-btn stop-btn" onclick="stopSystem()">
+                    <i class="fa-solid fa-power-off"></i> STOP SYSTEM
+                </button>
+
+                <button class="control-btn sound-btn" id="soundButton" onclick="toggleSound()">
+                    <i class="fa-solid fa-volume-high"></i> SOUND ON
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- RADIATION READINGS -->
+
+        <div class="metrics-grid">
+
+            <div class="metric-card">
+
+                <div class="metric-icon">
+                    <i class="fa-solid fa-radiation"></i>
+                </div>
+
+                <div class="metric-name">RADIATION DOSE RATE</div>
+
+                <div class="metric-value" id="doseRateValue">0.35</div>
+
+                <div class="metric-unit">mSv/day · illustrative</div>
+
+                <span class="metric-status" id="doseRateStatus">NORMAL</span>
+
+            </div>
+
+
+            <div class="metric-card">
+
+                <div class="metric-icon">
+                    <i class="fa-solid fa-gauge-high"></i>
+                </div>
+
+                <div class="metric-name">CUMULATIVE EXPOSURE</div>
+
+                <div class="metric-value" id="cumulativeValue">12.4</div>
+
+                <div class="metric-unit">mSv · illustrative</div>
+
+                <span class="metric-status" id="cumulativeStatus">NORMAL</span>
+
+            </div>
+
+
+            <div class="metric-card">
+
+                <div class="metric-icon">
+                    <i class="fa-solid fa-sun"></i>
+                </div>
+
+                <div class="metric-name">SOLAR PARTICLE ACTIVITY</div>
+
+                <div class="metric-value" id="solarValue">18</div>
+
+                <div class="metric-unit">activity index</div>
+
+                <span class="metric-status" id="solarStatus">LOW</span>
+
+            </div>
+
+
+            <div class="metric-card">
+
+                <div class="metric-icon">
+                    <i class="fa-solid fa-shield-halved"></i>
+                </div>
+
+                <div class="metric-name">SHIELDING STATUS</div>
+
+                <div class="metric-value" id="shieldValue">96</div>
+
+                <div class="metric-unit">protection index (%)</div>
+
+                <span class="metric-status" id="shieldStatus">STABLE</span>
+
+            </div>
+
+        </div>
+
+
+        <!-- RADIATION VISUAL + SENSOR RESPONSE -->
+
+        <div class="content-grid">
+
+            <section class="panel">
+
+                <div class="section-title">SPACE RADIATION FIELD</div>
+
+                <p class="section-subtitle">
+                    Animated visualization of the radiation monitoring environment.
+                </p>
+
+                <div class="radiation-area">
+
+                    <div class="radiation-orbit"></div>
+
+                    <div class="radiation-core">
+                        <i class="fa-solid fa-radiation"></i>
+                    </div>
+
+                    <div class="radiation-caption">
+                        RADIATION FIELD VISUALIZATION
+                    </div>
+
+                </div>
+
+            </section>
+
+
+            <section class="panel">
+
+                <div class="section-title">RADIATION SENSOR RESPONSE</div>
+
+                <p class="section-subtitle">
+                    Illustrative response indicators for the radiation monitoring system.
+                </p>
+
+                <div class="sensor-list">
+
+                    <div class="sensor-item">
+
+                        <div class="sensor-top">
+                            <span>
+                                <i class="fa-solid fa-atom"></i>
+                                Particle Detector
+                            </span>
+
+                            <span id="particleValue">22%</span>
+                        </div>
+
+                        <div class="progress">
+                            <div class="progress-fill" id="particleBar"></div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="sensor-item">
+
+                        <div class="sensor-top">
+                            <span>
+                                <i class="fa-solid fa-shield"></i>
+                                Shielding Monitor
+                            </span>
+
+                            <span id="shieldSensorValue">96%</span>
+                        </div>
+
+                        <div class="progress">
+                            <div class="progress-fill" id="shieldBar"></div>
+                        </div>
+
+                    </div>
+
+
+                    <div class="sensor-item">
+
+                        <div class="sensor-top">
+                            <span>
+                                <i class="fa-solid fa-satellite"></i>
+                                Solar Activity Sensor
+                            </span>
+
+                            <span id="solarSensorValue">18%</span>
+                        </div>
+
+                        <div class="progress">
+                            <div class="progress-fill" id="solarBar"></div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="footer-note">
+                    Sensor-response percentages are illustrative prototype indicators,
+                    not calibrated readings from physical hardware.
+                </div>
+
+            </section>
+
+        </div>
+
+
+        <!-- RADIATION HISTORY CHART -->
+
+        <section class="panel chart-panel">
+
+            <div class="section-title">RADIATION EXPOSURE HISTORY</div>
+
+            <p class="section-subtitle">
+                Illustrative changes in radiation dose rate and solar activity.
+            </p>
+
+            <div class="chart-container">
+                <canvas id="radiationChart"></canvas>
+            </div>
+
+        </section>
+
+
+        <!-- EVENT HISTORY -->
+
+        <section class="panel chart-panel">
+
+            <div class="section-title">RECENT RADIATION EVENTS</div>
+
+            <div class="history-list" id="historyList">
+
+                <div class="history-row">
+                    <span>Radiation monitoring initialized</span>
+                    <span>System ready</span>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- RESEARCH FOUNDATION -->
+
+        <section class="panel">
+
+            <div class="section-title">NASA DATASETS & RESEARCH FOUNDATION</div>
+
+            <div class="dataset-note">
+
+                <p>
+                    <strong style="color:var(--yellow)">
+                        NASA Space Radiation Research
+                    </strong>
+                    <br>
+                    NASA studies radiation exposure during spaceflight and its
+                    potential effects on astronaut health. Space radiation research
+                    includes galactic cosmic rays and solar particle events.
+                </p>
+
+                <br>
+
+                <p>
+                    <a href="https://www.nasa.gov/hrp/elements/radiation/" target="_blank" rel="noopener">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        NASA Human Research Program — Space Radiation
+                    </a>
+                </p>
+
+                <br>
+
+                <p>
+                    <strong style="color:var(--yellow)">
+                        NASA Space Radiation Analysis Group
+                    </strong>
+                    <br>
+                    NASA's Space Radiation Analysis Group supports radiation
+                    monitoring and radiation protection for human spaceflight.
+                </p>
+
+                <br>
+
+                <p>
+                    <a href="https://srag.jsc.nasa.gov/" target="_blank" rel="noopener">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        NASA Space Radiation Analysis Group
+                    </a>
+                </p>
+
+                <br>
+
+                <p>
+                    <strong style="color:var(--yellow)">
+                        NASA Open Science Data Repository
+                    </strong>
+                    <br>
+                    Research data and studies relevant to spaceflight health
+                    and biological responses.
+                </p>
+
+                <br>
+
+                <p>
+                    <a href="https://osdr.nasa.gov/" target="_blank" rel="noopener">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        NASA Open Science Data Repository
+                    </a>
+                </p>
+
+                <div class="footer-note">
+                    Data transparency: The displayed radiation readings, exposure
+                    profiles and sensor-response indicators are illustrative
+                    prototype values. They are not live NASA telemetry, personal
+                    dosimeter measurements or validated medical exposure estimates.
+                    The stimulation controls are software demonstrations and do
+                    not generate or expose anyone to radiation.
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- WARNING POPUP -->
+
+    <div class="warning-overlay" id="warningPopup">
+
+        <div class="warning-box">
+
+            <div class="warning-icon">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+
+            <h2>RADIATION EXPOSURE WARNING</h2>
+
+            <p id="warningMessage">
+                Elevated radiation monitoring indicators detected.
+                Review the radiation exposure and shielding status.
+            </p>
+
+            <button class="ack-btn" onclick="acknowledgeWarning()">
+                ACKNOWLEDGE ALERT
+            </button>
+
+        </div>
+
+    </div>
+
+
+    <div class="toast" id="toast"></div>
+
+
+    <script>
+
+        /* =====================================
+           ANIMATED STAR BACKGROUND
+        ===================================== */
+
+        const canvas = document.getElementById("stars");
+        const ctx = canvas.getContext("2d");
+
+        let stars = [];
+
+        function resizeStars() {
+
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            stars = [];
+
+            for (let i = 0; i < 110; i++) {
+
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 1.5,
+                    speed: Math.random() * .3 + .1
+                });
+
+            }
+
+        }
+
+        function animateStars() {
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            stars.forEach(star => {
+
+                ctx.fillStyle = "rgba(255,220,105,.75)";
+
+                ctx.beginPath();
+
+                ctx.arc(
+                    star.x,
+                    star.y,
+                    star.size,
+                    0,
+                    Math.PI * 2
+                );
+
+                ctx.fill();
+
+                star.y -= star.speed;
+
+                if (star.y < 0) {
+
+                    star.y = canvas.height;
+                    star.x = Math.random() * canvas.width;
+
+                }
+
+            });
+
+            requestAnimationFrame(animateStars);
+
+        }
+
+        resizeStars();
+        animateStars();
+
+        window.addEventListener("resize", resizeStars);
+
+
+        /* =====================================
+           SYSTEM VARIABLES
+        ===================================== */
+
+        let mode = "normal";
+        let soundEnabled = true;
+        let audioContext = null;
+        let alarmInterval = null;
+        let chart = null;
+
+
+        /* =====================================
+           PROTOTYPE READING PROFILES
+        ===================================== */
+
+        const normalReadings = {
+
+            doseRate: 0.35,
+            cumulative: 12.4,
+            solar: 18,
+            shield: 96,
+
+            particle: 22,
+            shieldSensor: 96,
+            solarSensor: 18
+
+        };
+
+        const highReadings = {
+
+            doseRate: 2.8,
+            cumulative: 18.7,
+            solar: 86,
+            shield: 62,
+
+            particle: 91,
+            shieldSensor: 62,
+            solarSensor: 86
+
+        };
+
+
+        /* =====================================
+           WARNING SOUND
+           SAME PATTERN AS AIR QUALITY CODE
+        ===================================== */
+
+        function playWarningTone() {
+
+            if (!soundEnabled) return;
+
+            try {
+
+                const AudioContextClass =
+                    window.AudioContext || window.webkitAudioContext;
+
+                if (!AudioContextClass) return;
+
+                if (!audioContext) {
+                    audioContext = new AudioContextClass();
+                }
+
+                if (audioContext.state === "suspended") {
+                    audioContext.resume();
+                }
+
+                const oscillator = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+
+                oscillator.type = "square";
+
+                // FIRST TONE: 880 Hz
+                oscillator.frequency.setValueAtTime(
+                    880,
+                    audioContext.currentTime
+                );
+
+                // SECOND TONE: 620 Hz
+                oscillator.frequency.setValueAtTime(
+                    620,
+                    audioContext.currentTime + .2
+                );
+
+                gain.gain.setValueAtTime(
+                    .12,
+                    audioContext.currentTime
+                );
+
+                gain.gain.exponentialRampToValueAtTime(
+                    .001,
+                    audioContext.currentTime + .4
+                );
+
+                oscillator.connect(gain);
+                gain.connect(audioContext.destination);
+
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + .42);
+
+            } catch (error) {
+
+                console.warn("Audio could not be played:", error);
+
+            }
+
+        }
+
+
+        function startWarningAlarm() {
+
+            stopWarningAlarm();
+
+            if (!soundEnabled) return;
+
+            playWarningTone();
+
+            // REPEAT EVERY 1 SECOND
+
+            alarmInterval = setInterval(() => {
+
+                if (mode === "high" && soundEnabled) {
+
+                    playWarningTone();
+
+                } else {
+
+                    stopWarningAlarm();
+
+                }
+
+            }, 1000);
+
+        }
+
+
+        function stopWarningAlarm() {
+
+            if (alarmInterval) {
+
+                clearInterval(alarmInterval);
+                alarmInterval = null;
+
+            }
+
+        }
+
+
+        function toggleSound() {
+
+            soundEnabled = !soundEnabled;
+
+            const button = document.getElementById("soundButton");
+
+            if (soundEnabled) {
+
+                button.innerHTML =
+                    '<i class="fa-solid fa-volume-high"></i> SOUND ON';
+
+                if (mode === "high") {
+                    startWarningAlarm();
+                }
+
+            } else {
+
+                button.innerHTML =
+                    '<i class="fa-solid fa-volume-xmark"></i> SOUND OFF';
+
+                stopWarningAlarm();
+
+            }
+
+        }
+
+
+        /* =====================================
+           CENTRAL ALERT STORAGE
+        ===================================== */
+
+        function saveRadiationAlert(title, message, severity) {
+
+            let alerts = [];
+
+            try {
+
+                alerts = JSON.parse(
+                    localStorage.getItem("cosmoCareAlerts") || "[]"
+                );
+
+                if (!Array.isArray(alerts)) {
+                    alerts = [];
+                }
+
+            } catch {
+
+                alerts = [];
+
+            }
+
+            const now = new Date();
+
+            const alert = {
+
+                id: "RAD-" + Date.now() + "-" +
+                    Math.random().toString(36).slice(2, 7),
+
+                source: "Radiation Monitor",
+                module: "Radiation Monitor",
+
+                title: title,
+                message: message,
+
+                severity: severity,
+                status: "active",
+                type: "radiation",
+
+                warningCode: "HIGH_RADIATION",
+                acknowledged: false,
+
+                time: now.toLocaleString(),
+                timestamp: now.toISOString()
+
+            };
+
+            alerts.unshift(alert);
+
+            alerts = alerts.slice(0, 100);
+
+            localStorage.setItem(
+                "cosmoCareAlerts",
+                JSON.stringify(alerts)
+            );
+
+            window.dispatchEvent(
+                new CustomEvent("cosmoCareAlertAdded", {
+                    detail: alert
+                })
+            );
+
+            return alert;
+
+        }
+
+
+        /* =====================================
+           TOAST NOTIFICATION
+        ===================================== */
+
+        function showToast(message) {
+
+            const toast = document.getElementById("toast");
+
+            toast.textContent = message;
+
+            toast.classList.add("show");
+
+            setTimeout(() => {
+
+                toast.classList.remove("show");
+
+            }, 3000);
+
+        }
+
+
+        /* =====================================
+           READING STATUS
+        ===================================== */
+
+        function updateStatus(id, level) {
+
+            const element = document.getElementById(id);
+
+            element.className = "metric-status";
+
+            if (level === "WARNING") {
+                element.classList.add("warning");
+            }
+
+            if (level === "CRITICAL") {
+                element.classList.add("critical");
+            }
+
+            element.textContent = level;
+
+        }
+
+
+        /* =====================================
+           UPDATE READINGS
+        ===================================== */
+
+        function updateReadings(data) {
+
+            document.getElementById("doseRateValue").textContent =
+                data.doseRate;
+
+            document.getElementById("cumulativeValue").textContent =
+                data.cumulative;
+
+            document.getElementById("solarValue").textContent =
+                data.solar;
+
+            document.getElementById("shieldValue").textContent =
+                data.shield;
+
+
+            document.getElementById("particleValue").textContent =
+                data.particle + "%";
+
+            document.getElementById("shieldSensorValue").textContent =
+                data.shieldSensor + "%";
+
+            document.getElementById("solarSensorValue").textContent =
+                data.solarSensor + "%";
+
+
+            document.getElementById("particleBar").style.width =
+                data.particle + "%";
+
+            document.getElementById("shieldBar").style.width =
+                data.shieldSensor + "%";
+
+            document.getElementById("solarBar").style.width =
+                data.solarSensor + "%";
+
+
+            // Illustrative prototype alert bands only.
+
+            updateStatus(
+                "doseRateStatus",
+                data.doseRate >= 2.5 ? "CRITICAL" :
+                    data.doseRate >= 1.5 ? "WARNING" : "NORMAL"
+            );
+
+            updateStatus(
+                "cumulativeStatus",
+                data.cumulative >= 18 ? "CRITICAL" :
+                    data.cumulative >= 15 ? "WARNING" : "NORMAL"
+            );
+
+            updateStatus(
+                "solarStatus",
+                data.solar >= 75 ? "CRITICAL" :
+                    data.solar >= 45 ? "WARNING" : "LOW"
+            );
+
+            updateStatus(
+                "shieldStatus",
+                data.shield < 65 ? "CRITICAL" :
+                    data.shield < 80 ? "WARNING" : "STABLE"
+            );
+
+        }
+
+
+        /* =====================================
+           HISTORY
+        ===================================== */
+
+        function addHistory(message, status) {
+
+            const list = document.getElementById("historyList");
+
+            const row = document.createElement("div");
+            row.className = "history-row";
+
+            const left = document.createElement("span");
+            left.textContent = message;
+
+            const right = document.createElement("span");
+
+            right.textContent =
+                status + " • " + new Date().toLocaleTimeString();
+
+            row.appendChild(left);
+            row.appendChild(right);
+
+            list.prepend(row);
+
+            while (list.children.length > 6) {
+
+                list.removeChild(list.lastChild);
+
+            }
+
+        }
+
+
+        /* =====================================
+           CHART
+        ===================================== */
+
+        function initializeChart() {
+
+            const chartContext =
+                document.getElementById("radiationChart").getContext("2d");
+
+            chart = new Chart(chartContext, {
+
+                type: "line",
+
+                data: {
+
+                    labels: ["1", "2", "3", "4", "5", "6"],
+
+                    datasets: [
+
+                        {
+                            label: "Dose Rate (mSv/day)",
+                            data: [0.35, 0.38, 0.32, 0.4, 0.36, 0.35],
+                            borderColor: "#ffd43b",
+                            backgroundColor: "rgba(255,212,59,.08)",
+                            tension: .4,
+                            fill: true
+                        },
+
+                        {
+                            label: "Solar Activity Index",
+                            data: [18, 20, 17, 21, 19, 18],
+                            borderColor: "#ff9f43",
+                            backgroundColor: "rgba(255,159,67,.06)",
+                            tension: .4,
+                            fill: false
+                        }
+
+                    ]
+
+                },
+
+                options: {
+
+                    responsive: true,
+                    maintainAspectRatio: false,
+
+                    plugins: {
+
+                        legend: {
+
+                            labels: {
+                                color: "#d6c99e",
+                                font: {
+                                    family: "Inter"
+                                }
+                            }
+
+                        }
+
+                    },
+
+                    scales: {
+
+                        x: {
+                            ticks: {
+                                color: "#b7a879"
+                            },
+                            grid: {
+                                color: "rgba(255,255,255,.05)"
+                            }
+                        },
+
+                        y: {
+                            ticks: {
+                                color: "#b7a879"
+                            },
+                            grid: {
+                                color: "rgba(255,255,255,.05)"
+                            }
+                        }
+
+                    }
+
+                }
+
+            });
+
+        }
+
+
+        function updateChart(data) {
+
+            if (!chart) return;
+
+            const time = new Date().toLocaleTimeString();
+
+            chart.data.labels.push(time);
+
+            chart.data.datasets[0].data.push(data.doseRate);
+            chart.data.datasets[1].data.push(data.solar);
+
+            if (chart.data.labels.length > 8) {
+
+                chart.data.labels.shift();
+
+                chart.data.datasets.forEach(dataset => {
+                    dataset.data.shift();
+                });
+
+            }
+
+            chart.update();
+
+        }
+
+
+        /* =====================================
+           WARNING MESSAGE
+        ===================================== */
+
+        function createRadiationWarning(data) {
+
+            const problems = [];
+
+            if (data.doseRate >= 2.5) {
+                problems.push("High radiation dose-rate indicator");
+            }
+
+            if (data.cumulative >= 18) {
+                problems.push("Elevated cumulative exposure indicator");
+            }
+
+            if (data.solar >= 75) {
+                problems.push("High solar particle activity indicator");
+            }
+
+            if (data.shield < 65) {
+                problems.push("Reduced shielding protection indicator");
+            }
+
+            return problems;
+
+        }
+
+
+        function showWarning(message) {
+
+            document.getElementById("warningMessage").textContent =
+                message;
+
+            document.getElementById("warningPopup").classList.add("show");
+
+        }
+
+
+        function acknowledgeWarning() {
+
+            document.getElementById("warningPopup").classList.remove("show");
+
+            // Acknowledging the popup does NOT silence an active alarm.
+
+        }
+
+
+        /* =====================================
+           NORMAL STIMULATION
+        ===================================== */
+
+        function setNormal() {
+
+            mode = "normal";
+
+            stopWarningAlarm();
+
+            document.getElementById("modeText").textContent =
+                "NORMAL STIMULATION";
+
+            document.getElementById("systemStatus").textContent =
+                "SYSTEM ACTIVE";
+
+            document.getElementById("statusDot").style.background =
+                "var(--yellow)";
+
+            document.getElementById("warningPopup").classList.remove("show");
+
+            updateReadings(normalReadings);
+            updateChart(normalReadings);
+
+            addHistory(
+                "Normal radiation monitoring profile restored",
+                "NORMAL"
+            );
+
+            showToast("Normal radiation monitoring profile activated.");
+
+        }
+
+
+        /* =====================================
+           HIGH STIMULATION
+        ===================================== */
+
+        function setHigh() {
+
+            // Prevent duplicate alerts on repeated clicks.
+
+            const alreadyHigh = mode === "high";
+
+            mode = "high";
+
+            document.getElementById("modeText").textContent =
+                "HIGH RADIATION STIMULATION";
+
+            document.getElementById("systemStatus").textContent =
+                "RADIATION WARNING";
+
+            document.getElementById("statusDot").style.background =
+                "var(--red)";
+
+            updateReadings(highReadings);
+            updateChart(highReadings);
+
+            const problems = createRadiationWarning(highReadings);
+
+            const warningMessage =
+                problems.join(". ") +
+                ". Review the radiation monitoring indicators.";
+
+            showWarning(warningMessage);
+
+            startWarningAlarm();
+
+            addHistory(
+                "High radiation monitoring profile activated",
+                "WARNING"
+            );
+
+            if (!alreadyHigh) {
+
+                saveRadiationAlert(
+                    "Radiation Exposure Warning",
+                    warningMessage,
+                    "critical"
+                );
+
+            }
+
+            showToast("Radiation warning activated.");
+
+        }
+
+
+        /* =====================================
+           STOP SYSTEM
+        ===================================== */
+
+        function stopSystem() {
+
+            mode = "stopped";
+
+            stopWarningAlarm();
+
+            document.getElementById("modeText").textContent =
+                "SYSTEM STOPPED";
+
+            document.getElementById("systemStatus").textContent =
+                "SYSTEM STOPPED";
+
+            document.getElementById("statusDot").style.background =
+                "var(--red)";
+
+            document.getElementById("warningPopup").classList.remove("show");
+
+            const stoppedReadings = {
+
+                doseRate: 0,
+                cumulative: 0,
+                solar: 0,
+                shield: 0,
+
+                particle: 0,
+                shieldSensor: 0,
+                solarSensor: 0
+
+            };
+
+            updateReadings(stoppedReadings);
+            updateChart(stoppedReadings);
+
+            addHistory(
+                "Radiation monitoring system stopped",
+                "STOPPED"
+            );
+
+            showToast("Radiation monitoring system stopped.");
+
+        }
+
+
+        /* =====================================
+           INITIALIZE
+        ===================================== */
+
+        initializeChart();
+
+        updateReadings(normalReadings);
+
+    </script>
+
+</body>
+
+</html>
+```

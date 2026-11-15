@@ -1,0 +1,2324 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Cosmo Care | Cardiovascular Command Center</title>
+
+    <link rel="stylesheet" href="cosmo-style.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --red: #ff3155;
+            --red-light: #ff7188;
+            --red-dark: #a80e30;
+            --background: #08070c;
+            --surface: rgba(22, 14, 22, 0.94);
+            --surface-light: rgba(39, 19, 31, 0.8);
+            --border: rgba(255, 49, 85, 0.20);
+            --text: #fff1f5;
+            --muted: #a99aa5;
+            --green: #42e6a0;
+            --warning: #ffb347;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        button {
+            font-family: inherit;
+        }
+
+        /* =================================
+           ANIMATED BACKGROUND
+        ================================= */
+
+        .background-effects {
+            position: fixed;
+            inset: 0;
+            overflow: hidden;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .background-glow {
+            position: absolute;
+            width: 480px;
+            height: 480px;
+            border-radius: 50%;
+            filter: blur(130px);
+            opacity: 0.13;
+        }
+
+        .glow-one {
+            background: #ff003c;
+            top: -230px;
+            left: 15%;
+            animation: glowFloat 13s ease-in-out infinite alternate;
+        }
+
+        .glow-two {
+            background: #a10e45;
+            bottom: -250px;
+            right: 5%;
+            animation: glowFloat 16s ease-in-out infinite alternate-reverse;
+        }
+
+        .glow-three {
+            background: #ff3155;
+            width: 250px;
+            height: 250px;
+            top: 45%;
+            left: 55%;
+            opacity: 0.06;
+            animation: glowFloat 18s ease-in-out infinite alternate;
+        }
+
+        @keyframes glowFloat {
+            from {
+                transform: translate(0, 0);
+            }
+
+            to {
+                transform: translate(75px, 55px);
+            }
+        }
+
+        .background-grid {
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(255, 49, 85, 0.025) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 49, 85, 0.025) 1px, transparent 1px);
+            background-size: 55px 55px;
+            mask-image: linear-gradient(to bottom, black, transparent 90%);
+        }
+
+        /* Floating particles */
+
+        .heartbeat-particles {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+        }
+
+        .heartbeat-particles span {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: var(--red-light);
+            border-radius: 50%;
+            opacity: 0.45;
+            box-shadow: 0 0 12px var(--red);
+            animation: particleRise 12s linear infinite;
+        }
+
+        .heartbeat-particles span:nth-child(1) {
+            left: 12%;
+            bottom: -20px;
+            animation-delay: 0s;
+        }
+
+        .heartbeat-particles span:nth-child(2) {
+            left: 35%;
+            bottom: -20px;
+            animation-delay: 3s;
+        }
+
+        .heartbeat-particles span:nth-child(3) {
+            left: 58%;
+            bottom: -20px;
+            animation-delay: 6s;
+        }
+
+        .heartbeat-particles span:nth-child(4) {
+            left: 82%;
+            bottom: -20px;
+            animation-delay: 2s;
+        }
+
+        .heartbeat-particles span:nth-child(5) {
+            left: 94%;
+            bottom: -20px;
+            animation-delay: 8s;
+        }
+
+        @keyframes particleRise {
+            0% {
+                transform: translateY(0);
+                opacity: 0;
+            }
+
+            15% {
+                opacity: 0.5;
+            }
+
+            85% {
+                opacity: 0.3;
+            }
+
+            100% {
+                transform: translateY(-100vh);
+                opacity: 0;
+            }
+        }
+
+        /* Floating heart shapes */
+
+        .floating-hearts {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+        }
+
+        .floating-hearts i {
+            position: absolute;
+            color: rgba(255, 49, 85, 0.10);
+            animation: heartFloat 14s linear infinite;
+        }
+
+        .floating-hearts i:nth-child(1) {
+            left: 17%;
+            bottom: -80px;
+            font-size: 35px;
+            animation-delay: 1s;
+        }
+
+        .floating-hearts i:nth-child(2) {
+            left: 47%;
+            bottom: -80px;
+            font-size: 22px;
+            animation-delay: 5s;
+        }
+
+        .floating-hearts i:nth-child(3) {
+            left: 75%;
+            bottom: -80px;
+            font-size: 42px;
+            animation-delay: 3s;
+        }
+
+        .floating-hearts i:nth-child(4) {
+            left: 90%;
+            bottom: -80px;
+            font-size: 25px;
+            animation-delay: 8s;
+        }
+
+        @keyframes heartFloat {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(.8);
+                opacity: 0;
+            }
+
+            20% {
+                opacity: .8;
+            }
+
+            80% {
+                opacity: .5;
+            }
+
+            100% {
+                transform: translateY(-110vh) rotate(35deg) scale(1.3);
+                opacity: 0;
+            }
+        }
+
+        /* =================================
+           MAIN CONTENT
+        ================================= */
+
+        .main {
+            position: relative;
+            z-index: 2;
+            margin-left: 255px;
+            width: calc(100% - 255px);
+            padding: 30px 38px;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .page-heading h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(19px, 2vw, 27px);
+            color: white;
+        }
+
+        .page-heading p {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 9px;
+        }
+
+        .system-status {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            background: rgba(255, 49, 85, 0.08);
+            border: 1px solid var(--border);
+            padding: 11px 15px;
+            border-radius: 30px;
+            font-size: 10px;
+            white-space: nowrap;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--green);
+            border-radius: 50%;
+            box-shadow: 0 0 12px var(--green);
+            animation: statusPulse 1.8s infinite;
+        }
+
+        @keyframes statusPulse {
+            50% {
+                opacity: 0.45;
+                box-shadow: 0 0 3px var(--green);
+            }
+        }
+
+        .menu-toggle {
+            display: none;
+            background: transparent;
+            border: 1px solid var(--border);
+            color: white;
+            border-radius: 8px;
+            padding: 10px 13px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        /* =================================
+           HERO
+        ================================= */
+
+        .hero {
+            position: relative;
+            padding: 32px;
+            background:
+                linear-gradient(115deg,
+                    rgba(100, 8, 34, 0.48),
+                    rgba(20, 10, 20, 0.96));
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            overflow: hidden;
+            margin-bottom: 27px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+        }
+
+        .hero::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(110deg,
+                    transparent 20%,
+                    rgba(255, 49, 85, 0.06) 50%,
+                    transparent 80%);
+            transform: translateX(-100%);
+            animation: heroShine 8s ease-in-out infinite;
+        }
+
+        @keyframes heroShine {
+            0%, 65% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-label {
+            color: var(--red-light);
+            font-size: 9px;
+            letter-spacing: 3px;
+            margin-bottom: 13px;
+        }
+
+        .hero h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(21px, 3vw, 31px);
+            margin-bottom: 13px;
+        }
+
+        .hero p {
+            max-width: 650px;
+            color: #c5b4c0;
+            font-size: 12px;
+            line-height: 1.9;
+        }
+
+        .hero-heart {
+            position: absolute;
+            right: 10%;
+            top: 42%;
+            transform: translateY(-50%);
+            font-size: 85px;
+            color: rgba(255, 49, 85, 0.62);
+            filter: drop-shadow(0 0 20px rgba(255, 49, 85, 0.55));
+            animation: heartbeat 1.4s ease-in-out infinite;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% {
+                transform: translateY(-50%) scale(1);
+            }
+
+            15% {
+                transform: translateY(-50%) scale(1.16);
+            }
+
+            30% {
+                transform: translateY(-50%) scale(1);
+            }
+
+            45% {
+                transform: translateY(-50%) scale(1.10);
+            }
+
+            60% {
+                transform: translateY(-50%) scale(1);
+            }
+        }
+
+        /* =================================
+           ECG ANIMATION
+        ================================= */
+
+        .ecg-container {
+            position: relative;
+            height: 65px;
+            overflow: hidden;
+            margin-top: 22px;
+            border-top: 1px solid rgba(255, 255, 255, 0.07);
+        }
+
+        .ecg-line {
+            width: 200%;
+            height: 65px;
+            animation: ecgMove 5s linear infinite;
+        }
+
+        .ecg-line svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .ecg-line polyline {
+            fill: none;
+            stroke: #ff405e;
+            stroke-width: 2;
+            stroke-linejoin: round;
+            stroke-linecap: round;
+            filter: drop-shadow(0 0 6px #ff405e);
+        }
+
+        @keyframes ecgMove {
+            from {
+                transform: translateX(0);
+            }
+
+            to {
+                transform: translateX(-50%);
+            }
+        }
+
+        /* =================================
+           SECTION HEADINGS
+        ================================= */
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 13px;
+            margin-bottom: 16px;
+            letter-spacing: 1px;
+        }
+
+        .section-title i {
+            color: var(--red-light);
+            margin-right: 7px;
+        }
+
+        /* =================================
+           CONTROL PANEL
+        ================================= */
+
+        .control-panel {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px;
+            padding: 19px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            margin-bottom: 27px;
+        }
+
+        .control-btn {
+            border: none;
+            padding: 12px 17px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.25s;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-3px);
+            filter: brightness(1.15);
+        }
+
+        .normal-btn {
+            color: #062a1d;
+            background: var(--green);
+        }
+
+        .high-btn {
+            color: white;
+            background: linear-gradient(120deg, #ff3155, #a10e2b);
+            box-shadow: 0 0 18px rgba(255, 49, 85, 0.16);
+        }
+
+        .stop-btn {
+            color: white;
+            background: #302a34;
+            border: 1px solid #554955;
+        }
+
+        .sound-btn {
+            color: white;
+            background: rgba(255, 49, 85, 0.12);
+            border: 1px solid var(--border);
+        }
+
+        .mode-label {
+            margin-left: auto;
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        .mode-label span {
+            color: var(--red-light);
+            font-weight: 700;
+        }
+
+        /* =================================
+           METRIC CARDS
+        ================================= */
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 27px;
+        }
+
+        .metric-card {
+            position: relative;
+            overflow: hidden;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 21px;
+            transition: 0.3s;
+        }
+
+        .metric-card::before {
+            content: "";
+            position: absolute;
+            width: 110px;
+            height: 110px;
+            right: -45px;
+            bottom: -50px;
+            background: var(--red);
+            filter: blur(65px);
+            opacity: 0.15;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(255, 49, 85, 0.65);
+            box-shadow: 0 12px 35px rgba(255, 49, 85, 0.09);
+        }
+
+        .metric-icon {
+            width: 39px;
+            height: 39px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 49, 85, 0.13);
+            color: var(--red-light);
+            border-radius: 11px;
+            margin-bottom: 17px;
+            font-size: 17px;
+        }
+
+        .metric-name {
+            font-size: 10px;
+            color: var(--muted);
+            margin-bottom: 12px;
+        }
+
+        .metric-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(20px, 2vw, 27px);
+            color: white;
+        }
+
+        .metric-unit {
+            font-family: 'Inter', sans-serif;
+            font-size: 10px;
+            color: var(--muted);
+        }
+
+        .metric-status {
+            font-size: 10px;
+            color: var(--green);
+            margin-top: 13px;
+        }
+
+        .metric-status.warning {
+            color: var(--red-light);
+        }
+
+        /* =================================
+           CONTENT GRID
+        ================================= */
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 19px;
+            margin-bottom: 27px;
+        }
+
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 22px;
+            min-width: 0;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 21px;
+        }
+
+        .panel-header h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 11px;
+        }
+
+        .panel-header span {
+            font-size: 9px;
+            color: var(--muted);
+        }
+
+        .chart-container {
+            position: relative;
+            height: 270px;
+            width: 100%;
+        }
+
+        /* =================================
+           INFORMATION ROWS
+        ================================= */
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+            font-size: 10px;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-row span:first-child {
+            color: var(--muted);
+        }
+
+        .info-row strong {
+            color: white;
+            text-align: right;
+        }
+
+        .info-highlight {
+            color: var(--red-light) !important;
+        }
+
+        /* =================================
+           EQUIPMENT
+        ================================= */
+
+        .device-section {
+            background: linear-gradient(120deg,
+                    rgba(80, 10, 30, 0.28),
+                    rgba(20, 12, 22, 0.94));
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 24px;
+            margin-bottom: 23px;
+        }
+
+        .device-section h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            margin-bottom: 15px;
+        }
+
+        .device-section h3 i {
+            color: var(--red-light);
+        }
+
+        .device-section p {
+            font-size: 11px;
+            color: #c0b1bb;
+            line-height: 1.9;
+        }
+
+        .device-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+            margin-top: 17px;
+        }
+
+        .device-tags span {
+            font-size: 9px;
+            color: var(--red-light);
+            border: 1px solid var(--border);
+            background: rgba(255, 49, 85, 0.08);
+            padding: 9px 12px;
+            border-radius: 20px;
+        }
+
+        /* =================================
+           NASA REFERENCES
+        ================================= */
+
+        .dataset-section {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 24px;
+            margin-bottom: 26px;
+        }
+
+        .dataset-section h3 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 12px;
+            margin-bottom: 16px;
+        }
+
+        .dataset-section h3 i {
+            color: var(--red-light);
+        }
+
+        .dataset-section p {
+            font-size: 10px;
+            color: #b9aab4;
+            line-height: 1.9;
+            margin-bottom: 13px;
+        }
+
+        .dataset-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 11px;
+        }
+
+        .dataset-links a {
+            text-decoration: none;
+            color: var(--red-light);
+            border: 1px solid var(--border);
+            background: rgba(255, 49, 85, 0.05);
+            padding: 11px 14px;
+            border-radius: 8px;
+            font-size: 9px;
+            transition: 0.3s;
+        }
+
+        .dataset-links a:hover {
+            background: rgba(255, 49, 85, 0.16);
+            transform: translateY(-2px);
+        }
+
+        /* =================================
+           FOOTER
+        ================================= */
+
+        .footer {
+            padding: 21px 0;
+            text-align: center;
+            font-size: 9px;
+            color: #766a74;
+            border-top: 1px solid var(--border);
+            line-height: 1.9;
+        }
+
+        /* =================================
+           WARNING POPUP
+        ================================= */
+
+        .alert-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.78);
+            backdrop-filter: blur(8px);
+            z-index: 3000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+        }
+
+        .alert-overlay.show {
+            display: flex;
+        }
+
+        .alert-box {
+            width: min(420px, 100%);
+            background: #1b1018;
+            border: 1px solid rgba(255, 49, 85, 0.7);
+            border-radius: 18px;
+            padding: 31px;
+            text-align: center;
+            box-shadow: 0 0 55px rgba(255, 49, 85, 0.2);
+            animation: alertIn 0.3s ease;
+        }
+
+        @keyframes alertIn {
+            from {
+                opacity: 0;
+                transform: scale(0.88) translateY(15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .alert-icon {
+            font-size: 42px;
+            color: var(--red);
+            margin-bottom: 18px;
+            animation: alertPulse 1s infinite alternate;
+        }
+
+        @keyframes alertPulse {
+            from {
+                transform: scale(1);
+                opacity: 0.7;
+            }
+
+            to {
+                transform: scale(1.15);
+                opacity: 1;
+            }
+        }
+
+        .alert-box h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 16px;
+            color: #ff657b;
+            margin-bottom: 14px;
+        }
+
+        .alert-box p {
+            font-size: 11px;
+            line-height: 1.9;
+            color: #d2c1cc;
+            margin-bottom: 23px;
+        }
+
+        .acknowledge-btn {
+            background: linear-gradient(120deg, #ff334f, #a10e2b);
+            border: none;
+            color: white;
+            padding: 13px 25px;
+            border-radius: 8px;
+            font-size: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.25s;
+        }
+
+        .acknowledge-btn:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.15);
+        }
+
+        /* =================================
+           MOBILE SIDEBAR
+        ================================= */
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 900;
+        }
+
+        .sidebar-overlay.show {
+            display: block;
+        }
+
+        /* =================================
+           RESPONSIVE
+        ================================= */
+
+        @media(max-width: 1150px) {
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media(max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main {
+                margin-left: 0;
+                width: 100%;
+                padding: 20px 17px;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .topbar {
+                align-items: flex-start;
+            }
+
+            .system-status {
+                font-size: 8px;
+                padding: 9px;
+            }
+
+            .hero {
+                padding: 23px;
+            }
+
+            .hero-heart {
+                font-size: 55px;
+                right: 7%;
+                opacity: 0.55;
+            }
+
+            .mode-label {
+                width: 100%;
+                margin-left: 0;
+            }
+        }
+
+        @media(max-width: 480px) {
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+
+            .metric-card {
+                padding: 14px;
+            }
+
+            .metric-value {
+                font-size: 18px;
+            }
+
+            .control-panel {
+                padding: 13px;
+            }
+
+            .control-btn {
+                flex: 1 1 42%;
+                padding: 12px 8px;
+                font-size: 9px;
+            }
+
+            .page-heading h1 {
+                font-size: 15px;
+            }
+
+            .page-heading p {
+                font-size: 9px;
+            }
+
+            .panel {
+                padding: 15px;
+            }
+
+            .chart-container {
+                height: 230px;
+            }
+
+            .hero h2 {
+                font-size: 18px;
+            }
+
+            .hero-heart {
+                display: none;
+            }
+
+            .device-section,
+            .dataset-section {
+                padding: 17px;
+            }
+        }
+
+        @media(prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
+            }
+        }
+
+        /* RED THEME SIDEBAR — KEEP ORIGINAL LAYOUT */
+.sidebar {
+    background: linear-gradient(180deg, #250711 0%, #10070c 100%);
+    border-right: 1px solid rgba(255, 49, 85, 0.3);
+}
+
+.sidebar-logo {
+    color: #fff1f5;
+}
+
+.sidebar-logo span {
+    color: #ff3155;
+}
+
+.sidebar .nav-link {
+    color: #d9aab5;
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.sidebar .nav-link i {
+    color: #ff7188;
+}
+
+.sidebar .nav-link:hover {
+    background: rgba(255, 49, 85, 0.13);
+    color: #ffffff;
+}
+
+.sidebar .nav-link.active {
+    background: linear-gradient(
+        90deg,
+        rgba(255, 49, 85, 0.28),
+        rgba(168, 14, 48, 0.12)
+    );
+    color: #ffffff;
+    border-left: 3px solid #ff3155;
+    box-shadow: 0 0 15px rgba(255, 49, 85, 0.12);
+}
+
+.sidebar .nav-link.active i {
+    color: #ff3155;
+}
+    </style>
+</head>
+
+<body>
+
+    <!-- BACKGROUND ANIMATIONS -->
+
+    <div class="background-effects">
+
+        <div class="background-glow glow-one"></div>
+        <div class="background-glow glow-two"></div>
+        <div class="background-glow glow-three"></div>
+
+        <div class="background-grid"></div>
+
+        <div class="heartbeat-particles">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+
+        <div class="floating-hearts">
+            <i class="fas fa-heart"></i>
+            <i class="fas fa-heart"></i>
+            <i class="fas fa-heart"></i>
+            <i class="fas fa-heart"></i>
+        </div>
+
+    </div>
+
+    <!-- SIDEBAR OVERLAY -->
+
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <!-- UNIVERSAL SIDEBAR -->
+
+    <aside class="sidebar" id="sidebar">
+
+        <div class="sidebar-logo">
+            <span>✦</span> COSMO CARE
+        </div>
+
+        <div class="sidebar-menu">
+
+            <a href="index.html" class="nav-link">
+                <i class="fas fa-house"></i>
+                <span>Main Dashboard</span>
+            </a>
+
+            <a href="cardiovascular.html" class="nav-link active">
+                <i class="fas fa-heartbeat"></i>
+                <span>Cardiovascular</span>
+            </a>
+
+            <a href="oxygen.html" class="nav-link">
+                <i class="fas fa-lungs"></i>
+                <span>Blood Oxygen</span>
+            </a>
+
+            <a href="sleep.html" class="nav-link">
+                <i class="fas fa-moon"></i>
+                <span>Sleep Monitor</span>
+            </a>
+
+            <a href="bone-health.html" class="nav-link">
+                <i class="fas fa-bone"></i>
+                <span>Bone Health</span>
+            </a>
+
+            <a href="radiation.html" class="nav-link">
+                <i class="fas fa-radiation"></i>
+                <span>Radiation Monitor</span>
+            </a>
+
+            <a href="air-quality.html" class="nav-link">
+                <i class="fas fa-wind"></i>
+                <span>Air Quality</span>
+            </a>
+
+            <a href="movement.html" class="nav-link">
+                <i class="fas fa-person-walking"></i>
+                <span>Balance & Movement</span>
+            </a>
+
+            <a href="famil-connect.html" class="nav-link">
+                <i class="fas fa-users"></i>
+                <span>Family Connect</span>
+            </a>
+
+            <a href="alerts.html" class="nav-link">
+                <i class="fas fa-bell"></i>
+                <span>Alerts & Warnings</span>
+            </a>
+
+        </div>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+
+    <main class="main">
+
+        <!-- TOPBAR -->
+
+        <div class="topbar">
+
+            <div style="display:flex;gap:13px;align-items:center;">
+
+                <button class="menu-toggle" onclick="toggleSidebar()">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
+                <div class="page-heading">
+
+                    <h1>Cardiovascular Monitoring</h1>
+
+                    <p>
+                        Heart activity and cardiovascular health monitoring system
+                    </p>
+
+                </div>
+
+            </div>
+
+            <div class="system-status">
+                <span class="status-dot"></span>
+                PROTOTYPE INTERFACE
+            </div>
+
+        </div>
+
+        <!-- HERO -->
+
+        <section class="hero">
+
+            <div class="hero-content">
+
+                <div class="hero-label">
+                    COSMO CARE / CARDIOVASCULAR SYSTEM
+                </div>
+
+                <h2>Heart Health Command Center</h2>
+
+                <p>
+                    A cardiovascular monitoring interface designed to demonstrate
+                    how astronaut heart activity and related physiological
+                    indicators can be monitored during space missions.
+                </p>
+
+            </div>
+
+            <i class="fa-solid fa-heart-pulse hero-heart"></i>
+
+            <div class="ecg-container">
+
+                <div class="ecg-line">
+
+                    <svg viewBox="0 0 1200 65" preserveAspectRatio="none">
+
+                        <polyline points="
+                        0,34 80,34 100,34 115,34
+                        130,10 145,55 160,5 175,34
+                        230,34 270,34 290,34
+                        305,10 320,55 335,5 350,34
+                        410,34 460,34 480,34
+                        495,10 510,55 525,5 540,34
+                        600,34 650,34 670,34
+                        685,10 700,55 715,5 730,34
+                        790,34 840,34 860,34
+                        875,10 890,55 905,5 920,34
+                        980,34 1030,34 1050,34
+                        1065,10 1080,55 1095,5 1110,34
+                        1200,34
+                        " />
+
+                    </svg>
+
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- CONTROLS -->
+
+        <h3 class="section-title">
+            <i class="fa-solid fa-sliders"></i>
+            MONITORING CONTROLS
+        </h3>
+
+        <section class="control-panel">
+
+            <button class="control-btn normal-btn" onclick="setNormal()">
+                <i class="fa-solid fa-circle-check"></i>
+                NORMAL STIMULATION
+            </button>
+
+            <button class="control-btn high-btn" onclick="setHigh()">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                HIGH STIMULATION
+            </button>
+
+            <button class="control-btn stop-btn" onclick="stopSystem()">
+                <i class="fa-solid fa-stop"></i>
+                STOP SYSTEM
+            </button>
+
+            <button class="control-btn sound-btn" id="soundButton" onclick="toggleSound()">
+                <i class="fa-solid fa-volume-high"></i>
+                SOUND ON
+            </button>
+
+            <div class="mode-label">
+                CURRENT MODE:
+                <span id="modeText">NORMAL</span>
+            </div>
+
+        </section>
+
+        <!-- METRICS -->
+
+        <h3 class="section-title">
+            <i class="fa-solid fa-heart-pulse"></i>
+            CARDIOVASCULAR READINGS
+        </h3>
+
+        <section class="metrics-grid">
+
+            <div class="metric-card">
+
+                <div class="metric-icon">
+                    <i class="fa-solid fa-heart-pulse"></i>
+                </div>
+
+                <div class="metric-name">HEART RATE</div>
+
+                <div class="metric-value">
+                    <span id="heartRate">72</span>
+                    <span class="metric-unit">BPM</span>
+                </div>
+
+                <div class="metric-status" id="heartStatus">
+                    ● Normal profile
+                </div>
+
+            </div>
+
+            <div class="metric-card">
+
+                <div class="metric-icon">
+                    <i class="fa-solid fa-gauge-high"></i>
+                </div>
+
+                <div class="metric-name">SYSTOLIC PRESSURE</div>
+
+                <div class="metric-value">
+                    <span id="systolic">118</span>
+                    <span class="metric-unit">mmHg</span>
+                </div>
+
+                <div class="metric-status" id="systolicStatus">
+                    ● Normal profile
+                </div>
+
+            </div>
+
+            <div class="metric-card">
+
+                <div class="metric-icon">
+                    <i class="fa-solid fa-wave-square"></i>
+                </div>
+
+                <div class="metric-name">DIASTOLIC PRESSURE</div>
+
+                <div class="metric-value">
+                    <span id="diastolic">76</span>
+                    <span class="metric-unit">mmHg</span>
+                </div>
+
+                <div class="metric-status" id="diastolicStatus">
+                    ● Normal profile
+                </div>
+
+            </div>
+
+            <div class="metric-card">
+
+                <div class="metric-icon">
+                    <i class="fa-solid fa-chart-line"></i>
+                </div>
+
+                <div class="metric-name">HEART RATE VARIABILITY</div>
+
+                <div class="metric-value">
+                    <span id="hrv">52</span>
+                    <span class="metric-unit">ms</span>
+                </div>
+
+                <div class="metric-status" id="hrvStatus">
+                    ● Normal profile
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- CHARTS AND INFORMATION -->
+
+        <section class="content-grid">
+
+            <div class="panel">
+
+                <div class="panel-header">
+                    <h3>HEART RATE ANALYSIS</h3>
+                    <span>PROFILE HISTORY</span>
+                </div>
+
+                <div class="chart-container">
+                    <canvas id="heartChart"></canvas>
+                </div>
+
+            </div>
+
+            <div class="panel">
+
+                <div class="panel-header">
+                    <h3>MONITOR INFORMATION</h3>
+                    <span>INTERFACE STATUS</span>
+                </div>
+
+                <div class="info-row">
+                    <span>Monitoring mode</span>
+                    <strong id="monitorMode">NORMAL</strong>
+                </div>
+
+                <div class="info-row">
+                    <span>Heart rate profile</span>
+                    <strong id="heartProfile">72 BPM</strong>
+                </div>
+
+                <div class="info-row">
+                    <span>Blood pressure profile</span>
+                    <strong id="bpProfile">118/76 mmHg</strong>
+                </div>
+
+                <div class="info-row">
+                    <span>HRV profile</span>
+                    <strong id="hrvProfile">52 ms</strong>
+                </div>
+
+                <div class="info-row">
+                    <span>Alert status</span>
+                    <strong id="alertStatus" class="info-highlight">
+                        NO ACTIVE ALERT
+                    </strong>
+                </div>
+
+                <div class="info-row">
+                    <span>System state</span>
+                    <strong id="systemState">ACTIVE</strong>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- EQUIPMENT -->
+
+        <section class="device-section">
+
+            <h3>
+                <i class="fa-solid fa-microchip"></i>
+                CARDIOVASCULAR MONITORING EQUIPMENT
+            </h3>
+
+            <p>
+                In a practical astronaut-monitoring system, cardiovascular
+                measurements can be obtained using ECG electrodes and
+                physiological monitoring equipment. ECG signals help determine
+                heart rate and support heart-rate-variability analysis.
+                Blood pressure requires a suitable blood-pressure monitoring
+                instrument.
+            </p>
+
+            <div class="device-tags">
+
+                <span>
+                    <i class="fa-solid fa-heart-pulse"></i>
+                    ECG Electrodes
+                </span>
+
+                <span>
+                    <i class="fa-solid fa-wave-square"></i>
+                    ECG Monitor
+                </span>
+
+                <span>
+                    <i class="fa-solid fa-gauge"></i>
+                    Blood Pressure Monitor
+                </span>
+
+                <span>
+                    <i class="fa-solid fa-chart-line"></i>
+                    HRV Analysis
+                </span>
+
+            </div>
+
+        </section>
+
+        <!-- NASA REFERENCES -->
+
+        <section class="dataset-section">
+
+            <h3>
+                <i class="fa-solid fa-satellite"></i>
+                NASA RESEARCH & DATA REFERENCES
+            </h3>
+
+            <p>
+                This dashboard is designed with reference to NASA's space
+                life-sciences research and astronaut physiological monitoring
+                resources. These resources provide research context for
+                studying cardiovascular changes during spaceflight.
+            </p>
+
+            <p>
+                <strong style="color:#ff7188;">
+                    DATA CLARIFICATION:
+                </strong>
+
+                The Normal and High Stimulation readings are illustrative
+                software-generated profiles. They are not downloaded NASA
+                telemetry, real astronaut measurements, or readings from
+                a connected physical ECG device.
+            </p>
+
+            <div class="dataset-links">
+
+                <a href="https://science.nasa.gov/biological-physical/data/osdr/"
+                    target="_blank" rel="noopener noreferrer">
+
+                    <i class="fa-solid fa-database"></i>
+                    NASA OSDR
+
+                </a>
+
+                <a href="https://nlsp.nasa.gov/"
+                    target="_blank" rel="noopener noreferrer">
+
+                    <i class="fa-solid fa-book-open"></i>
+                    NASA Life Sciences Portal
+
+                </a>
+
+                <a href="https://ntrs.nasa.gov/"
+                    target="_blank" rel="noopener noreferrer">
+
+                    <i class="fa-solid fa-file-lines"></i>
+                    NASA Technical Reports
+
+                </a>
+
+            </div>
+
+        </section>
+
+        <!-- FOOTER -->
+
+        <footer class="footer">
+
+            COSMO CARE | ASTRONAUT HEALTH MONITORING SYSTEM
+
+            <br>
+
+            Research-informed prototype interface.
+            Displayed stimulation readings are simulated and are not
+            medical measurements.
+
+        </footer>
+
+    </main>
+
+    <!-- WARNING POPUP -->
+
+    <div class="alert-overlay" id="alertOverlay">
+
+        <div class="alert-box">
+
+            <div class="alert-icon">
+                <i class="fa-solid fa-heart-crack"></i>
+            </div>
+
+            <h2>CARDIOVASCULAR WARNING</h2>
+
+            <p id="alertMessage">
+                Elevated cardiovascular stimulation profile detected.
+                Please review the displayed readings.
+            </p>
+
+            <button class="acknowledge-btn" onclick="acknowledgeAlert()">
+                <i class="fa-solid fa-check"></i>
+                ACKNOWLEDGE ALERT
+            </button>
+
+        </div>
+
+    </div>
+
+    <script>
+
+        /* =================================
+           VARIABLES
+        ================================= */
+
+        let currentMode = "NORMAL";
+        let soundEnabled = true;
+        let alarmInterval = null;
+        let audioContext = null;
+        let alertAcknowledged = false;
+        let heartChart = null;
+
+
+        /* =================================
+           AUDIO CONTEXT
+        ================================= */
+
+        function getAudioContext() {
+
+            const AudioContextClass =
+                window.AudioContext || window.webkitAudioContext;
+
+            if (!AudioContextClass) return null;
+
+            if (!audioContext) {
+                audioContext = new AudioContextClass();
+            }
+
+            if (audioContext.state === "suspended") {
+                audioContext.resume();
+            }
+
+            return audioContext;
+
+        }
+
+
+        /* =================================
+           WARNING SOUND
+           SAME AS RADIATION DASHBOARD
+        ================================= */
+
+        function playWarningTone() {
+
+            if (!soundEnabled) return;
+
+            try {
+
+                const AudioContextClass =
+                    window.AudioContext || window.webkitAudioContext;
+
+                if (!AudioContextClass) return;
+
+                if (!audioContext) {
+                    audioContext = new AudioContextClass();
+                }
+
+                if (audioContext.state === "suspended") {
+                    audioContext.resume();
+                }
+
+                const oscillator = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+
+                oscillator.type = "square";
+
+                oscillator.frequency.setValueAtTime(
+                    880,
+                    audioContext.currentTime
+                );
+
+                oscillator.frequency.setValueAtTime(
+                    620,
+                    audioContext.currentTime + .2
+                );
+
+                gain.gain.setValueAtTime(
+                    .12,
+                    audioContext.currentTime
+                );
+
+                gain.gain.exponentialRampToValueAtTime(
+                    .001,
+                    audioContext.currentTime + .4
+                );
+
+                oscillator.connect(gain);
+                gain.connect(audioContext.destination);
+
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + .42);
+
+            } catch (error) {
+
+                console.warn("Warning audio unavailable:", error);
+
+            }
+
+        }
+
+
+        /* =================================
+           ACKNOWLEDGEMENT SOUND
+        ================================= */
+
+        function playAcknowledgeSound() {
+
+            try {
+
+                const context = getAudioContext();
+
+                if (!context) return;
+
+                const oscillator = context.createOscillator();
+                const gain = context.createGain();
+
+                const now = context.currentTime;
+
+                oscillator.type = "sine";
+
+                oscillator.frequency.setValueAtTime(620, now);
+
+                oscillator.frequency.exponentialRampToValueAtTime(
+                    920,
+                    now + 0.18
+                );
+
+                gain.gain.setValueAtTime(.001, now);
+
+                gain.gain.exponentialRampToValueAtTime(
+                    .12,
+                    now + 0.025
+                );
+
+                gain.gain.exponentialRampToValueAtTime(
+                    .001,
+                    now + 0.38
+                );
+
+                oscillator.connect(gain);
+                gain.connect(context.destination);
+
+                oscillator.start(now);
+                oscillator.stop(now + 0.4);
+
+            } catch (error) {
+
+                console.warn("Acknowledgement audio unavailable:", error);
+
+            }
+
+        }
+
+
+        /* =================================
+           START WARNING ALARM
+        ================================= */
+
+        function startWarningAlarm() {
+
+            stopWarningAlarm();
+
+            if (!soundEnabled) return;
+
+            playWarningTone();
+
+            alarmInterval = setInterval(() => {
+
+                if (currentMode === "HIGH" && soundEnabled) {
+
+                    playWarningTone();
+
+                } else {
+
+                    stopWarningAlarm();
+
+                }
+
+            }, 1000);
+
+        }
+
+
+        /* =================================
+           STOP WARNING ALARM
+        ================================= */
+
+        function stopWarningAlarm() {
+
+            if (alarmInterval) {
+
+                clearInterval(alarmInterval);
+
+                alarmInterval = null;
+
+            }
+
+        }
+
+
+        /* =================================
+           SHOW WARNING
+        ================================= */
+
+        function showWarning(message) {
+
+            document.getElementById("alertMessage").textContent = message;
+
+            document.getElementById("alertOverlay").classList.add("show");
+
+            alertAcknowledged = false;
+
+        }
+
+
+        /* =================================
+           HIDE WARNING
+        ================================= */
+
+        function hideWarning() {
+
+            document.getElementById("alertOverlay").classList.remove("show");
+
+        }
+
+
+        /* =================================
+           ACKNOWLEDGE ALERT
+           ALARM CONTINUES AFTER ACKNOWLEDGEMENT
+        ================================= */
+
+        function acknowledgeAlert() {
+
+            alertAcknowledged = true;
+
+            playAcknowledgeSound();
+
+            hideWarning();
+
+        }
+
+
+        /* =================================
+           CENTRAL ALERT INTEGRATION
+        ================================= */
+
+        function sendAlertToDashboard() {
+
+            const now = new Date();
+
+            const alertData = {
+
+                id: "CARDIO-" + Date.now() + "-" +
+                    Math.random().toString(36).slice(2, 7),
+
+                source: "Cardiovascular Monitor",
+
+                module: "Cardiovascular Monitor",
+
+                title: "Elevated Cardiovascular Profile",
+
+                message:
+                    "The high cardiovascular stimulation profile has been activated. Review the illustrative heart rate, blood pressure and HRV readings.",
+
+                severity: "critical",
+
+                status: "active",
+
+                type: "cardiovascular",
+
+                warningCode: "HIGH_STIMULATION",
+
+                acknowledged: false,
+
+                time: now.toLocaleString(),
+
+                timestamp: now.toISOString()
+
+            };
+
+            try {
+
+                let alerts = JSON.parse(
+                    localStorage.getItem("cosmoCareAlerts") || "[]"
+                );
+
+                alerts.unshift(alertData);
+
+                alerts = alerts.slice(0, 100);
+
+                localStorage.setItem(
+                    "cosmoCareAlerts",
+                    JSON.stringify(alerts)
+                );
+
+                window.dispatchEvent(
+                    new CustomEvent("cosmoCareAlertAdded", {
+                        detail: alertData
+                    })
+                );
+
+            } catch (error) {
+
+                console.warn("Could not save dashboard alert:", error);
+
+            }
+
+        }
+
+
+        /* =================================
+           UPDATE METRICS
+        ================================= */
+
+        function updateMetrics(hr, sys, dia, hrv) {
+
+            document.getElementById("heartRate").textContent = hr;
+
+            document.getElementById("systolic").textContent = sys;
+
+            document.getElementById("diastolic").textContent = dia;
+
+            document.getElementById("hrv").textContent = hrv;
+
+            document.getElementById("heartProfile").textContent =
+                hr + " BPM";
+
+            document.getElementById("bpProfile").textContent =
+                sys + "/" + dia + " mmHg";
+
+            document.getElementById("hrvProfile").textContent =
+                hrv + " ms";
+
+        }
+
+
+        /* =================================
+           UPDATE METRIC STATUSES
+        ================================= */
+
+        function updateMetricStatuses(isHigh) {
+
+            const statuses = [
+                "heartStatus",
+                "systolicStatus",
+                "diastolicStatus",
+                "hrvStatus"
+            ];
+
+            statuses.forEach(id => {
+
+                const element = document.getElementById(id);
+
+                element.textContent = isHigh
+                    ? "● High stimulation profile"
+                    : "● Normal profile";
+
+                element.classList.toggle("warning", isHigh);
+
+            });
+
+        }
+
+
+        /* =================================
+           NORMAL MODE
+        ================================= */
+
+        function setNormal() {
+
+            stopWarningAlarm();
+
+            hideWarning();
+
+            alertAcknowledged = false;
+
+            currentMode = "NORMAL";
+
+            updateMetrics(72, 118, 76, 52);
+
+            updateMetricStatuses(false);
+
+            document.getElementById("modeText").textContent = "NORMAL";
+
+            document.getElementById("monitorMode").textContent = "NORMAL";
+
+            document.getElementById("alertStatus").textContent =
+                "NO ACTIVE ALERT";
+
+            document.getElementById("alertStatus").style.color =
+                "#42e6a0";
+
+            document.getElementById("systemState").textContent =
+                "ACTIVE";
+
+            updateChart([68, 72, 70, 74, 71, 73, 72]);
+
+        }
+
+
+        /* =================================
+           HIGH STIMULATION MODE
+        ================================= */
+
+        function setHigh() {
+
+            if (currentMode === "HIGH") {
+
+                if (!alertAcknowledged) {
+
+                    showWarning(
+                        "Elevated cardiovascular stimulation profile detected. Please review the readings."
+                    );
+
+                }
+
+                if (soundEnabled && alarmInterval === null) {
+
+                    startWarningAlarm();
+
+                }
+
+                return;
+
+            }
+
+            currentMode = "HIGH";
+
+            alertAcknowledged = false;
+
+            updateMetrics(104, 142, 90, 28);
+
+            updateMetricStatuses(true);
+
+            document.getElementById("modeText").textContent = "HIGH";
+
+            document.getElementById("monitorMode").textContent = "HIGH";
+
+            document.getElementById("alertStatus").textContent =
+                "WARNING ACTIVE";
+
+            document.getElementById("alertStatus").style.color =
+                "#ff6376";
+
+            document.getElementById("systemState").textContent =
+                "WARNING";
+
+            updateChart([72, 78, 85, 91, 96, 101, 104]);
+
+            showWarning(
+                "Elevated cardiovascular stimulation profile detected. The displayed heart rate, blood pressure and HRV readings have moved to the high simulation profile. Please review the monitoring panel."
+            );
+
+            sendAlertToDashboard();
+
+            if (soundEnabled) {
+
+                startWarningAlarm();
+
+            }
+
+        }
+
+
+        /* =================================
+           STOP SYSTEM
+        ================================= */
+
+        function stopSystem() {
+
+            stopWarningAlarm();
+
+            hideWarning();
+
+            alertAcknowledged = false;
+
+            currentMode = "STOPPED";
+
+            updateMetrics("--", "--", "--", "--");
+
+            updateMetricStatuses(false);
+
+            document.getElementById("heartStatus").textContent =
+                "● Monitoring stopped";
+
+            document.getElementById("systolicStatus").textContent =
+                "● Monitoring stopped";
+
+            document.getElementById("diastolicStatus").textContent =
+                "● Monitoring stopped";
+
+            document.getElementById("hrvStatus").textContent =
+                "● Monitoring stopped";
+
+            document.getElementById("modeText").textContent = "STOPPED";
+
+            document.getElementById("monitorMode").textContent = "STOPPED";
+
+            document.getElementById("alertStatus").textContent =
+                "SYSTEM STOPPED";
+
+            document.getElementById("alertStatus").style.color =
+                "#aaa";
+
+            document.getElementById("systemState").textContent =
+                "INACTIVE";
+
+            updateChart([]);
+
+        }
+
+
+        /* =================================
+           SOUND ON / OFF
+        ================================= */
+
+        function toggleSound() {
+
+            soundEnabled = !soundEnabled;
+
+            const button = document.getElementById("soundButton");
+
+            if (soundEnabled) {
+
+                button.innerHTML =
+                    '<i class="fa-solid fa-volume-high"></i> SOUND ON';
+
+                if (currentMode === "HIGH") {
+
+                    startWarningAlarm();
+
+                }
+
+            } else {
+
+                button.innerHTML =
+                    '<i class="fa-solid fa-volume-xmark"></i> SOUND OFF';
+
+                stopWarningAlarm();
+
+            }
+
+        }
+
+
+        /* =================================
+           CHART INITIALIZATION
+        ================================= */
+
+        function initializeChart() {
+
+            const canvas = document.getElementById("heartChart");
+
+            const ctx = canvas.getContext("2d");
+
+            heartChart = new Chart(ctx, {
+
+                type: "line",
+
+                data: {
+
+                    labels: [
+                        "T-6",
+                        "T-5",
+                        "T-4",
+                        "T-3",
+                        "T-2",
+                        "T-1",
+                        "NOW"
+                    ],
+
+                    datasets: [{
+
+                        label: "Heart Rate",
+
+                        data: [68, 70, 69, 73, 71, 74, 72],
+
+                        borderColor: "#ff405e",
+
+                        backgroundColor: "rgba(255,51,79,0.10)",
+
+                        borderWidth: 2,
+
+                        fill: true,
+
+                        tension: 0.4,
+
+                        pointBackgroundColor: "#ff6376",
+
+                        pointBorderColor: "#ff3155",
+
+                        pointRadius: 4,
+
+                        pointHoverRadius: 6
+
+                    }]
+
+                },
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+                    interaction: {
+                        intersect: false,
+                        mode: "index"
+                    },
+
+                    plugins: {
+
+                        legend: {
+
+                            labels: {
+
+                                color: "#c8b9c3",
+
+                                font: {
+                                    size: 10
+                                }
+
+                            }
+
+                        }
+
+                    },
+
+                    scales: {
+
+                        x: {
+
+                            ticks: {
+                                color: "#a99aa5",
+                                font: {
+                                    size: 9
+                                }
+                            },
+
+                            grid: {
+                                color: "rgba(255,255,255,0.05)"
+                            }
+
+                        },
+
+                        y: {
+
+                            min: 40,
+
+                            max: 150,
+
+                            ticks: {
+                                color: "#a99aa5",
+                                font: {
+                                    size: 9
+                                }
+                            },
+
+                            grid: {
+                                color: "rgba(255,255,255,0.05)"
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            });
+
+        }
+
+
+        /* =================================
+           UPDATE CHART
+        ================================= */
+
+        function updateChart(values) {
+
+            if (!heartChart) return;
+
+            heartChart.data.datasets[0].data = values;
+
+            heartChart.update();
+
+        }
+
+
+        /* =================================
+           MOBILE SIDEBAR
+        ================================= */
+
+        function toggleSidebar() {
+
+            document.getElementById("sidebar").classList.toggle("open");
+
+            document.getElementById("sidebarOverlay").classList.toggle("show");
+
+        }
+
+
+        /* =================================
+           CLOSE SIDEBAR AFTER NAVIGATION
+        ================================= */
+
+        document.querySelectorAll(".sidebar a").forEach(link => {
+
+            link.addEventListener("click", () => {
+
+                document.getElementById("sidebar").classList.remove("open");
+
+                document.getElementById("sidebarOverlay").classList.remove("show");
+
+            });
+
+        });
+
+
+        /* =================================
+           INITIALIZATION
+        ================================= */
+
+        document.addEventListener("DOMContentLoaded", () => {
+
+            initializeChart();
+
+            setNormal();
+
+        });
+
+    </script>
+
+</body>
+
+</html>

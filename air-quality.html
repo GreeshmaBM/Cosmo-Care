@@ -1,0 +1,1711 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmo Care | Air Quality Monitoring</title>
+
+    <link rel="stylesheet" href="cosmo-style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+            --bg: #071411;
+            --panel: rgba(13, 36, 29, 0.88);
+            --panel2: rgba(17, 48, 38, 0.85);
+            --green: #36e6a0;
+            --green2: #13b981;
+            --cyan: #56e8d2;
+            --red: #ff5364;
+            --yellow: #ffd166;
+            --text: #eafff5;
+            --muted: #8eafa1;
+            --border: rgba(77, 224, 163, 0.17);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        #stars {
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            pointer-events: none;
+        }
+
+        .background-glow {
+            position: fixed;
+            width: 450px;
+            height: 450px;
+            border-radius: 50%;
+            filter: blur(130px);
+            opacity: 0.15;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .glow-one {
+            background: #13b981;
+            top: -150px;
+            left: 20%;
+        }
+
+        .glow-two {
+            background: #00a6a6;
+            bottom: -200px;
+            right: 5%;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 245px;
+            height: 100vh;
+            background: rgba(5, 20, 15, 0.96);
+            border-right: 1px solid var(--border);
+            padding: 25px 15px;
+            z-index: 10;
+            overflow-y: auto;
+        }
+
+        .logo {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--green);
+            font-size: 21px;
+            font-weight: 800;
+            padding: 8px 12px;
+            letter-spacing: 1px;
+        }
+
+        .logo span {
+            display: block;
+            color: var(--muted);
+            font-family: 'Inter', sans-serif;
+            font-size: 10px;
+            letter-spacing: 3px;
+            margin-top: 6px;
+        }
+
+        .sidebar-heading {
+            color: #668779;
+            font-size: 10px;
+            letter-spacing: 2px;
+            margin: 35px 12px 13px;
+            text-transform: uppercase;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            color: #9cb9aa;
+            text-decoration: none;
+            padding: 13px 12px;
+            margin: 5px 0;
+            border-radius: 9px;
+            font-size: 12px;
+            transition: 0.3s;
+        }
+
+        .nav-link i {
+            width: 19px;
+            font-size: 15px;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: rgba(54, 230, 160, 0.12);
+            color: var(--green);
+            box-shadow: inset 3px 0 var(--green);
+        }
+
+        .main {
+            margin-left: 245px;
+            padding: 30px 35px 50px;
+        }
+
+        .topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 28px;
+        }
+
+        .page-title h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: clamp(19px, 2.5vw, 27px);
+            letter-spacing: 1px;
+        }
+
+        .page-title p {
+            color: var(--muted);
+            font-size: 12px;
+            margin-top: 9px;
+        }
+
+        .system-status {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: var(--green);
+            background: rgba(54, 230, 160, 0.08);
+            border: 1px solid var(--border);
+            padding: 11px 16px;
+            border-radius: 30px;
+            font-size: 11px;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background: var(--green);
+            border-radius: 50%;
+            box-shadow: 0 0 12px var(--green);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            50% {
+                opacity: 0.3;
+                transform: scale(0.7);
+            }
+        }
+
+        .panel {
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 22px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.18);
+            backdrop-filter: blur(12px);
+        }
+
+        .section-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 13px;
+            letter-spacing: 1px;
+            margin-bottom: 18px;
+        }
+
+        .section-subtitle {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: -10px;
+            margin-bottom: 18px;
+            line-height: 1.6;
+        }
+
+        .control-panel {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 22px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 9px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: 0.25s;
+        }
+
+        .control-btn {
+            border: 1px solid var(--border);
+            padding: 11px 15px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.04);
+            color: var(--text);
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .normal-btn {
+            border-color: var(--green);
+            color: var(--green);
+        }
+
+        .high-btn {
+            border-color: var(--yellow);
+            color: var(--yellow);
+        }
+
+        .stop-btn {
+            border-color: var(--red);
+            color: var(--red);
+        }
+
+        .sound-btn {
+            border-color: var(--cyan);
+            color: var(--cyan);
+        }
+
+        .mode-label {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .mode-label strong {
+            color: var(--green);
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .metric-card {
+            background: var(--panel2);
+            border: 1px solid var(--border);
+            border-radius: 13px;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+            transition: 0.3s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--green);
+        }
+
+        .metric-icon {
+            font-size: 19px;
+            color: var(--green);
+            margin-bottom: 15px;
+        }
+
+        .metric-name {
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .metric-value {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 25px;
+            margin: 12px 0 5px;
+        }
+
+        .metric-unit {
+            color: var(--muted);
+            font-size: 10px;
+        }
+
+        .metric-status {
+            display: inline-block;
+            margin-top: 14px;
+            padding: 5px 9px;
+            border-radius: 20px;
+            background: rgba(54, 230, 160, 0.1);
+            color: var(--green);
+            font-size: 9px;
+            letter-spacing: 1px;
+        }
+
+        .metric-status.warning {
+            background: rgba(255, 209, 102, 0.12);
+            color: var(--yellow);
+        }
+
+        .metric-status.critical {
+            background: rgba(255, 83, 100, 0.13);
+            color: var(--red);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 18px;
+            margin-bottom: 20px;
+        }
+
+        .lung-area {
+            min-height: 330px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .lung-svg {
+            width: 210px;
+            height: 245px;
+            filter: drop-shadow(0 0 18px rgba(54, 230, 160, 0.4));
+            animation: breathing 4s ease-in-out infinite;
+        }
+
+        @keyframes breathing {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.08);
+            }
+        }
+
+        .lung-circle {
+            position: absolute;
+            width: 260px;
+            height: 260px;
+            border: 1px solid rgba(54, 230, 160, 0.2);
+            border-radius: 50%;
+            animation: rotate 15s linear infinite;
+        }
+
+        .lung-circle::before,
+        .lung-circle::after {
+            content: "";
+            position: absolute;
+            border: 1px dashed rgba(54, 230, 160, 0.25);
+            border-radius: 50%;
+            inset: 20px;
+        }
+
+        .lung-circle::after {
+            inset: 45px;
+        }
+
+        @keyframes rotate {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .lung-caption {
+            position: absolute;
+            bottom: 20px;
+            color: var(--muted);
+            font-size: 10px;
+            letter-spacing: 2px;
+        }
+
+        .sensor-list {
+            display: flex;
+            flex-direction: column;
+            gap: 13px;
+        }
+
+        .sensor-item {
+            background: rgba(255, 255, 255, 0.025);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+        }
+
+        .sensor-top {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            font-size: 11px;
+            margin-bottom: 12px;
+        }
+
+        .sensor-top span:last-child {
+            color: var(--green);
+        }
+
+        .progress {
+            width: 100%;
+            height: 7px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.08);
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            width: 25%;
+            height: 100%;
+            background: linear-gradient(90deg, var(--green2), var(--cyan));
+            border-radius: 20px;
+            transition: width 0.6s ease;
+        }
+
+        .chart-panel {
+            margin-bottom: 20px;
+        }
+
+        .chart-container {
+            height: 250px;
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .history-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.025);
+            border-radius: 8px;
+            font-size: 11px;
+        }
+
+        .history-row span:last-child {
+            color: var(--muted);
+        }
+
+        .dataset-note {
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.8;
+        }
+
+        .dataset-note a {
+            color: var(--green);
+            text-decoration: none;
+        }
+
+        .dataset-note a:hover {
+            text-decoration: underline;
+        }
+
+        .footer-note {
+            color: #678577;
+            font-size: 10px;
+            line-height: 1.7;
+            margin-top: 18px;
+        }
+
+        /* WARNING POPUP */
+
+        .warning-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.78);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            padding: 20px;
+            backdrop-filter: blur(7px);
+        }
+
+        .warning-overlay.show {
+            display: flex;
+        }
+
+        .warning-box {
+            width: 100%;
+            max-width: 430px;
+            background: #101d19;
+            border: 1px solid var(--red);
+            border-radius: 17px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 0 45px rgba(255, 83, 100, 0.2);
+            animation: popup 0.35s ease;
+        }
+
+        @keyframes popup {
+            from {
+                opacity: 0;
+                transform: scale(0.85);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .warning-icon {
+            color: var(--red);
+            font-size: 43px;
+            margin-bottom: 18px;
+            animation: warningPulse 1s infinite;
+        }
+
+        @keyframes warningPulse {
+            50% {
+                transform: scale(1.13);
+            }
+        }
+
+        .warning-box h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--red);
+            font-size: 17px;
+            margin-bottom: 14px;
+        }
+
+        .warning-box p {
+            color: #b8d1c4;
+            font-size: 12px;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .ack-btn {
+            background: var(--red);
+            color: white;
+            border: none;
+            border-radius: 7px;
+            padding: 12px 25px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .ack-btn:hover {
+            background: #e83c50;
+        }
+
+        /* TOAST */
+
+        .toast {
+            position: fixed;
+            right: 25px;
+            bottom: 25px;
+            background: #10271e;
+            border: 1px solid var(--green);
+            color: var(--text);
+            border-radius: 10px;
+            padding: 14px 18px;
+            font-size: 11px;
+            z-index: 120;
+            opacity: 0;
+            transform: translateY(20px);
+            pointer-events: none;
+            transition: 0.3s;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media(max-width:1100px) {
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media(max-width:800px) {
+            .sidebar {
+                width: 65px;
+                padding: 20px 8px;
+            }
+
+            .logo {
+                font-size: 0;
+                padding: 8px;
+            }
+
+            .logo::before {
+                content: "CC";
+                font-size: 18px;
+            }
+
+            .logo span,
+            .sidebar-heading,
+            .nav-link span {
+                display: none;
+            }
+
+            .nav-link {
+                justify-content: center;
+                padding: 14px 5px;
+            }
+
+            .nav-link i {
+                font-size: 17px;
+            }
+
+            .main {
+                margin-left: 65px;
+                padding: 22px 15px;
+            }
+
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media(max-width:500px) {
+            .metrics-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 9px;
+            }
+
+            .metric-card {
+                padding: 13px;
+            }
+
+            .metric-value {
+                font-size: 19px;
+            }
+
+            .panel {
+                padding: 16px;
+            }
+
+            .control-btn {
+                padding: 10px;
+                font-size: 10px;
+            }
+        }
+
+        /* AIR QUALITY ACTIVE NAV LINK */
+        .sidebar .nav-link.active {
+            background: rgba(0, 230, 150, 0.18);
+            color: #ffffff;
+            border-left: 3px solid #00e696;
+            box-shadow: 0 0 12px rgba(0, 230, 150, 0.15);
+        }
+
+        .sidebar .nav-link.active i {
+            color: #00e696;
+        }
+    </style>
+</head>
+
+<body>
+
+    <canvas id="stars"></canvas>
+    <div class="background-glow glow-one"></div>
+    <div class="background-glow glow-two"></div>
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="sidebar-logo">
+            <span>✦</span> COSMO CARE
+        </div>
+
+        <div class="sidebar-menu">
+
+            <a href="index.html" class="nav-link">
+                <i class="fas fa-house"></i>
+                <span>Main Dashboard</span>
+            </a>
+
+            <a href="cardiovascular.html" class="nav-link">
+                <i class="fas fa-heartbeat"></i>
+                <span>Cardiovascular</span>
+            </a>
+
+            <a href="oxygen.html" class="nav-link">
+                <i class="fas fa-lungs"></i>
+                <span>Blood Oxygen</span>
+            </a>
+
+            <a href="sleep.html" class="nav-link">
+                <i class="fas fa-moon"></i>
+                <span>Sleep Monitor</span>
+            </a>
+
+            <a href="bone-health.html" class="nav-link">
+                <i class="fas fa-bone"></i>
+                <span>Bone Health</span>
+            </a>
+
+            <a href="radiation.html" class="nav-link">
+                <i class="fas fa-radiation"></i>
+                <span>Radiation Monitor</span>
+            </a>
+
+            <a href="air-quality.html" class="nav-link active">
+                <i class="fas fa-wind"></i>
+                <span>Air Quality</span>
+            </a>
+
+            <a href="movement.html" class="nav-link">
+                <i class="fas fa-person-walking"></i>
+                <span>Balance & Movement</span>
+            </a>
+
+            <a href="famil-connect.html" class="nav-link">
+                <i class="fas fa-users"></i>
+                <span>Family Connect</span>
+            </a>
+
+            <a href="alerts.html" class="nav-link">
+                <i class="fas fa-bell"></i>
+                <span>Alerts & Warnings</span>
+            </a>
+
+        </div>
+
+    </aside>
+    <!-- MAIN CONTENT -->
+
+    <main class="main">
+
+        <div class="topbar">
+            <div class="page-title">
+                <h1>AIR QUALITY MONITOR</h1>
+                <p>Spacecraft cabin environmental monitoring system</p>
+            </div>
+
+            <div class="system-status">
+                <span class="status-dot" id="statusDot"></span>
+                <span id="systemStatus">SYSTEM ACTIVE</span>
+            </div>
+        </div>
+
+        <!-- CONTROLS -->
+
+        <section class="panel control-panel">
+            <div>
+                <div class="section-title">ENVIRONMENTAL CONTROL</div>
+                <div class="mode-label">
+                    Current Mode: <strong id="modeText">NORMAL STIMULATION</strong>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="control-btn normal-btn" onclick="setNormal()">
+                    <i class="fa-solid fa-leaf"></i> NORMAL
+                </button>
+
+                <button class="control-btn high-btn" onclick="setHigh()">
+                    <i class="fa-solid fa-triangle-exclamation"></i> HIGH STIMULATION
+                </button>
+
+                <button class="control-btn stop-btn" onclick="stopSystem()">
+                    <i class="fa-solid fa-power-off"></i> STOP SYSTEM
+                </button>
+
+                <button class="control-btn sound-btn" id="soundButton" onclick="toggleSound()">
+                    <i class="fa-solid fa-volume-high"></i> SOUND ON
+                </button>
+            </div>
+        </section>
+
+        <!-- READINGS -->
+
+        <div class="metrics-grid">
+
+            <div class="metric-card">
+                <div class="metric-icon"><i class="fa-solid fa-cloud"></i></div>
+                <div class="metric-name">CARBON DIOXIDE</div>
+                <div class="metric-value" id="co2Value">900</div>
+                <div class="metric-unit">ppm</div>
+                <span class="metric-status" id="co2Status">NORMAL</span>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon"><i class="fa-solid fa-smog"></i></div>
+                <div class="metric-name">CARBON MONOXIDE</div>
+                <div class="metric-value" id="coValue">0.5</div>
+                <div class="metric-unit">ppm</div>
+                <span class="metric-status" id="coStatus">NORMAL</span>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon"><i class="fa-solid fa-temperature-half"></i></div>
+                <div class="metric-name">CABIN TEMPERATURE</div>
+                <div class="metric-value" id="tempValue">22</div>
+                <div class="metric-unit">°C</div>
+                <span class="metric-status" id="tempStatus">NORMAL</span>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-icon"><i class="fa-solid fa-droplet"></i></div>
+                <div class="metric-name">RELATIVE HUMIDITY</div>
+                <div class="metric-value" id="humidityValue">45</div>
+                <div class="metric-unit">%</div>
+                <span class="metric-status" id="humidityStatus">NORMAL</span>
+            </div>
+
+        </div>
+
+        <!-- LUNGS + SENSORS -->
+
+        <div class="content-grid">
+
+            <section class="panel">
+                <div class="section-title">CABIN RESPIRATORY ENVIRONMENT</div>
+                <p class="section-subtitle">
+                    Visual representation of the environmental monitoring system.
+                </p>
+
+                <div class="lung-area">
+                    <div class="lung-circle"></div>
+
+                    <svg class="lung-svg" viewBox="0 0 220 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+
+                        <path d="M105 25 V118" stroke="#56e8d2" stroke-width="9" stroke-linecap="round" />
+
+                        <path d="M105 88 L80 120 L62 145" stroke="#56e8d2" stroke-width="7" stroke-linecap="round" />
+
+                        <path d="M105 88 L130 120 L150 145" stroke="#56e8d2" stroke-width="7" stroke-linecap="round" />
+
+                        <path d="M93 95
+                             C65 83 35 112 25 157
+                             C14 202 33 238 65 230
+                             C88 224 99 184 99 145
+                             L99 105 Z" fill="rgba(54,230,160,0.25)" stroke="#36e6a0" stroke-width="3" />
+
+                        <path d="M117 95
+                             C145 83 175 112 185 157
+                             C196 202 177 238 145 230
+                             C122 224 111 184 111 145
+                             L111 105 Z" fill="rgba(54,230,160,0.25)" stroke="#36e6a0" stroke-width="3" />
+
+                        <path d="M105 25 V90" stroke="#b4fff0" stroke-width="5" stroke-linecap="round" />
+                    </svg>
+
+                    <div class="lung-caption">CABIN AIRFLOW VISUALIZATION</div>
+                </div>
+            </section>
+
+            <section class="panel">
+                <div class="section-title">SENSOR RESPONSE MONITOR</div>
+                <p class="section-subtitle">
+                    Prototype sensor-response indicators for cabin environmental monitoring.
+                </p>
+
+                <div class="sensor-list">
+
+                    <div class="sensor-item">
+                        <div class="sensor-top">
+                            <span><i class="fa-solid fa-atom"></i> NanoSense</span>
+                            <span id="nanoValue">28%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-fill" id="nanoBar"></div>
+                        </div>
+                    </div>
+
+                    <div class="sensor-item">
+                        <div class="sensor-top">
+                            <span><i class="fa-solid fa-temperature-high"></i> ThermoSense</span>
+                            <span id="thermoValue">25%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-fill" id="thermoBar"></div>
+                        </div>
+                    </div>
+
+                    <div class="sensor-item">
+                        <div class="sensor-top">
+                            <span><i class="fa-solid fa-water"></i> HumiditySense</span>
+                            <span id="humiditySensorValue">32%</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-fill" id="humidityBar"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="footer-note">
+                    Sensor-response percentages are illustrative prototype indicators,
+                    not calibrated measurements from physical hardware.
+                </div>
+            </section>
+
+        </div>
+
+        <!-- HISTORY CHART -->
+
+        <section class="panel chart-panel">
+            <div class="section-title">ENVIRONMENTAL READING HISTORY</div>
+            <p class="section-subtitle">
+                Changes in cabin environmental readings during the current simulation.
+            </p>
+
+            <div class="chart-container">
+                <canvas id="airChart"></canvas>
+            </div>
+        </section>
+
+        <!-- ALERT HISTORY -->
+
+        <section class="panel chart-panel">
+            <div class="section-title">RECENT AIR QUALITY EVENTS</div>
+            <div class="history-list" id="historyList">
+                <div class="history-row">
+                    <span>Air quality monitoring initialized</span>
+                    <span>System ready</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- DATASET INFORMATION -->
+
+        <section class="panel">
+            <div class="section-title">DATASETS & RESEARCH FOUNDATION</div>
+
+            <div class="dataset-note">
+                <p>
+                    <strong style="color:var(--green)">NASA Environmental Data Application</strong><br>
+                    NASA's Environmental Data Application provides access to spacecraft
+                    environmental measurements, including cabin CO₂, temperature and
+                    relative humidity data where available.
+                </p>
+
+                <br>
+
+                <p>
+                    <a href="https://visualization.osdr.nasa.gov/eda/" target="_blank">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        NASA Environmental Data Application
+                    </a>
+                </p>
+
+                <br>
+
+                <p>
+                    <strong style="color:var(--green)">NASA NanoSense Technology Reference — TOP2-292</strong><br>
+                    Research reference for nanoparticle-based sensing concepts.
+                </p>
+
+                <br>
+
+                <p>
+                    <a href="https://technology.nasa.gov/patent/TOP2-292" target="_blank">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                        NASA Technology Transfer — TOP2-292
+                    </a>
+                </p>
+
+                <div class="footer-note">
+                    Dataset transparency: The NASA links above are research/data references.
+                    The displayed readings in this prototype are simulated values and are
+                    not live NASA telemetry or measurements from connected hardware.
+                    The sensor-response indicators are illustrative.
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- WARNING POPUP -->
+
+    <div class="warning-overlay" id="warningPopup">
+        <div class="warning-box">
+
+            <div class="warning-icon">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+
+            <h2>CABIN AIR QUALITY WARNING</h2>
+
+            <p id="warningMessage">
+                Elevated cabin environmental readings detected.
+                Check CO₂, CO, temperature and humidity levels.
+            </p>
+
+            <button class="ack-btn" onclick="acknowledgeWarning()">
+                ACKNOWLEDGE ALERT
+            </button>
+
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+
+        /* =====================================
+           STAR BACKGROUND
+        ===================================== */
+
+        const canvas = document.getElementById("stars");
+        const ctx = canvas.getContext("2d");
+
+        let stars = [];
+
+        function resizeStars() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            stars = [];
+
+            for (let i = 0; i < 100; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 1.5,
+                    speed: Math.random() * 0.3 + 0.1
+                });
+            }
+        }
+
+        function animateStars() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            stars.forEach(star => {
+                ctx.fillStyle = "rgba(130,255,200,0.7)";
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+                ctx.fill();
+
+                star.y -= star.speed;
+
+                if (star.y < 0) {
+                    star.y = canvas.height;
+                    star.x = Math.random() * canvas.width;
+                }
+            });
+
+            requestAnimationFrame(animateStars);
+        }
+
+        resizeStars();
+        animateStars();
+        window.addEventListener("resize", resizeStars);
+
+
+        /* =====================================
+           SYSTEM VARIABLES
+        ===================================== */
+
+        let mode = "normal";
+        let soundEnabled = true;
+        let audioContext = null;
+        let alarmInterval = null;
+        let chart = null;
+
+        const historyEntries = [];
+
+        const normalReadings = {
+            co2: 900,
+            co: 0.5,
+            temp: 22,
+            humidity: 45,
+            nano: 28,
+            thermo: 25,
+            humiditySensor: 32
+        };
+
+        const highReadings = {
+            co2: 8000,
+            co: 12,
+            temp: 29,
+            humidity: 82,
+            nano: 92,
+            thermo: 85,
+            humiditySensor: 89
+        };
+
+
+        /* =====================================
+           WARNING SOUND
+           SAME TONE AS RADIATION DASHBOARD
+        ===================================== */
+
+        function playWarningTone() {
+
+            if (!soundEnabled) return;
+
+            try {
+
+                const AudioContextClass =
+                    window.AudioContext || window.webkitAudioContext;
+
+                if (!AudioContextClass) return;
+
+                if (!audioContext) {
+                    audioContext = new AudioContextClass();
+                }
+
+                if (audioContext.state === "suspended") {
+                    audioContext.resume();
+                }
+
+                const oscillator = audioContext.createOscillator();
+                const gain = audioContext.createGain();
+
+                oscillator.type = "square";
+
+                // FIRST TONE: 880 Hz
+                oscillator.frequency.setValueAtTime(
+                    880,
+                    audioContext.currentTime
+                );
+
+                // SECOND TONE: 620 Hz
+                oscillator.frequency.setValueAtTime(
+                    620,
+                    audioContext.currentTime + .2
+                );
+
+                gain.gain.setValueAtTime(
+                    .12,
+                    audioContext.currentTime
+                );
+
+                gain.gain.exponentialRampToValueAtTime(
+                    .001,
+                    audioContext.currentTime + .4
+                );
+
+                oscillator.connect(gain);
+                gain.connect(audioContext.destination);
+
+                oscillator.start();
+                oscillator.stop(audioContext.currentTime + 0.42);
+
+            } catch (error) {
+                console.warn("Audio could not be played:", error);
+            }
+        }
+
+
+        function startWarningAlarm() {
+
+            stopWarningAlarm();
+
+            if (!soundEnabled) return;
+
+            playWarningTone();
+
+            // REPEAT EVERY 1 SECOND
+            alarmInterval = setInterval(() => {
+
+                if (mode === "high" && soundEnabled) {
+                    playWarningTone();
+                } else {
+                    stopWarningAlarm();
+                }
+
+            }, 1000);
+        }
+
+
+        function stopWarningAlarm() {
+
+            if (alarmInterval) {
+                clearInterval(alarmInterval);
+                alarmInterval = null;
+            }
+        }
+
+
+        function toggleSound() {
+
+            soundEnabled = !soundEnabled;
+
+            const button = document.getElementById("soundButton");
+
+            if (soundEnabled) {
+
+                button.innerHTML =
+                    '<i class="fa-solid fa-volume-high"></i> SOUND ON';
+
+                if (mode === "high") {
+                    startWarningAlarm();
+                }
+
+            } else {
+
+                button.innerHTML =
+                    '<i class="fa-solid fa-volume-xmark"></i> SOUND OFF';
+
+                stopWarningAlarm();
+            }
+        }
+
+
+        /* =====================================
+           ALERT STORAGE
+        ===================================== */
+
+        function saveAirQualityAlert(title, message, severity) {
+
+            let alerts = [];
+
+            try {
+                alerts = JSON.parse(
+                    localStorage.getItem("cosmoCareAlerts") || "[]"
+                );
+
+                if (!Array.isArray(alerts)) alerts = [];
+
+            } catch {
+                alerts = [];
+            }
+
+            const now = new Date();
+
+            const alert = {
+                id: "AIR-" + Date.now(),
+                source: "Air Quality Monitor",
+                title: title,
+                message: message,
+                severity: severity,
+                status: "active",
+                type: "air-quality",
+                acknowledged: false,
+                time: now.toLocaleString(),
+                timestamp: now.toISOString()
+            };
+
+            alerts.unshift(alert);
+
+            alerts = alerts.slice(0, 100);
+
+            localStorage.setItem(
+                "cosmoCareAlerts",
+                JSON.stringify(alerts)
+            );
+
+            window.dispatchEvent(
+                new CustomEvent("cosmoCareAlertAdded", {
+                    detail: alert
+                })
+            );
+
+            return alert;
+        }
+
+
+        /* =====================================
+           TOAST NOTIFICATION
+        ===================================== */
+
+        function showToast(message) {
+
+            const toast = document.getElementById("toast");
+
+            toast.textContent = message;
+            toast.classList.add("show");
+
+            setTimeout(() => {
+                toast.classList.remove("show");
+            }, 3000);
+        }
+
+
+        /* =====================================
+           READING STATUS
+        ===================================== */
+
+        function updateStatus(id, level) {
+
+            const element = document.getElementById(id);
+
+            element.className = "metric-status";
+
+            if (level === "WARNING") {
+                element.classList.add("warning");
+            }
+
+            if (level === "CRITICAL") {
+                element.classList.add("critical");
+            }
+
+            element.textContent = level;
+        }
+
+
+        function getReadingLevel(value, warning, critical) {
+
+            if (value >= critical) return "CRITICAL";
+            if (value > warning) return "WARNING";
+
+            return "NORMAL";
+        }
+
+
+        /* =====================================
+           DISPLAY READINGS
+        ===================================== */
+
+        function updateReadings(data) {
+
+            document.getElementById("co2Value").textContent =
+                data.co2;
+
+            document.getElementById("coValue").textContent =
+                data.co;
+
+            document.getElementById("tempValue").textContent =
+                data.temp;
+
+            document.getElementById("humidityValue").textContent =
+                data.humidity;
+
+            document.getElementById("nanoValue").textContent =
+                data.nano + "%";
+
+            document.getElementById("thermoValue").textContent =
+                data.thermo + "%";
+
+            document.getElementById("humiditySensorValue").textContent =
+                data.humiditySensor + "%";
+
+            document.getElementById("nanoBar").style.width =
+                data.nano + "%";
+
+            document.getElementById("thermoBar").style.width =
+                data.thermo + "%";
+
+            document.getElementById("humidityBar").style.width =
+                data.humiditySensor + "%";
+
+
+            // Prototype alert bands, not official NASA cabin limits.
+            updateStatus(
+                "co2Status",
+                getReadingLevel(data.co2, 4000, 8500)
+            );
+
+            updateStatus(
+                "coStatus",
+                getReadingLevel(data.co, 10, 25)
+            );
+
+            updateStatus(
+                "tempStatus",
+                (data.temp < 18 || data.temp > 27) ? "WARNING" : "NORMAL"
+            );
+
+            updateStatus(
+                "humidityStatus",
+                (data.humidity < 25 || data.humidity > 75) ? "WARNING" : "NORMAL"
+            );
+
+        }
+
+
+        /* =====================================
+           HISTORY
+        ===================================== */
+
+        function addHistory(message, status) {
+
+            const list = document.getElementById("historyList");
+
+            const row = document.createElement("div");
+            row.className = "history-row";
+
+            const left = document.createElement("span");
+            left.textContent = message;
+
+            const right = document.createElement("span");
+            right.textContent = status + " • " +
+                new Date().toLocaleTimeString();
+
+            row.appendChild(left);
+            row.appendChild(right);
+
+            list.prepend(row);
+
+            while (list.children.length > 6) {
+                list.removeChild(list.lastChild);
+            }
+        }
+
+
+        /* =====================================
+           CHART
+        ===================================== */
+
+        function initializeChart() {
+
+            const chartContext =
+                document.getElementById("airChart").getContext("2d");
+
+            chart = new Chart(chartContext, {
+
+                type: "line",
+
+                data: {
+                    labels: ["1", "2", "3", "4", "5", "6"],
+
+                    datasets: [
+                        {
+                            label: "CO₂ (ppm)",
+                            data: [900, 950, 880, 920, 900, 900],
+                            borderColor: "#36e6a0",
+                            backgroundColor: "rgba(54,230,160,0.08)",
+                            tension: 0.4,
+                            fill: true
+                        },
+                        {
+                            label: "Humidity (%)",
+                            data: [45, 46, 44, 47, 45, 45],
+                            borderColor: "#56e8d2",
+                            tension: 0.4,
+                            fill: false
+                        }
+                    ]
+                },
+
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: "#b8d1c4",
+                                font: {
+                                    family: "Inter"
+                                }
+                            }
+                        }
+                    },
+
+                    scales: {
+                        x: {
+                            ticks: { color: "#8eafa1" },
+                            grid: { color: "rgba(255,255,255,0.05)" }
+                        },
+
+                        y: {
+                            ticks: { color: "#8eafa1" },
+                            grid: { color: "rgba(255,255,255,0.05)" }
+                        }
+                    }
+                }
+
+            });
+
+        }
+
+
+        function updateChart(data) {
+
+            if (!chart) return;
+
+            const time = new Date().toLocaleTimeString();
+
+            chart.data.labels.push(time);
+
+            chart.data.datasets[0].data.push(data.co2);
+            chart.data.datasets[1].data.push(data.humidity);
+
+            if (chart.data.labels.length > 8) {
+
+                chart.data.labels.shift();
+
+                chart.data.datasets.forEach(dataset => {
+                    dataset.data.shift();
+                });
+            }
+
+            chart.update();
+        }
+
+
+        /* =====================================
+           WARNING MESSAGE
+        ===================================== */
+
+        function createAirQualityWarning(data) {
+
+            const problems = [];
+
+            if (data.co2 > 4000) {
+                problems.push("Elevated carbon dioxide");
+            }
+
+            if (data.co > 10) {
+                problems.push("Elevated carbon monoxide");
+            }
+
+            if (data.temp < 18 || data.temp > 27) {
+                problems.push("Cabin temperature outside the prototype alert band");
+            }
+
+            if (data.humidity < 25 || data.humidity > 75) {
+                problems.push("Cabin humidity outside the prototype alert band");
+            }
+
+            return problems;
+        }
+
+
+        function showWarning(message) {
+
+            document.getElementById("warningMessage").textContent =
+                message;
+
+            document.getElementById("warningPopup").classList.add("show");
+        }
+
+
+        function acknowledgeWarning() {
+
+            document.getElementById("warningPopup").classList.remove("show");
+
+            // Acknowledging the popup does not silence an active alarm.
+        }
+
+
+        /* =====================================
+           NORMAL STIMULATION
+        ===================================== */
+
+        function setNormal() {
+
+            mode = "normal";
+
+            stopWarningAlarm();
+
+            document.getElementById("modeText").textContent =
+                "NORMAL STIMULATION";
+
+            document.getElementById("systemStatus").textContent =
+                "SYSTEM ACTIVE";
+
+            document.getElementById("statusDot").style.background =
+                "var(--green)";
+
+            document.getElementById("warningPopup").classList.remove("show");
+
+            updateReadings(normalReadings);
+            updateChart(normalReadings);
+
+            addHistory(
+                "Normal cabin environmental profile restored",
+                "NORMAL"
+            );
+
+            showToast("Normal air quality profile activated.");
+        }
+
+
+        /* =====================================
+           HIGH STIMULATION
+        ===================================== */
+
+        function setHigh() {
+
+            // Avoid duplicate alerts when High is clicked repeatedly.
+            const alreadyHigh = mode === "high";
+
+            mode = "high";
+
+            document.getElementById("modeText").textContent =
+                "HIGH ENVIRONMENTAL STIMULATION";
+
+            document.getElementById("systemStatus").textContent =
+                "ENVIRONMENTAL WARNING";
+
+            document.getElementById("statusDot").style.background =
+                "var(--red)";
+
+            updateReadings(highReadings);
+            updateChart(highReadings);
+
+            const problems = createAirQualityWarning(highReadings);
+
+            const warningMessage =
+                problems.join(". ") +
+                ". Review the cabin environmental monitoring readings.";
+
+            showWarning(warningMessage);
+
+            startWarningAlarm();
+
+            addHistory(
+                "High cabin air-quality profile activated",
+                "WARNING"
+            );
+
+            if (!alreadyHigh) {
+
+                saveAirQualityAlert(
+                    "Cabin Air Quality Warning",
+                    warningMessage,
+                    "critical"
+                );
+            }
+
+            showToast("Cabin air-quality warning activated.");
+        }
+
+
+        /* =====================================
+           STOP SYSTEM
+        ===================================== */
+
+        function stopSystem() {
+
+            mode = "stopped";
+
+            stopWarningAlarm();
+
+            document.getElementById("modeText").textContent =
+                "SYSTEM STOPPED";
+
+            document.getElementById("systemStatus").textContent =
+                "SYSTEM STOPPED";
+
+            document.getElementById("statusDot").style.background =
+                "var(--red)";
+
+            document.getElementById("warningPopup").classList.remove("show");
+
+            const stoppedReadings = {
+                co2: 0,
+                co: 0,
+                temp: 0,
+                humidity: 0,
+                nano: 0,
+                thermo: 0,
+                humiditySensor: 0
+            };
+
+            updateReadings(stoppedReadings);
+            updateChart(stoppedReadings);
+
+            addHistory(
+                "Air quality monitoring system stopped",
+                "STOPPED"
+            );
+
+            showToast("Air quality monitoring stopped.");
+        }
+
+
+        /* =====================================
+           INITIALIZE
+        ===================================== */
+
+        initializeChart();
+        updateReadings(normalReadings);
+
+    </script>
+
+</body>
+
+</html>
